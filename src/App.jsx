@@ -15,7 +15,8 @@ export default function App()
     
     function getUserSession()
     {
-        return(supabase.auth.getSession());
+        const userSession = supabase.auth.getSession();
+        return(userSession);
     }
     
     async function loadUserSession()
@@ -23,7 +24,15 @@ export default function App()
         const response = await getUserSession();
         const userSession = response.data.session;
         setSession(userSession);
-        setIsAuthModalOpen(!userSession);
+        
+        if (userSession === null)
+        {
+            setIsAuthModalOpen(true);
+        }
+        else
+        {
+            setIsAuthModalOpen(false);
+        }
     }
     
     
@@ -35,7 +44,15 @@ export default function App()
             (_event, session) =>
             {
                 setSession(session);
-                setIsAuthModalOpen(!session);
+                
+                if (session === null)
+                {
+                    setIsAuthModalOpen(true);
+                }
+                else
+                {
+                    setIsAuthModalOpen(false);
+                }
             }
         );
         

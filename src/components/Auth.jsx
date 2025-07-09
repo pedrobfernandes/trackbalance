@@ -53,7 +53,14 @@ export default function Auth()
     
     function toggleAuthMode()
     {
-        setIsSignUp(!isSignUp);
+        if (isSignUp === true)
+        {
+            setIsSignUp(false);
+        }
+        else
+        {
+            setIsSignUp(true);
+        }
     }
     
     
