@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import Modal from "react-modal";
 import Auth from "./components/Auth";
+import Header from "./components/Header";
+import Overview from "./pages/Overview";
 import { supabase } from "./lib/supabaseClient";
 
 
@@ -72,7 +74,7 @@ export default function App()
     }
     
     return(
-        <div>
+        <>
             <Modal
                 isOpen={isAuthModalOpen}
                 onRequestClose={() => {}}
@@ -93,18 +95,13 @@ export default function App()
             {
                 session ?
                 (
-                    <div>
-                        <h1>Bem vindo ao TrackBalance!</h1>
-                        <button
-                            type="button"
-                            onClick={handleLogout}
-                        >
-                            Sair
-                        </button>
-                    </div>
+                    <>
+                        <Header/>
+                        <Overview onExit={handleLogout}/>
+                    </>
                 
                 ) : null
             }
-        </div>
+        </>
     );
 }
