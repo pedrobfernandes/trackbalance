@@ -1,39 +1,65 @@
+import { useState } from "react";
 import GrouppedButtons from "../components/GrouppedButtons";
+import FormModal from "../components/FormModal";
 
 export default function Overview(props)
 {
     const { onExit } = props;
     
+    const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+    const [formType, setFormType] = useState("");
+    
+    
+    // TODO: Criar um objeto com formType e uma string;
+    // Ex talvez algo como: { "receita": [ "inserir", "atualizar", "deletar" ], "despesas" [ "inserir", "atualizar", "deletar" ], }
+    // Apos talvez fazer apenas uma função mais generica (handleClick por exemplo) e passar o inserir atualizar ou deletar para setFormType..
+    // Ao invez de ter estas funções todas handleInsertIncome handleUpdateIncome etc..
+    //??? Que tal?? Será???
     
     function handleInsertIncome()
     {
         console.log("Inserindo receita");
+        setFormType("insertIncome");
+        setIsFormModalOpen(true);
     }
     
     function handleUpdateIncome()
     {
         console.log("Atualizando receita");
+        setFormType("updateIncome");
+        setIsFormModalOpen(true);
     }
     
     function handleDeleteIncome()
     {
-        console.log("Deletando receita");
+        const confirmed = window.confirm("Tem certeza que deseja deletar a receita?");
+        
+        if (confirmed === true)
+        {
+            console.log("Deletando receita");
+        }
     }
     
     
     function handleInsertExpenses()
     {
         console.log("Inserindo despesas");
+        setFormType("insertExpenses");
+        setIsFormModalOpen(true);
     }
     
     function handleUpdateExpenses()
     {
         console.log("Atualizando despesas");
+        setFormType("updateExpenses");
+        setIsFormModalOpen(true);
     }
     
     function handleDeleteExpenses()
     {
         console.log("Deletando despesas");
+        setFormType("deleteExpenses");
+        setIsFormModalOpen(true);
     }
     
     function exportToCsv()
@@ -44,6 +70,12 @@ export default function Overview(props)
     function exportToPdf()
     {
         console.log("Exportando para PDF");
+    }
+    
+    
+    function handleCloseModal()
+    {
+        setIsFormModalOpen(false);
     }
     
     return(
@@ -138,6 +170,21 @@ export default function Overview(props)
             >
                 Sair
             </button>
+            
+            {
+                isFormModalOpen ?
+                (
+                    <FormModal
+                        formType={formType}
+                        isFormModalOpen={isFormModalOpen}
+                        onRequestClose={() => {}}
+                        shouldCloseOnOverlayClick={false}
+                        onSubmitSuccess={handleCloseModal}
+                        onCancel={handleCloseModal}
+                    />
+                ) : null
+            }
+            
         </main>
     );
 }
