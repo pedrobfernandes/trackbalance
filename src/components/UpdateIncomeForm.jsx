@@ -4,15 +4,15 @@ export default function UpdateIncomeForm(props)
 {
     const { onSubmitSuccess, onCancel } = props;
     
-    const [newIncome, setNewIncome] = useState(3000);
-    const [oldIncome, setOldincome] = useState(newIncome);
+    const [updatedIncome, setUpdatedIncome] = useState(3000);
+    const [oldIncome, setOldIncome] = useState(updatedIncome);
     
     function handleSubmit(event)
     {
         event.preventDefault();
-        console.log("Nova receita: ", newIncome);
-        setOldincome(newIncome);
-        setNewIncome(0);
+        console.log("Nova receita: ", updatedIncome);
+        setOldIncome(updatedIncome);
+        setUpdatedIncome(0);
         
         onSubmitSuccess();
     }
@@ -27,8 +27,8 @@ export default function UpdateIncomeForm(props)
                 type="number"
                 step={0.01}
                 min={1}
-                value={newIncome}
-                onChange={(event) => setNewIncome(event.target.value)}
+                value={updatedIncome}
+                onChange={(event) => setUpdatedIncome(event.target.value)}
                 required
             />
             <button type="submit">Enviar</button>
