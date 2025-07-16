@@ -1,6 +1,7 @@
 import { useState } from "react";
 import GrouppedButtons from "../components/GrouppedButtons";
 import FormModal from "../components/FormModal";
+import ExpensesTable from "../components/ExpensesTable";
 
 export default function Overview(props)
 {
@@ -8,6 +9,15 @@ export default function Overview(props)
     
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [formType, setFormType] = useState("");
+    
+    
+    const expensesData =
+    [
+        { id: 1, category: "Aluguel", value: 650 },
+        { id: 2, category: "Transporte", value: 120 },
+        { id: 3, category: "Internet", value: 100 },
+        { id: 4, category: "Supermercado", value: 300 },
+    ]
     
     
     // TODO: Criar um objeto com formType e uma string;
@@ -153,6 +163,7 @@ export default function Overview(props)
                     
                     <div className="table-container">
                         <h3>Tabela</h3>
+                        <ExpensesTable expensesData={expensesData}/>
                     </div>
                     
                     <div className="donnut-container">
