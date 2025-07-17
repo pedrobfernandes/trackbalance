@@ -15,6 +15,7 @@ export default function FormModal(props)
         onRequestClose,
         shouldCloseOnOverlayClick,
         onSubmitSuccess,
+        onValueChange,
         onCancel,
         
     } = props;
@@ -23,6 +24,7 @@ export default function FormModal(props)
     {
         "insertIncome": <InsertIncomeForm
             onSubmitSuccess={onSubmitSuccess}
+            onValueChange={onValueChange}
             onCancel={onCancel}
         />,
         
@@ -33,6 +35,7 @@ export default function FormModal(props)
         
         "insertExpenses": <InsertExpensesForm
             onSubmitSuccess={onSubmitSuccess}
+            onValueChange={onValueChange}
             onCancel={onCancel}
         />,
         

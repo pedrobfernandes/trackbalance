@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export default function InsertExpensesForm(props)
 {
-    const { onSubmitSuccess, onCancel } = props;
+    const { onSubmitSuccess, onValueChange, onCancel } = props;
     
     const [expense, setExpense] = useState({ category: "", amount: 0 });
     
@@ -29,8 +29,10 @@ export default function InsertExpensesForm(props)
     function handleSumbit(event)
     {
         event.preventDefault();
-        console.log("Categoria: ", expense.category);
-        console.log("Valor: R$ ", expense.amount);
+        //~ console.log("Categoria: ", expense.category);
+        //~ console.log("Valor: R$ ", expense.amount);
+        
+        onValueChange("insertExpense", expense);
         
         setExpense({ category: "", amount: 0 });        
         onSubmitSuccess();

@@ -30,7 +30,7 @@ export default function ExpensesTable(props)
         },
         
         {
-            accessorKey: "value",
+            accessorKey: "amount",
             header: "Valor (R$)",
             cell: info => `R$ ${info.getValue().toFixed(2)}`
         },

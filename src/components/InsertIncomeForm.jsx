@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export default function InsertIncomeForm(props)
 {
-    const { onSubmitSuccess, onCancel } = props;
+    const { onSubmitSuccess, onValueChange, onCancel } = props;
     
     const [income, setIncome] = useState("");
     
@@ -11,8 +11,10 @@ export default function InsertIncomeForm(props)
     {
         event.preventDefault();
         console.log("Receita inserida: ", income);
-        setIncome("");
         
+        onValueChange("insertIncome", parseFloat(income));
+        
+        setIncome("");
         onSubmitSuccess();
     }
     

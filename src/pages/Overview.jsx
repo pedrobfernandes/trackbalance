@@ -10,14 +10,28 @@ export default function Overview(props)
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [formType, setFormType] = useState("");
     
+     const [income, setIncome] = useState(0);
+     const [expenses, setExpenses] = useState([]);
     
-    const expensesData =
-    [
-        { id: 1, category: "Aluguel", value: 650 },
-        { id: 2, category: "Transporte", value: 120 },
-        { id: 3, category: "Internet", value: 100 },
-        { id: 4, category: "Supermercado", value: 300 },
-    ]
+    
+    //~ const expensesData =
+    //~ [
+        //~ { id: 1, category: "Aluguel", value: 650 },
+        //~ { id: 2, category: "Transporte", value: 120 },
+        //~ { id: 3, category: "Internet", value: 100 },
+        //~ { id: 4, category: "Supermercado", value: 300 },
+        //~ { id: 5, category: "Conta de Água", value: 220.75 },
+        //~ { id: 6, category: "Conta de Luz", value: 361.33 },
+        //~ { id: 7, category: "Prestação do Carro", value: 1589.99 },
+    //~ ]
+    
+    const totalExpenses = expenses.reduce(
+        (accumulator, expense) =>
+            accumulator + expense.amount, 0).toFixed(2);
+    
+    console.log("Tipo de TotalExpenses: ", typeof totalExpenses);
+    
+    const remaining = parseFloat(income - totalExpenses).toFixed(2);
     
     
     // TODO: Criar um objeto com formType e uma string;
@@ -88,6 +102,31 @@ export default function Overview(props)
         setIsFormModalOpen(false);
     }
     
+    function handleSetNewExpense(newExpense)
+    {
+        const category = newExpense.category;
+        const amount = newExpense.amount;
+        
+        setExpenses(previousExpenses => [...previousExpenses, {category, amount}]);
+    }
+    
+    
+    function handleValueChange(formType, value)
+    {
+        if (formType === "insertIncome" || formType === "updateIncome")
+        {
+            setIncome(value);
+            //~ console.log("Income é: ", value);
+        }
+        else if (formType === "insertExpense")
+        {
+            //~ console.log("Categoria: ", value.category);
+            //~ console.log("Valor: ", value.amount);
+            handleSetNewExpense(value);
+            //~ console.log(typeof value.amount);
+        }
+    }
+    
     return(
         <main>
             
@@ -138,17 +177,17 @@ export default function Overview(props)
                     
                     <div className="income-summary-container">
                         <h3>Receita</h3>
-                        <p>R$ 5000.00</p>
+                        <p>R$ {income}</p>
                     </div>
                     
                     <div className="expenses-summary-container">
                         <h3>Despesas</h3>
-                        <p>R$ 3000.00</p>
+                        <p>R$ {totalExpenses}</p>
                     </div>
                     
                     <div className="remaining-summary-container">
                         <h3>Restante</h3>
-                        <p>R$ 2000.00</p>
+                        <p>R$ {remaining}</p>
                     </div>
                     
                 </div>
@@ -163,7 +202,7 @@ export default function Overview(props)
                     
                     <div className="table-container">
                         <h3>Tabela</h3>
-                        <ExpensesTable expensesData={expensesData}/>
+                        <ExpensesTable expensesData={expenses}/>
                     </div>
                     
                     <div className="donnut-container">
@@ -191,6 +230,7 @@ export default function Overview(props)
                         onRequestClose={() => {}}
                         shouldCloseOnOverlayClick={false}
                         onSubmitSuccess={handleCloseModal}
+                        onValueChange={handleValueChange}
                         onCancel={handleCloseModal}
                     />
                 ) : null
