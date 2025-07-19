@@ -14,22 +14,10 @@ export default function Overview(props)
      const [expenses, setExpenses] = useState([]);
     
     
-    //~ const expensesData =
-    //~ [
-        //~ { id: 1, category: "Aluguel", value: 650 },
-        //~ { id: 2, category: "Transporte", value: 120 },
-        //~ { id: 3, category: "Internet", value: 100 },
-        //~ { id: 4, category: "Supermercado", value: 300 },
-        //~ { id: 5, category: "Conta de Água", value: 220.75 },
-        //~ { id: 6, category: "Conta de Luz", value: 361.33 },
-        //~ { id: 7, category: "Prestação do Carro", value: 1589.99 },
-    //~ ]
-    
     const totalExpenses = expenses.reduce(
         (accumulator, expense) =>
             accumulator + expense.amount, 0).toFixed(2);
-    
-    console.log("Tipo de TotalExpenses: ", typeof totalExpenses);
+
     
     const remaining = parseFloat(income - totalExpenses).toFixed(2);
     
@@ -116,14 +104,10 @@ export default function Overview(props)
         if (formType === "insertIncome" || formType === "updateIncome")
         {
             setIncome(value);
-            //~ console.log("Income é: ", value);
         }
         else if (formType === "insertExpense")
         {
-            //~ console.log("Categoria: ", value.category);
-            //~ console.log("Valor: ", value.amount);
             handleSetNewExpense(value);
-            //~ console.log(typeof value.amount);
         }
     }
     
