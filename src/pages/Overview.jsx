@@ -2,6 +2,7 @@ import { useState } from "react";
 import GrouppedButtons from "../components/GrouppedButtons";
 import FormModal from "../components/FormModal";
 import ExpensesTable from "../components/ExpensesTable";
+import ExpensesDonutChart from "../components/ExpensesDonutChart";
 
 export default function Overview(props)
 {
@@ -256,6 +257,7 @@ export default function Overview(props)
                     
                     <div className="donnut-container">
                         <h3>Gráfico Donnut</h3>
+                        <ExpensesDonutChart expensesData={expenses}/>
                     </div>
                     
                 </div>
