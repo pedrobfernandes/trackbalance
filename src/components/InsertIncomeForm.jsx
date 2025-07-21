@@ -12,7 +12,7 @@ export default function InsertIncomeForm(props)
         event.preventDefault();
         console.log("Receita inserida: ", income);
         
-        onValueChange("insertIncome", parseFloat(income));
+        onValueChange("insertIncome", parseFloat(income).toFixed(2));
         
         setIncome("");
         onSubmitSuccess();

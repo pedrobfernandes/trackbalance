@@ -2,16 +2,15 @@ import { useState } from "react";
 
 export default function UpdateIncomeForm(props)
 {
-    const { onSubmitSuccess, onCancel } = props;
+    const { onSubmitSuccess, onValueChange, onCancel } = props;
     
-    const [updatedIncome, setUpdatedIncome] = useState(3000);
-    const [oldIncome, setOldIncome] = useState(updatedIncome);
+    const [updatedIncome, setUpdatedIncome] = useState(0);
     
     function handleSubmit(event)
     {
         event.preventDefault();
         console.log("Nova receita: ", updatedIncome);
-        setOldIncome(updatedIncome);
+        onValueChange("updateIncome", parseFloat(updatedIncome).toFixed(2));
         setUpdatedIncome(0);
         
         onSubmitSuccess();
@@ -20,7 +19,6 @@ export default function UpdateIncomeForm(props)
     
     return(
         <form onSubmit={handleSubmit}>
-            <p>Sua antiga receita: R$ {oldIncome}</p>
             <label htmlFor="new-income-input">Insira a nova receita:</label>
             <input
                 id="new-income-input"

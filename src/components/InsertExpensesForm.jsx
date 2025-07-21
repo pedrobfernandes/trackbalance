@@ -29,8 +29,6 @@ export default function InsertExpensesForm(props)
     function handleSumbit(event)
     {
         event.preventDefault();
-        //~ console.log("Categoria: ", expense.category);
-        //~ console.log("Valor: R$ ", expense.amount);
         
         onValueChange("insertExpense", expense);
         

@@ -14,9 +14,9 @@ export default function Overview(props)
      const [expenses, setExpenses] = useState([]);
     
     
-    const totalExpenses = expenses.reduce(
+    const totalExpenses = parseFloat(expenses.reduce(
         (accumulator, expense) =>
-            accumulator + expense.amount, 0).toFixed(2);
+            accumulator + expense.amount, 0)).toFixed(2);
 
     
     const remaining = parseFloat(income - totalExpenses).toFixed(2);
@@ -63,15 +63,31 @@ export default function Overview(props)
     function handleUpdateExpenses()
     {
         console.log("Atualizando despesas");
-        setFormType("updateExpenses");
-        setIsFormModalOpen(true);
+        
+        if (expenses.length > 0)
+        {
+            setFormType("updateExpenses");
+            setIsFormModalOpen(true);
+        }
+        else
+        {
+            return;
+        }
     }
     
     function handleDeleteExpenses()
     {
         console.log("Deletando despesas");
-        setFormType("deleteExpenses");
-        setIsFormModalOpen(true);
+        
+        if (expenses.length > 0)
+        {
+            setFormType("deleteExpenses");
+            setIsFormModalOpen(true);
+        }
+        else
+        {
+            return;
+        }
     }
     
     function exportToCsv()
@@ -95,7 +111,48 @@ export default function Overview(props)
         const category = newExpense.category;
         const amount = newExpense.amount;
         
-        setExpenses(previousExpenses => [...previousExpenses, {category, amount}]);
+        setExpenses(
+            previousExpenses => [
+                ...previousExpenses,
+                {category, amount}
+            ]
+        );
+    }
+    
+    
+    function handleUpdateExpenseValue(updatedExpense)
+    {
+        const updatedExpenses = expenses.map(expense =>
+        {
+            const isSameCategory = expense.category === updatedExpense.category;
+            
+            if (isSameCategory === true)
+            {
+                return({
+                    category: expense.category,
+                    amount: updatedExpense.amount,
+                });
+            }
+            else
+            {
+                return(expense);
+            }
+        });
+        
+        setExpenses(updatedExpenses);
+    }
+    
+    
+    
+    function handleDeleteSingleExpense(category)
+    {
+        const toDelete = expenses.find(expense => expense.category === category);
+        
+        setExpenses(
+            previous => previous.filter(
+                previousExpense => previousExpense.category !== toDelete.category
+            )
+        );
     }
     
     
@@ -108,6 +165,14 @@ export default function Overview(props)
         else if (formType === "insertExpense")
         {
             handleSetNewExpense(value);
+        }
+        else if (formType === "updateExpense")
+        {
+            handleUpdateExpenseValue(value);
+        }
+        else if (formType === "deleteExpenses")
+        {
+            handleDeleteSingleExpense(value);
         }
     }
     
@@ -213,6 +278,7 @@ export default function Overview(props)
                         isFormModalOpen={isFormModalOpen}
                         onRequestClose={() => {}}
                         shouldCloseOnOverlayClick={false}
+                        expensesData={expenses}
                         onSubmitSuccess={handleCloseModal}
                         onValueChange={handleValueChange}
                         onCancel={handleCloseModal}
