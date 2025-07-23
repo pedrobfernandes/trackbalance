@@ -1,4 +1,10 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import
+{
+    PieChart, Pie,
+    Cell, ResponsiveContainer,
+    Tooltip
+
+} from "recharts";
 
 
 export default function ExpensesDonutChart(props)
@@ -30,8 +36,8 @@ export default function ExpensesDonutChart(props)
     const donutCells = renderDonutCellData();
     
     return(
-        <div style={{ width: "100%", height: 300 }}>
-            <ResponsiveContainer>
+        <div>
+            <ResponsiveContainer width={300} height={300}>
                 <PieChart>
                     <Pie
                         data={expensesData}

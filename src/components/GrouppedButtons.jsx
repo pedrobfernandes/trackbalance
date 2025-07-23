@@ -6,7 +6,7 @@ export default function GrouppedButtons(props)
     {
         type, onInsert, onUpdate,
         onDelete, onExportToCsv,
-        onExportToPdf
+        onExportToPdf, disabledButtons = {}
         
     } = props;
     
@@ -15,16 +15,38 @@ export default function GrouppedButtons(props)
     {
         receita:
         [
-            { text: "Inserir", action: onInsert },
-            { text: "Atualizar", action: onUpdate },
-            { text: "Deletar", action: onDelete },
+            {
+                text: "Inserir", action: onInsert,
+                disabled: disabledButtons["Inserir"]
+            },
+            
+            {
+                text: "Atualizar", action: onUpdate,
+                disabled: disabledButtons["Atualizar"]
+            },
+            
+            {
+                text: "Deletar", action: onDelete,
+                disabled: disabledButtons["Deletar"]
+            },
         ],
         
         despesa:
         [
-            { text: "Inserir", action: onInsert },
-            { text: "Atualizar", action: onUpdate },
-            { text: "Deletar", action: onDelete },
+            {
+                text: "Inserir", action: onInsert,
+                disabled: disabledButtons["Inserir"]
+            },
+            
+            {
+                text: "Atualizar", action: onUpdate,
+                disabled: disabledButtons["Atualizar"]
+            },
+            
+            {
+                text: "Deletar", action: onDelete,
+                disabled: disabledButtons["Deletar"]
+            },
         ],
         
         exportar:
@@ -42,6 +64,7 @@ export default function GrouppedButtons(props)
                 key={index}
                 text={item.text}
                 action={item.action}
+                disabled={item.disabled || false}
             />
         );
     }

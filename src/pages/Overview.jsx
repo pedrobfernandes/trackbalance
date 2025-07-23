@@ -3,6 +3,7 @@ import GrouppedButtons from "../components/GrouppedButtons";
 import FormModal from "../components/FormModal";
 import ExpensesTable from "../components/ExpensesTable";
 import ExpensesDonutChart from "../components/ExpensesDonutChart";
+import { exportToCsv } from "../utils/exportExpenses";
 
 export default function Overview(props)
 {
@@ -21,7 +22,6 @@ export default function Overview(props)
 
     
     const remaining = parseFloat(income - totalExpenses).toFixed(2);
-    
     
     // TODO: Criar um objeto com formType e uma string;
     // Ex talvez algo como: { "receita": [ "inserir", "atualizar", "deletar" ], "despesas" [ "inserir", "atualizar", "deletar" ], }
@@ -50,6 +50,7 @@ export default function Overview(props)
         if (confirmed === true)
         {
             console.log("Deletando receita");
+            setIncome(0);
         }
     }
     
@@ -91,12 +92,20 @@ export default function Overview(props)
         }
     }
     
-    function exportToCsv()
+    function handleExportToCsv()
     {
         console.log("Exportando para CSV");
+        exportToCsv(
+            expenses,
+            {
+                income,
+                totalExpenses,
+                remaining
+            }
+        );
     }
     
-    function exportToPdf()
+    function handleExportToPdf()
     {
         console.log("Exportando para PDF");
     }
@@ -193,6 +202,11 @@ export default function Overview(props)
                             onInsert={handleInsertIncome}
                             onUpdate={handleUpdateIncome}
                             onDelete={handleDeleteIncome}
+                            disabledButtons={{
+                                Inserir: income > 0,
+                                Atualizar: income === 0,
+                                Deletar: income === 0,
+                            }}
                         />
                     </div>
                     
@@ -203,6 +217,11 @@ export default function Overview(props)
                             onInsert={handleInsertExpenses}
                             onUpdate={handleUpdateExpenses}
                             onDelete={handleDeleteExpenses}
+                            disabledButtons={{
+                                Inserir: false,
+                                Atualizar: expenses.length === 0,
+                                Deletar: expenses.length === 0,
+                            }}
                         />
                     </div>
                     
@@ -210,8 +229,8 @@ export default function Overview(props)
                         <h3>Exportar</h3>
                         <GrouppedButtons
                             type="exportar"
-                            onExportToCsv={exportToCsv}
-                            onExportToPdf={exportToPdf}
+                            onExportToCsv={handleExportToCsv}
+                            onExportToPdf={handleExportToPdf}
                         />
                     </div>
                     
