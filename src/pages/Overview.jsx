@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import GrouppedButtons from "../components/GrouppedButtons";
 import FormModal from "../components/FormModal";
 import ExpensesTable from "../components/ExpensesTable";
 import ExpensesDonutChart from "../components/ExpensesDonutChart";
-import { exportToCsv } from "../utils/exportExpenses";
+import { exportToCsv, exportToPdf } from "../utils/exportExpenses";
 
 export default function Overview(props)
 {
@@ -22,6 +22,7 @@ export default function Overview(props)
 
     
     const remaining = parseFloat(income - totalExpenses).toFixed(2);
+    const donutChartRef = useRef(null);
     
     // TODO: Criar um objeto com formType e uma string;
     // Ex talvez algo como: { "receita": [ "inserir", "atualizar", "deletar" ], "despesas" [ "inserir", "atualizar", "deletar" ], }
@@ -105,9 +106,14 @@ export default function Overview(props)
         );
     }
     
-    function handleExportToPdf()
+    async function handleExportToPdf()
     {
-        console.log("Exportando para PDF");
+        
+        await exportToPdf(expenses, {
+            income,
+            totalExpenses,
+            remaining
+        }, donutChartRef);
     }
     
     
@@ -274,9 +280,12 @@ export default function Overview(props)
                         <ExpensesTable expensesData={expenses}/>
                     </div>
                     
-                    <div className="donnut-container">
-                        <h3>Gráfico Donnut</h3>
-                        <ExpensesDonutChart expensesData={expenses}/>
+                    <div className="donut-container">
+                        <h3>Gráfico Donut</h3>
+                        <ExpensesDonutChart
+                            expensesData={expenses}
+                            chartRef={donutChartRef}
+                        />
                     </div>
                     
                 </div>

@@ -9,7 +9,7 @@ import
 
 export default function ExpensesDonutChart(props)
 {
-    const { expensesData } = props;
+    const { expensesData, chartRef } = props;
     
     const COLORS =
     [
@@ -33,28 +33,36 @@ export default function ExpensesDonutChart(props)
         return(cells);
     }
     
+    function renderPieChart(donutCells)
+    {
+        return(
+            <PieChart>
+                <Pie
+                    data={expensesData}
+                    dataKey="amount"
+                    nameKey="category"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    fill="#8884d8"
+                    label
+                >
+                    {donutCells}
+                </Pie>
+                <Tooltip formatter={(value) => `R$ ${value.toFixed(2)}`}/>
+            </PieChart>
+        );
+    }
+
+    
     const donutCells = renderDonutCellData();
+    const pieChart = renderPieChart(donutCells);
     
     return(
-        <div>
-            <ResponsiveContainer width={300} height={300}>
-                <PieChart>
-                    <Pie
-                        data={expensesData}
-                        dataKey="amount"
-                        nameKey="category"
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={100}
-                        fill="#8884d8"
-                        label
-                    >
-                        {donutCells}
-                    </Pie>
-                    <Tooltip formatter={(value) => `R$ ${value.toFixed(2)}`}/>
-
-                </PieChart>
+        <div ref={chartRef}>
+            <ResponsiveContainer width="100%" height={300}>
+                {pieChart}
             </ResponsiveContainer>
         </div>
     );
