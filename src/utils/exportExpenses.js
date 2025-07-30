@@ -80,15 +80,15 @@ export async function exportToPdf(expensesData, summary, chartRef)
         const canvas = await html2canvas(chartRef.current, { scale: 2 });       
         const imageData = canvas.toDataURL("image/png");
         
-       const imageWidth = canvas.width;
-       const imageHeight = canvas.height;
-       const pageWidth = doc.internal.pageSize.getWidth();
+        const imageWidth = canvas.width;
+        const imageHeight = canvas.height;
+        const pageWidth = doc.internal.pageSize.getWidth();
        
-       const scale = pageWidth / imageWidth;
-       const displayWidth = imageWidth * scale;
-       const displayHeight = imageHeight * scale;
+        const scale = pageWidth / imageWidth;
+        const displayWidth = imageWidth * scale;
+        const displayHeight = imageHeight * scale;
        
-       const x = (pageWidth - displayWidth) / 2;
+        const x = (pageWidth - displayWidth) / 2;
         
         doc.addImage(imageData, "PNG", x, yOffset, displayWidth, displayHeight);
     }
