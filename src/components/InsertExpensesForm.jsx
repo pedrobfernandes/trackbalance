@@ -30,7 +30,7 @@ export default function InsertExpensesForm(props)
     {
         event.preventDefault();
         
-        onValueChange("insertExpense", expense);
+        onValueChange("insertExpenses", expense);
         
         setExpense({ category: "", amount: 0 });        
         onSubmitSuccess();

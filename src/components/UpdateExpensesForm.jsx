@@ -45,7 +45,7 @@ export default function UpdateExpensesForm(props)
     {
         event.preventDefault();
         
-        onValueChange("updateExpense", newExpense);
+        onValueChange("updateExpenses", newExpense);
         setNewExpense({ category: "", amount: 0 });
         
         onSubmitSuccess();

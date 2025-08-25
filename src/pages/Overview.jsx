@@ -1,13 +1,24 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import GrouppedButtons from "../components/GrouppedButtons";
 import FormModal from "../components/FormModal";
 import ExpensesTable from "../components/ExpensesTable";
 import ExpensesDonutChart from "../components/ExpensesDonutChart";
 import { exportToCsv, exportToPdf } from "../utils/exportExpenses";
+import { createMonth } from "../supabase/months";
+import { fetchIncome, insertIncome, updateIncome, deleteIncome } from "../supabase/incomes";
+import { fetchExpenses, insertExpense, updateExpense, deleteExpense } from "../supabase/expenses";
+import { insertUserFlags } from "../supabase/userFlags";
+import { initData } from "../supabase/utils/initData";
+
 
 export default function Overview(props)
 {
     const { onExit } = props;
+    
+    const [loggedUserId, setLoggedUserId] = useState(null);
+    const [currentYear, setCurrentYear] = useState(null);
+    const [currentMonth, setCurrentMonth] = useState(null);
+    const [userFlags, setUserFlags] = useState(null);
     
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [formType, setFormType] = useState("");
@@ -24,74 +35,165 @@ export default function Overview(props)
     const remaining = parseFloat(income - totalExpenses).toFixed(2);
     const donutChartRef = useRef(null);
     
-    // TODO: Criar um objeto com formType e uma string;
-    // Ex talvez algo como: { "receita": [ "inserir", "atualizar", "deletar" ], "despesas" [ "inserir", "atualizar", "deletar" ], }
-    // Apos talvez fazer apenas uma função mais generica (handleClick por exemplo) e passar o inserir atualizar ou deletar para setFormType..
-    // Ao invez de ter estas funções todas handleInsertIncome handleUpdateIncome etc..
-    //??? Que tal?? Será???
+    const didInitialize = useRef(false);
+
     
-    function handleInsertIncome()
+    const formTypeMap =
     {
-        console.log("Inserindo receita");
-        setFormType("insertIncome");
-        setIsFormModalOpen(true);
-    }
-    
-    function handleUpdateIncome()
-    {
-        console.log("Atualizando receita");
-        setFormType("updateIncome");
-        setIsFormModalOpen(true);
-    }
-    
-    function handleDeleteIncome()
-    {
-        const confirmed = window.confirm("Tem certeza que deseja deletar a receita?");
-        
-        if (confirmed === true)
+        receita:
         {
-            console.log("Deletando receita");
+            insert: "insertIncome",
+            update: "updateIncome",
+            delete: "deleteIncome"
+        },
+        
+        despesa:
+        {
+            insert: "insertExpenses",
+            update: "updateExpenses",
+            delete: "deleteExpenses"
+        }
+    };
+    
+    
+    async function initializeData()
+    {
+        try
+        {
+            const testYear = 2025;
+            const testMonth = 11;
+            
+            const initResult = await initData({ testYear, testMonth });
+            //~ const initResult = await initData();
+            
+            if (initResult !== null)
+            {
+                setLoggedUserId(initResult.loggedUserId);
+                setCurrentYear(initResult.currentYear);
+                setCurrentMonth(initResult.currentMonth);
+                setUserFlags(initResult.userFlags);
+                
+                
+                if (initResult.userFlags !== null)
+                {
+                    const monthId = initResult.userFlags.current_month_id;
+                    const incomeData = await fetchIncome(monthId);
+                    const expensesData = await fetchExpenses(monthId);
+                
+                    setIncome(incomeData.data.amount || 0);
+                    setExpenses(expensesData.data || []);
+                }
+                else
+                {
+                    setIncome(0);
+                    setExpenses([]);
+                }
+            }
+        }
+        catch (error)
+        {
+            alert("Erro inicializando os dados da aplicação.");
+            return;
+        }
+    }
+    
+    
+    useEffect(() =>
+    {
+        if (!didInitialize.current)
+        {
+            didInitialize.current = true;
+            initializeData();
+        }
+    
+    }, []);
+    
+    
+    async function isFirstUse()
+    {
+        try
+        {
+            const firstMonth = await createMonth({
+                userId: loggedUserId,
+                year: currentYear,
+                month: currentMonth
+            });
+            
+            if (firstMonth.error !== null)
+            {
+                alert(firstMonth.error);
+                return({
+                    status: false,
+                    data: null
+                });
+            }
+            
+            const initialUserFlags = await insertUserFlags({
+                userId: loggedUserId,
+                monthId: firstMonth.data.id
+            });
+            
+            if (initialUserFlags.error !== null)
+            {
+                alert(initialUserFlags.error);
+                return({
+                    status: false,
+                    data: null
+                });
+            }
+            
+            return({
+                status: true,
+                data: initialUserFlags.data
+            });
+        }
+        catch (error)
+        {
+            alert(error.message);
+            return({
+                status: false,
+                data: null
+            });
+        }
+    }
+    
+    async function handleClick(type, action)
+    {
+        if (type === "receita" && action === "delete")
+        {
+            const confirmed = window.confirm(
+                "Tem certeza que deseja deletar a receita?"
+            );
+            
+            if (confirmed === false)
+            {
+                return;
+            }
+            
             setIncome(0);
+            await deleteIncome(userFlags.current_month_id);
+            
+            return;
         }
-    }
-    
-    
-    function handleInsertExpenses()
-    {
-        console.log("Inserindo despesas");
-        setFormType("insertExpenses");
+        
+        if (type === "despesa" && action === "update"
+            && expenses.length === 0)
+        {
+            return;
+        }
+        
+        if (type === "despesa" && action === "delete"
+            && expenses.length === 0)
+        {
+            return;
+        }
+        
+        const selectedFormType = formTypeMap[type][action];
+        console.log(`${action} ${type}`);
+        setFormType(selectedFormType);
         setIsFormModalOpen(true);
     }
     
-    function handleUpdateExpenses()
-    {
-        console.log("Atualizando despesas");
-        
-        if (expenses.length > 0)
-        {
-            setFormType("updateExpenses");
-            setIsFormModalOpen(true);
-        }
-        else
-        {
-            return;
-        }
-    }
-    
-    function handleDeleteExpenses()
-    {
-        console.log("Deletando despesas");
-        
-        if (expenses.length > 0)
-        {
-            setFormType("deleteExpenses");
-            setIsFormModalOpen(true);
-        }
-        else
-        {
-            return;
-        }
-    }
     
     function handleExportToCsv()
     {
@@ -172,22 +274,78 @@ export default function Overview(props)
     }
     
     
-    function handleValueChange(formType, value)
+    async function handleValueChange(formType, value)
     {
+        let currentUserFlags = userFlags;
+        
+        if (currentUserFlags === null)
+        {
+            try
+            {
+                const firstTimeFlags = await isFirstUse();
+                
+                if (firstTimeFlags.status === false)
+                {
+                    return;
+                }
+                
+                currentUserFlags = firstTimeFlags.data
+                setUserFlags(currentUserFlags);
+            }
+            catch (error)
+            {
+                alert(error.message);
+                return;
+            }
+        }
+        
         if (formType === "insertIncome" || formType === "updateIncome")
         {
+            
+            if (formType === "insertIncome")
+            {
+                await insertIncome({
+                    monthId: currentUserFlags.current_month_id,
+                    amount: value
+                });
+            }
+            else
+            {
+                await updateIncome({
+                    monthId: currentUserFlags.current_month_id,
+                    amount: value
+                });
+            }
+            
             setIncome(value);
         }
-        else if (formType === "insertExpense")
+        else if (formType === "insertExpenses")
         {
+            await insertExpense({
+                monthId: currentUserFlags.current_month_id,
+                category: value.category,
+                amount: value.amount
+            });
+            
             handleSetNewExpense(value);
         }
-        else if (formType === "updateExpense")
+        else if (formType === "updateExpenses")
         {
+            await updateExpense({
+                monthId: currentUserFlags.current_month_id, 
+                category: value.category,
+                amount: value.amount
+            });
+            
             handleUpdateExpenseValue(value);
         }
         else if (formType === "deleteExpenses")
         {
+            await deleteExpense({
+                monthId: currentUserFlags.current_month_id,
+                category: value
+            });
+            
             handleDeleteSingleExpense(value);
         }
     }
@@ -205,9 +363,9 @@ export default function Overview(props)
                         <h3>Receita</h3>
                         <GrouppedButtons
                             type="receita"
-                            onInsert={handleInsertIncome}
-                            onUpdate={handleUpdateIncome}
-                            onDelete={handleDeleteIncome}
+                            onInsert={() => handleClick("receita", "insert")}
+                            onUpdate={() => handleClick("receita", "update")}
+                            onDelete={() => handleClick("receita", "delete")}
                             disabledButtons={{
                                 Inserir: income > 0,
                                 Atualizar: income === 0,
@@ -220,9 +378,9 @@ export default function Overview(props)
                         <h3>Despesas</h3>
                         <GrouppedButtons
                             type="despesa"
-                            onInsert={handleInsertExpenses}
-                            onUpdate={handleUpdateExpenses}
-                            onDelete={handleDeleteExpenses}
+                            onInsert={() => handleClick("despesa", "insert")}
+                            onUpdate={() => handleClick("despesa", "update")}
+                            onDelete={() => handleClick("despesa", "delete")}
                             disabledButtons={{
                                 Inserir: false,
                                 Atualizar: expenses.length === 0,

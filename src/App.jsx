@@ -15,25 +15,41 @@ export default function App()
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     
     
-    function getUserSession()
+    async function getUserSession()
     {
-        const userSession = supabase.auth.getSession();
+        const userSession = await supabase.auth.getSession();
         return(userSession);
     }
     
     async function loadUserSession()
     {
-        const response = await getUserSession();
-        const userSession = response.data.session;
-        setSession(userSession);
-        
-        if (userSession === null)
+        try
         {
-            setIsAuthModalOpen(true);
+            const response = await getUserSession();
+            
+            if (response.error !== null)
+            {
+                console.error("Erro ao obter sessão do usuário");
+                setIsAuthModalOpen(true);
+                return;
+            }
+            
+            const userSession = response.data.session;
+            setSession(userSession);
+            
+            if (userSession === null)
+            {
+                setIsAuthModalOpen(true);
+            }
+            else
+            {
+                setIsAuthModalOpen(false);
+            }
         }
-        else
+        catch (error)
         {
-            setIsAuthModalOpen(false);
+            console.error("Erro de conexão ao obter sessão");
+            setIsAuthModalOpen(true);
         }
     }
     
