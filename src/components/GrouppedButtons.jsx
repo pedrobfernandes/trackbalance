@@ -6,7 +6,8 @@ export default function GrouppedButtons(props)
     {
         type, onInsert, onUpdate,
         onDelete, onExportToCsv,
-        onExportToPdf, disabledButtons = {}
+        onExportToPdf, onNavigateToNext,
+        onNavigateToPrevious, disabledButtons = {}
         
     } = props;
     
@@ -54,6 +55,12 @@ export default function GrouppedButtons(props)
             { text: "CSV", action: onExportToCsv },
             { text: "PDF", action: onExportToPdf },
         ],
+        
+        navegar:
+        [
+            { text: "Anterior", action: onNavigateToPrevious },
+            { text: "Próximo", action: onNavigateToNext }
+        ]
     };
     
     

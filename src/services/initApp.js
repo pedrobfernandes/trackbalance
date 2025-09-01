@@ -1,0 +1,112 @@
+import { initData } from "./initData";
+import { hasMonthIncome, hasMonthExpenses, createCurrentMonth } from "../helpers/dataHelpers";
+import { insertUserFlags } from "../supabase/userFlags";
+
+
+export async function initializeData(props)
+{
+    const
+    {
+        setLoggedUserId, setCurrentYear,
+        setCurrentMonth, setUserFlags,
+        setIncome, setExpenses
+    
+    } = props;
+    
+    const testYear = 2026;
+    const testMonth = 1;
+    
+    const initResult = await initData({ testYear, testMonth });
+    //~ const initResult = await initData();
+    
+    if (initResult !== null)
+    {
+        setLoggedUserId(initResult.loggedUserId);
+        setCurrentYear(initResult.currentYear);
+        setCurrentMonth(initResult.currentMonth);
+        setUserFlags(initResult.userFlags);
+        
+        
+        if (initResult.userFlags !== null)
+        {
+            const monthId = initResult.userFlags.current_month_id;
+            
+            try
+            {
+                const incomeData = await hasMonthIncome(monthId);
+                const expensesData = await hasMonthExpenses(monthId);
+                
+                if (incomeData.status === "not_found")
+                {
+                    setIncome(0);
+                }
+                else
+                {
+                    setIncome(incomeData.data.amount);
+                }
+                
+               
+                
+                if (expensesData.status === "not_found")
+                {
+                    setExpenses([]);
+                }
+                else
+                {
+                    setExpenses(expensesData.data);
+                }
+            }
+            catch(error)
+            {
+                alert(`${error}`);
+                setIncome(0);
+                setExpenses([]);
+            }
+        }
+        else
+        {
+            setIncome(0);
+            setExpenses([]);
+        }
+    }
+}
+
+
+export async function isFirstUse({ userId, year, month })
+{
+    try
+    {
+        const firstMonth = await createCurrentMonth({
+            userId: userId,
+            year: year,
+            month: month
+        });
+        
+        
+        const initialUserFlags = await insertUserFlags({
+            userId: userId,
+            monthId: firstMonth.data.id
+        });
+        
+        if (initialUserFlags.error !== null)
+        {
+            alert(initialUserFlags.error);
+            return({
+                status: false,
+                data: null
+            });
+        }
+        
+        return({
+            status: true,
+            data: initialUserFlags.data
+        });
+    }
+    catch (error)
+    {
+        return({
+            status: false,
+            data: null
+        });
+    }
+}

@@ -3,12 +3,8 @@ import GrouppedButtons from "../components/GrouppedButtons";
 import FormModal from "../components/FormModal";
 import ExpensesTable from "../components/ExpensesTable";
 import ExpensesDonutChart from "../components/ExpensesDonutChart";
-import { exportToCsv, exportToPdf } from "../utils/exportExpenses";
-import { createMonth } from "../supabase/months";
-import { fetchIncome, insertIncome, updateIncome, deleteIncome } from "../supabase/incomes";
-import { fetchExpenses, insertExpense, updateExpense, deleteExpense } from "../supabase/expenses";
-import { insertUserFlags } from "../supabase/userFlags";
-import { initData } from "../supabase/utils/initData";
+import { initializeData } from "../services/initApp";
+import { createOverviewHandlers } from "../helpers/overviewHandlers";
 
 
 export default function Overview(props)
@@ -23,8 +19,8 @@ export default function Overview(props)
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [formType, setFormType] = useState("");
     
-     const [income, setIncome] = useState(0);
-     const [expenses, setExpenses] = useState([]);
+    const [income, setIncome] = useState(0);
+    const [expenses, setExpenses] = useState([]);
     
     
     const totalExpenses = parseFloat(expenses.reduce(
@@ -56,299 +52,33 @@ export default function Overview(props)
     };
     
     
-    async function initializeData()
-    {
-        try
-        {
-            const testYear = 2025;
-            const testMonth = 11;
-            
-            const initResult = await initData({ testYear, testMonth });
-            //~ const initResult = await initData();
-            
-            if (initResult !== null)
-            {
-                setLoggedUserId(initResult.loggedUserId);
-                setCurrentYear(initResult.currentYear);
-                setCurrentMonth(initResult.currentMonth);
-                setUserFlags(initResult.userFlags);
-                
-                
-                if (initResult.userFlags !== null)
-                {
-                    const monthId = initResult.userFlags.current_month_id;
-                    const incomeData = await fetchIncome(monthId);
-                    const expensesData = await fetchExpenses(monthId);
-                
-                    setIncome(incomeData.data.amount || 0);
-                    setExpenses(expensesData.data || []);
-                }
-                else
-                {
-                    setIncome(0);
-                    setExpenses([]);
-                }
-            }
-        }
-        catch (error)
-        {
-            alert("Erro inicializando os dados da aplicação.");
-            return;
-        }
-    }
-    
-    
     useEffect(() =>
     {
         if (!didInitialize.current)
         {
             didInitialize.current = true;
-            initializeData();
+            initializeData({
+                setLoggedUserId, setCurrentYear,
+                setCurrentMonth, setUserFlags,
+                setIncome, setExpenses
+            });
         }
     
     }, []);
     
     
-    async function isFirstUse()
-    {
-        try
-        {
-            const firstMonth = await createMonth({
-                userId: loggedUserId,
-                year: currentYear,
-                month: currentMonth
-            });
-            
-            if (firstMonth.error !== null)
-            {
-                alert(firstMonth.error);
-                return({
-                    status: false,
-                    data: null
-                });
-            }
-            
-            const initialUserFlags = await insertUserFlags({
-                userId: loggedUserId,
-                monthId: firstMonth.data.id
-            });
-            
-            if (initialUserFlags.error !== null)
-            {
-                alert(initialUserFlags.error);
-                return({
-                    status: false,
-                    data: null
-                });
-            }
-            
-            return({
-                status: true,
-                data: initialUserFlags.data
-            });
-        }
-        catch (error)
-        {
-            alert(error.message);
-            return({
-                status: false,
-                data: null
-            });
-        }
-    }
-    
-    async function handleClick(type, action)
-    {
-        if (type === "receita" && action === "delete")
-        {
-            const confirmed = window.confirm(
-                "Tem certeza que deseja deletar a receita?"
-            );
-            
-            if (confirmed === false)
-            {
-                return;
-            }
-            
-            setIncome(0);
-            await deleteIncome(userFlags.current_month_id);
-            
-            return;
-        }
-        
-        if (type === "despesa" && action === "update"
-            && expenses.length === 0)
-        {
-            return;
-        }
-        
-        if (type === "despesa" && action === "delete"
-            && expenses.length === 0)
-        {
-            return;
-        }
-        
-        const selectedFormType = formTypeMap[type][action];
-        console.log(`${action} ${type}`);
-        setFormType(selectedFormType);
-        setIsFormModalOpen(true);
-    }
+    const overviewHandlers = createOverviewHandlers({
+        getUserFlags: () => userFlags, setUserFlags,
+        getLoggedUserId: () => loggedUserId,
+        getCurrentYear: () => currentYear,
+        getCurrentMonth:() => currentMonth,
+        getIncome: () => income, setIncome,
+        getExpenses: () => expenses,
+        setExpenses, setIsFormModalOpen,
+        setFormType, formTypeMap, donutChartRef
+    });
     
     
-    function handleExportToCsv()
-    {
-        console.log("Exportando para CSV");
-        exportToCsv(
-            expenses,
-            {
-                income,
-                totalExpenses,
-                remaining
-            }
-        );
-    }
-    
-    async function handleExportToPdf()
-    {
-        
-        await exportToPdf(expenses, {
-            income,
-            totalExpenses,
-            remaining
-        }, donutChartRef);
-    }
-    
-    
-    function handleCloseModal()
-    {
-        setIsFormModalOpen(false);
-    }
-    
-    function handleSetNewExpense(newExpense)
-    {
-        const category = newExpense.category;
-        const amount = newExpense.amount;
-        
-        setExpenses(
-            previousExpenses => [
-                ...previousExpenses,
-                {category, amount}
-            ]
-        );
-    }
-    
-    
-    function handleUpdateExpenseValue(updatedExpense)
-    {
-        const updatedExpenses = expenses.map(expense =>
-        {
-            const isSameCategory = expense.category === updatedExpense.category;
-            
-            if (isSameCategory === true)
-            {
-                return({
-                    category: expense.category,
-                    amount: updatedExpense.amount,
-                });
-            }
-            else
-            {
-                return(expense);
-            }
-        });
-        
-        setExpenses(updatedExpenses);
-    }
-    
-    
-    
-    function handleDeleteSingleExpense(category)
-    {
-        const toDelete = expenses.find(expense => expense.category === category);
-        
-        setExpenses(
-            previous => previous.filter(
-                previousExpense => previousExpense.category !== toDelete.category
-            )
-        );
-    }
-    
-    
-    async function handleValueChange(formType, value)
-    {
-        let currentUserFlags = userFlags;
-        
-        if (currentUserFlags === null)
-        {
-            try
-            {
-                const firstTimeFlags = await isFirstUse();
-                
-                if (firstTimeFlags.status === false)
-                {
-                    return;
-                }
-                
-                currentUserFlags = firstTimeFlags.data
-                setUserFlags(currentUserFlags);
-            }
-            catch (error)
-            {
-                alert(error.message);
-                return;
-            }
-        }
-        
-        if (formType === "insertIncome" || formType === "updateIncome")
-        {
-            
-            if (formType === "insertIncome")
-            {
-                await insertIncome({
-                    monthId: currentUserFlags.current_month_id,
-                    amount: value
-                });
-            }
-            else
-            {
-                await updateIncome({
-                    monthId: currentUserFlags.current_month_id,
-                    amount: value
-                });
-            }
-            
-            setIncome(value);
-        }
-        else if (formType === "insertExpenses")
-        {
-            await insertExpense({
-                monthId: currentUserFlags.current_month_id,
-                category: value.category,
-                amount: value.amount
-            });
-            
-            handleSetNewExpense(value);
-        }
-        else if (formType === "updateExpenses")
-        {
-            await updateExpense({
-                monthId: currentUserFlags.current_month_id, 
-                category: value.category,
-                amount: value.amount
-            });
-            
-            handleUpdateExpenseValue(value);
-        }
-        else if (formType === "deleteExpenses")
-        {
-            await deleteExpense({
-                monthId: currentUserFlags.current_month_id,
-                category: value
-            });
-            
-            handleDeleteSingleExpense(value);
-        }
-    }
     
     return(
         <main>
@@ -363,9 +93,9 @@ export default function Overview(props)
                         <h3>Receita</h3>
                         <GrouppedButtons
                             type="receita"
-                            onInsert={() => handleClick("receita", "insert")}
-                            onUpdate={() => handleClick("receita", "update")}
-                            onDelete={() => handleClick("receita", "delete")}
+                            onInsert={() => overviewHandlers.handleClick("receita", "insert")}
+                            onUpdate={() => overviewHandlers.handleClick("receita", "update")}
+                            onDelete={() => overviewHandlers.handleClick("receita", "delete")}
                             disabledButtons={{
                                 Inserir: income > 0,
                                 Atualizar: income === 0,
@@ -378,9 +108,9 @@ export default function Overview(props)
                         <h3>Despesas</h3>
                         <GrouppedButtons
                             type="despesa"
-                            onInsert={() => handleClick("despesa", "insert")}
-                            onUpdate={() => handleClick("despesa", "update")}
-                            onDelete={() => handleClick("despesa", "delete")}
+                            onInsert={() => overviewHandlers.handleClick("despesa", "insert")}
+                            onUpdate={() => overviewHandlers.handleClick("despesa", "update")}
+                            onDelete={() => overviewHandlers.handleClick("despesa", "delete")}
                             disabledButtons={{
                                 Inserir: false,
                                 Atualizar: expenses.length === 0,
@@ -393,8 +123,8 @@ export default function Overview(props)
                         <h3>Exportar</h3>
                         <GrouppedButtons
                             type="exportar"
-                            onExportToCsv={handleExportToCsv}
-                            onExportToPdf={handleExportToPdf}
+                            onExportToCsv={overviewHandlers.handleExportToCsv}
+                            onExportToPdf={overviewHandlers.handleExportToPdf}
                         />
                     </div>
                     
@@ -467,9 +197,9 @@ export default function Overview(props)
                         onRequestClose={() => {}}
                         shouldCloseOnOverlayClick={false}
                         expensesData={expenses}
-                        onSubmitSuccess={handleCloseModal}
-                        onValueChange={handleValueChange}
-                        onCancel={handleCloseModal}
+                        onSubmitSuccess={overviewHandlers.handleCloseModal}
+                        onValueChange={overviewHandlers.handleValueChange}
+                        onCancel={overviewHandlers.handleCloseModal}
                     />
                 ) : null
             }
