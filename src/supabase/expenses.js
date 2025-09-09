@@ -149,7 +149,7 @@ export async function updateExpense({ monthId, category, amount })
 }
 
 
-export async function deleteExpense({ monthId, category })
+export async function deleteExpense(monthId, category)
 {
     try
     {

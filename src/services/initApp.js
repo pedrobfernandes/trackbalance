@@ -13,8 +13,8 @@ export async function initializeData(props)
     
     } = props;
     
-    const testYear = 2026;
-    const testMonth = 1;
+    const testYear = 2025;
+    const testMonth = 12;
     
     const initResult = await initData({ testYear, testMonth });
     //~ const initResult = await initData();
@@ -36,25 +36,8 @@ export async function initializeData(props)
                 const incomeData = await hasMonthIncome(monthId);
                 const expensesData = await hasMonthExpenses(monthId);
                 
-                if (incomeData.status === "not_found")
-                {
-                    setIncome(0);
-                }
-                else
-                {
-                    setIncome(incomeData.data.amount);
-                }
-                
-               
-                
-                if (expensesData.status === "not_found")
-                {
-                    setExpenses([]);
-                }
-                else
-                {
-                    setExpenses(expensesData.data);
-                }
+                setIncome(incomeData.data?.amount || 0);
+                setExpenses(expensesData.data || []);
             }
             catch(error)
             {
@@ -83,10 +66,9 @@ export async function isFirstUse({ userId, year, month })
         });
         
         
-        const initialUserFlags = await insertUserFlags({
-            userId: userId,
-            monthId: firstMonth.data.id
-        });
+        const initialUserFlags = await insertUserFlags(
+            userId, firstMonth.data.id
+        );
         
         if (initialUserFlags.error !== null)
         {

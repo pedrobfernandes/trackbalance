@@ -47,7 +47,7 @@ export async function fetchUserFlags(userId)
 }
 
 
-export async function insertUserFlags({ userId, monthId })
+export async function insertUserFlags(userId, monthId)
 {
     try
     {

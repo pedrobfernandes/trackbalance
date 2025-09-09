@@ -5,10 +5,17 @@ import html2canvas from "html2canvas";
 
 export function exportToCsv(expensesData, summary)
 {
-    const { income, totalExpenses, remaining } = summary;
+    const
+    {
+        income, totalExpenses,
+        remaining, viewMonth,
+        viewYear
+    
+    } = summary;
+    
     const summaryLines =
     [
-        "Sumário:\n",
+        `Sumário - ${String(viewMonth).padStart(2, "0")}/${viewYear}:\n`,
         "Receita:\tDespesas:\tRestante:",
         `${income}\t${totalExpenses}\t${remaining}`,
         "\n",
@@ -35,16 +42,23 @@ export function exportToCsv(expensesData, summary)
 }
 
 
-export async function exportToPdf(expensesData, summary, chartRef)
+export async function exportToPdf({ expensesData, summary, chartRef })
 {
-    const { income, totalExpenses, remaining } = summary;
+    const
+    {
+        income, totalExpenses,
+        remaining, viewMonth,
+        viewYear
+    
+    } = summary;
+    
     const doc = new jsPDF();
     
     let yOffset = 10;
     
     
     doc.setFontSize(16);
-    doc.text("Sumário:", 14, yOffset);
+    doc.text(`Sumário - ${String(viewMonth).padStart(2, "0")}/${viewYear}`, 14, yOffset);
     yOffset += 10;
     
     doc.setFontSize(12);

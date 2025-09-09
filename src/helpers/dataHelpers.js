@@ -28,6 +28,47 @@ export function getDifferenceBetweenMonths({
     );
 }
 
+
+export function getPreviousMonth(year, month)
+{
+    if (month === 1)
+    {
+        return({
+            year: year - 1,
+            month: 12
+        });
+    }
+    
+    return({
+        year: year,
+        month: month - 1
+    });
+}
+
+
+export function getNextMonth(year, month)
+{
+    if (month === 12)
+    {
+        return({
+            year: year + 1,
+            month: 1
+        });
+    }
+    
+    return({
+        year: year,
+        month: month + 1
+    });
+}
+
+
+export function toYearMonthNumber(year, month)
+{
+    return(year * 100 + month);
+}
+
+
 export function showErrorAndStop(message)
 {
     throw new Error(message);
@@ -43,6 +84,17 @@ export function isSqlOrNetworkError(request)
     }
     
     return(false);
+}
+
+
+function isStopError(target)
+{
+    if (target.error !== null)
+    {
+        showErrorAndStop(target.error);
+    }
+    
+    return;
 }
 
 
@@ -76,6 +128,46 @@ export async function isMonthExists({ userId, year, month })
 }
 
 
+async function findLastExistingPreviousMonthId({ userId, year, month })
+{
+    let currentYear = year;
+    let currentMonth = month;
+    
+    while (true)
+    {
+        const previousMonth = getPreviousMonth(
+            currentYear, currentMonth
+        );
+        
+        const monthRecord = await isMonthExists({
+            userId: userId,
+            year: previousMonth.year,
+            month: previousMonth.month
+        });
+        
+        if (monthRecord.status === "success")
+        {
+            return(monthRecord.data.id);
+        }
+        
+        currentYear = previousMonth.year,
+        currentMonth = previousMonth.month;
+    }
+}
+
+
+export async function getPreviousMonthId({ userId, year, month })
+{
+    const previousMonthId = await findLastExistingPreviousMonthId({
+        userId: userId,
+        year: year,
+        month: month
+    });
+    
+    return(previousMonthId)
+}
+
+
 export async function createCurrentMonth({ userId, year, month })
 {
     const currentMonth = await createMonth({
@@ -84,11 +176,7 @@ export async function createCurrentMonth({ userId, year, month })
         month: month
     });
     
-    if (currentMonth.error !== null)
-    {
-        showErrorAndStop(currentMonth.error);
-    }
-    
+    isStopError(currentMonth);
     return(currentMonth);
 }
 
@@ -96,11 +184,7 @@ export async function createCurrentMonth({ userId, year, month })
 export async function getLastMonthDate(monthId)
 {
     const lastMonthDate = await fetchMonthById(monthId);
-    
-    if (lastMonthDate.error !== null)
-    {
-        showErrorAndStop(lastMonthDate.error);
-    }
+    isStopError(lastMonthDate);
     
     return({
         year: lastMonthDate.data.year,
@@ -135,34 +219,25 @@ export  async function hasMonthExpenses(monthId)
 }
 
 
-export async function insertMonthIncome({ monthId, amount })
+export async function insertMonthIncome(monthId, amount)
 {
-    const insertedMonthIncome = await insertIncome({
-        monthId: monthId,
-        amount: amount
-    });
+    const insertedMonthIncome = await insertIncome(
+        monthId, amount
+    );
     
-    if (insertedMonthIncome.error !== null)
-    {
-        showErrorAndStop(insertedMonthIncome.error);
-    }
     
+    isStopError(insertedMonthIncome);
     return(insertedMonthIncome);
 }
 
 
-export async function updateMonthIncome({ monthId, amount })
+export async function updateMonthIncome(monthId, amount)
 {
-    const updatedMonthIncome = await updateIncome({
-        monthId: monthId,
-        amount: amount
-    });
+    const updatedMonthIncome = await updateIncome(
+        monthId, amount
+    );
     
-    if (updatedMonthIncome.error !== null)
-    {
-        showErrorAndStop(updatedMonthIncome.error);
-    }
-    
+    isStopError(updatedMonthIncome);
     return(updatedMonthIncome);
 }
 
@@ -170,12 +245,7 @@ export async function updateMonthIncome({ monthId, amount })
 export async function deleteMonthIncome(monthId)
 {
     const deletedMonthIncome = await deleteIncome(monthId);
-    
-    if (deletedMonthIncome.error !== null)
-    {
-        showErrorAndStop(deletedMonthIncome.error);
-    }
-    
+    isStopError(deletedMonthIncome);
     return(deletedMonthIncome)
 }
 
@@ -188,11 +258,7 @@ export async function insertMonthExpense({ monthId, category, amount })
         amount: amount
     });
     
-    if (insertedMonthExpense.error !== null)
-    {
-        showErrorAndStop(insertedMonthExpense.error);
-    }
-    
+    isStopError(insertedMonthExpense);
     return(insertedMonthExpense);
 }
 
@@ -205,32 +271,23 @@ export async function updateMonthExpense({ monthId, category, amount })
         amount: amount
     });
     
-    if (updatedMonthExpense.error !== null)
-    {
-        showErrorAndStop(updatedMonthExpense.error);
-    }
-    
+    isStopError(updatedMonthExpense);
     return(updatedMonthExpense);
 }
 
 
-export async function deleteMonthExpense({ monthId, category })
+export async function deleteMonthExpense(monthId, category)
 {
-    const deletedMonthExpense = await deleteExpense({
-        monthId: monthId,
-        category: category
-    });
+    const deletedMonthExpense = await deleteExpense(
+        monthId, category
+    );
     
-    if (deletedMonthExpense.error !== null)
-    {
-        showErrorAndStop(deletedMonthExpense.error);
-    }
-    
+    isStopError(deletedMonthExpense);
     return(deletedMonthExpense);
 }
 
 
-export async function getUpdatedFlags({ userId, currentMonthId })
+export async function getUpdatedFlags(userId, currentMonthId)
 {
     const updatedFlags = await updateUserFlags({
         userId: userId,
@@ -238,11 +295,7 @@ export async function getUpdatedFlags({ userId, currentMonthId })
         currentMonthId: currentMonthId
     });
     
-    if (updatedFlags.error !== null)
-    {
-        showErrorAndStop(updatedFlags.error);
-    }
-    
+    isStopError(updatedFlags);
     return(updatedFlags.data)
 }
 
@@ -264,21 +317,19 @@ export async function fillCurrentMonth({ userId, year, month, lastMonthId })
         });
     }
     
-    await fillEmptyMonth({
-        lastMonthId: lastMonthId,
-        currentMonthId: currentMonthRecord.data.id
-    });
+    await fillEmptyMonth(
+        lastMonthId, currentMonthRecord.data.id
+    );
     
-    const updatedFlags = await getUpdatedFlags({
-        userId: userId,
-        currentMonthId: currentMonthRecord.data.id
-    });
+    const updatedFlags = await getUpdatedFlags(
+        userId, currentMonthRecord.data.id
+    );
     
     return(updatedFlags);
 }
 
 
-export async function fillEmptyMonth({ lastMonthId, currentMonthId })
+export async function fillEmptyMonth(lastMonthId, currentMonthId)
 {
     // Aqui, nos permitimos, que um mes tenha apenas receita,
     // apenas despesas, ou ambos. Temos que verificar, se o mês
@@ -293,10 +344,9 @@ export async function fillEmptyMonth({ lastMonthId, currentMonthId })
         lastMonthIncome.status !== "not_found")
     {
         // podemos copiar a receita
-        thisMonthIncome = await insertMonthIncome({
-            monthId: currentMonthId,
-            amount: lastMonthIncome.data.amount
-        });
+        thisMonthIncome = await insertMonthIncome(
+            currentMonthId, lastMonthIncome.data.amount
+        );
     }
     
     if (thisMonthExpenses.status === "not_found" &&
@@ -341,15 +391,13 @@ export async function loopThroughAndFillMonths({
             month: monthIterator
         });
         
-        await fillEmptyMonth({
-            lastMonthId: sourcemonthId,
-            currentMonthId: newMonth.data.id
-        });
+        await fillEmptyMonth(
+            sourcemonthId, newMonth.data.id
+        );
         
-        currentFlags = await getUpdatedFlags({
-            userId: userId,
-            currentMonthId: newMonth.data.id
-        });
+        currentFlags = await getUpdatedFlags(
+            userId, newMonth.data.id
+        );
         
         sourcemonthId = newMonth.data.id;
     }

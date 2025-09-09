@@ -4,17 +4,18 @@ import FormModal from "../components/FormModal";
 import ExpensesTable from "../components/ExpensesTable";
 import ExpensesDonutChart from "../components/ExpensesDonutChart";
 import { initializeData } from "../services/initApp";
-import { createOverviewHandlers } from "../helpers/overviewHandlers";
+import { useOverviewHandlers } from "../hooks/useOverviewHandlers";
 
 
-export default function Overview(props)
+export default function Overview()
 {
-    const { onExit } = props;
-    
     const [loggedUserId, setLoggedUserId] = useState(null);
     const [currentYear, setCurrentYear] = useState(null);
     const [currentMonth, setCurrentMonth] = useState(null);
     const [userFlags, setUserFlags] = useState(null);
+    
+    const [currentViewingYear, setCurrentViewingYear] = useState(currentYear);
+    const [currentViewingMonth, setCurrentViewingMonth] = useState(currentMonth);
     
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [formType, setFormType] = useState("");
@@ -67,11 +68,25 @@ export default function Overview(props)
     }, []);
     
     
-    const overviewHandlers = createOverviewHandlers({
+    useEffect(() =>
+    {
+        if (currentYear !== null && currentMonth !== null)
+        {
+            setCurrentViewingYear(currentYear);
+            setCurrentViewingMonth(currentMonth);
+        }
+    
+    }, [currentYear, currentMonth]);
+    
+    
+    const overviewHandlers = useOverviewHandlers({
         getUserFlags: () => userFlags, setUserFlags,
         getLoggedUserId: () => loggedUserId,
         getCurrentYear: () => currentYear,
         getCurrentMonth:() => currentMonth,
+        getCurrentViewingYear: () => currentViewingYear,
+        getCurrentViewingMonth: () => currentViewingMonth,
+        setCurrentViewingYear, setCurrentViewingMonth,
         getIncome: () => income, setIncome,
         getExpenses: () => expenses,
         setExpenses, setIsFormModalOpen,
@@ -79,10 +94,46 @@ export default function Overview(props)
     });
     
     
+    function showCurrentViewingDate()
+    {
+        if (currentViewingYear !== null
+            && currentViewingMonth !== null)
+        {
+            const formattedViewingMonth = String(
+                currentViewingMonth).padStart(2, "0");
+            return(
+                <h2>
+                    {`${formattedViewingMonth}/${currentViewingYear}`}
+                </h2>
+            );
+        }
+    }
+    
+    
+    function renderFormModal()
+    {
+        if (isFormModalOpen === true)
+        {
+            return(
+                <FormModal
+                    formType={formType}
+                    isFormModalOpen={isFormModalOpen}
+                    onRequestClose={() => {}}
+                    shouldCloseOnOverlayClick={false}
+                    expensesData={expenses}
+                    onSubmitSuccess={overviewHandlers.handleCloseModal}
+                    onValueChange={overviewHandlers.handleValueChange}
+                    onCancel={overviewHandlers.handleCloseModal}
+                />
+            );
+        }
+    }
+    
     
     return(
         <main>
             
+            {showCurrentViewingDate()}
             
             <section className="options-section">
                 
@@ -125,6 +176,15 @@ export default function Overview(props)
                             type="exportar"
                             onExportToCsv={overviewHandlers.handleExportToCsv}
                             onExportToPdf={overviewHandlers.handleExportToPdf}
+                        />
+                    </div>
+                    
+                    <div className="options-navigation-container">
+                        <h3>Navegar</h3>
+                        <GrouppedButtons
+                            type="navegar"
+                            onNavigateToPrevious={() => overviewHandlers.handleNavigate("backwards")}
+                            onNavigateToNext={() => overviewHandlers.handleNavigate("forward")}
                         />
                     </div>
                     
@@ -180,29 +240,7 @@ export default function Overview(props)
                 
             </section>
             
-            
-            <button
-                type="button"
-                onClick={onExit}
-            >
-                Sair
-            </button>
-            
-            {
-                isFormModalOpen ?
-                (
-                    <FormModal
-                        formType={formType}
-                        isFormModalOpen={isFormModalOpen}
-                        onRequestClose={() => {}}
-                        shouldCloseOnOverlayClick={false}
-                        expensesData={expenses}
-                        onSubmitSuccess={overviewHandlers.handleCloseModal}
-                        onValueChange={overviewHandlers.handleValueChange}
-                        onCancel={overviewHandlers.handleCloseModal}
-                    />
-                ) : null
-            }
+           {renderFormModal()}
             
         </main>
     );

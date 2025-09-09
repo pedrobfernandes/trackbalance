@@ -48,7 +48,7 @@ export async function fetchIncome(monthId)
 }
 
 
-export async function insertIncome({monthId, amount})
+export async function insertIncome(monthId, amount)
 {
     try
     {
@@ -95,7 +95,7 @@ export async function insertIncome({monthId, amount})
 }
 
 
-export async function updateIncome({monthId, amount})
+export async function updateIncome(monthId, amount)
 {
     try
     {
