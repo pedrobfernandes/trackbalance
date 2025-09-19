@@ -1,13 +1,13 @@
 import OptionsButton from "./OptionsButton";
 
+
 export default function GrouppedButtons(props)
 {
     const
     {
         type, onInsert, onUpdate,
         onDelete, onExportToCsv,
-        onExportToPdf, onNavigateToNext,
-        onNavigateToPrevious, disabledButtons = {}
+        onExportToPdf, disabledButtons = {}
         
     } = props;
     
@@ -55,12 +55,6 @@ export default function GrouppedButtons(props)
             { text: "CSV", action: onExportToCsv },
             { text: "PDF", action: onExportToPdf },
         ],
-        
-        navegar:
-        [
-            { text: "Anterior", action: onNavigateToPrevious },
-            { text: "Próximo", action: onNavigateToNext }
-        ]
     };
     
     
@@ -76,6 +70,7 @@ export default function GrouppedButtons(props)
         );
     }
     
+    
     function getButtonGroups()
     {
         const group = mappedButtons[type];
@@ -89,6 +84,7 @@ export default function GrouppedButtons(props)
     }
     
     const buttonGroup = getButtonGroups();
+    
     
     return(
         buttonGroup

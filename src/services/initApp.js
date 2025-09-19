@@ -13,11 +13,11 @@ export async function initializeData(props)
     
     } = props;
     
-    const testYear = 2025;
-    const testMonth = 12;
+    //~ const testYear = 2025;
+    //~ const testMonth = 12;
     
-    const initResult = await initData({ testYear, testMonth });
-    //~ const initResult = await initData();
+    //~ const initResult = await initData({ testYear, testMonth });
+    const initResult = await initData();
     
     if (initResult !== null)
     {

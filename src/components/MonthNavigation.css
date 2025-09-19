@@ -1,0 +1,14 @@
+.date-picker-form .react-datepicker,
+.date-picker-form .react-datepicker__header,
+.date-picker-form input
+{
+    font-family: "Manrope", sans-serif;
+    font-weight: var(--medium-font);
+    font-size: var(--text-font);
+}
+
+.date-picker-form input
+{
+    margin: 1rem 0;
+    text-align: center;
+}

@@ -1,18 +1,18 @@
 import { useState } from "react";
 
+
 export default function UpdateIncomeForm(props)
 {
     const { onSubmitSuccess, onValueChange, onCancel } = props;
     
     const [updatedIncome, setUpdatedIncome] = useState(0);
     
+    
     function handleSubmit(event)
     {
         event.preventDefault();
-        console.log("Nova receita: ", updatedIncome);
         onValueChange("updateIncome", parseFloat(updatedIncome).toFixed(2));
         setUpdatedIncome(0);
-        
         onSubmitSuccess();
     }
     

@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+
 export default function DeleteExpensesForm(props)
 {
     const
@@ -22,10 +23,10 @@ export default function DeleteExpensesForm(props)
     function handleSubmit(event)
     {
         event.preventDefault();
-        
         onValueChange("deleteExpenses", toDelete);
         onSubmitSuccess();
     }
+    
     
     function renderSelectOption(option, index)
     {
@@ -33,6 +34,7 @@ export default function DeleteExpensesForm(props)
             <option key={index} value={option}>{option}</option>
         );
     }
+
 
     function renderExpenseSelect()
     {
@@ -55,9 +57,10 @@ export default function DeleteExpensesForm(props)
     
     const expensesSelect = renderExpenseSelect();
     
+    
     return(
         <form onSubmit={handleSubmit}>
-            <label htmlFor="expense-select">Escolha a despesa para deletar:</label>
+            <label htmlFor="expenses-select">Escolha a despesa para deletar:</label>
             {expensesSelect}
             <button type="submit">Enviar</button>
             <button type="button" onClick={onCancel}>Cancelar</button>

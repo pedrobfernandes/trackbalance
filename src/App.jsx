@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import Modal from "react-modal";
 import Auth from "./components/Auth";
 import Header from "./components/Header";
-import Overview from "./pages/Overview";
 import PasswordResetModal from "./components/PasswordResetModal";
+import Overview from "./pages/Overview";
 import { supabase } from "./lib/supabaseClient";
 
 Modal.setAppElement("#root");
@@ -102,8 +102,8 @@ export default function App()
         {
             return(
                 <>
-                    <Header onExit={handleLogout} />
-                    <Overview />
+                    <Header/>
+                    <Overview onExit={handleLogout}/>
                 </>
             );
         }
@@ -112,29 +112,31 @@ export default function App()
 
     return(
         <>
-            <Modal
-                isOpen={isAuthModalOpen}
-                onRequestClose={() => {}}
-                contentLabel="Autenticação"
-                shouldCloseOnOverlayClick={false}
-                style={{
-                    content: {
-                        maxWidth: "50rem",
-                        margin: "auto",
-                        padding: "2rem",
-                        inset: "auto",
-                    },
-                }}
-            >
-                <Auth />
-            </Modal>
+                <Modal
+                    overlayClassName="ReactModal__Overvaly"
+                    className="ReactModal__Content"
+                    isOpen={isAuthModalOpen}
+                    onRequestClose={() => {}}
+                    contentLabel="Autenticação"
+                    shouldCloseOnOverlayClick={false}
+                    aria={{
+                        modal: true,
+                        labelledby: "auth-modal-title",
+                    }}
+                    
+                >
+                    <h2 id="auth-modal-title" className="visually-hidden">Autenticação</h2>
+                    <Auth />
+                </Modal>
 
-            <PasswordResetModal
-                isOpen={isPasswordResetModalOpen}
-                onClose={() => setIsPasswordResetModalOpen(false)}
-            />
-            
-            {renderApp()}
+                <PasswordResetModal
+                    isOpen={isPasswordResetModalOpen}
+                    onClose={() => setIsPasswordResetModalOpen(false)}
+                />
+        
+                <main>
+                    {renderApp()}
+                </main>
         </>
     );
 }

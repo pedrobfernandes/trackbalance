@@ -13,6 +13,7 @@ export default function UpdateExpensesForm(props)
     const initialCategory = expensesData[0].category;
     const [newExpense, setNewExpense] = useState({ category: initialCategory, amount: 0 });
     
+    
     const categories = expensesData.map(expense =>
     {
         return(expense.category)
@@ -29,6 +30,7 @@ export default function UpdateExpensesForm(props)
         }));
     }
     
+    
     function handleAmountChange(event)
     {
         const expense =  parseFloat(event.target.value);
@@ -37,19 +39,17 @@ export default function UpdateExpensesForm(props)
             category: previous.category,
             amount: expense,
         }));
-        
-        console.log("Novo valor: ", expense);
     }
+    
     
     function handleSubmit(event)
     {
         event.preventDefault();
-        
         onValueChange("updateExpenses", newExpense);
-        setNewExpense({ category: "", amount: 0 });
-        
+        setNewExpense({ category: "", amount: 0 });        
         onSubmitSuccess();
     }
+    
     
     function renderSelectOption(option, index)
     {
@@ -57,6 +57,7 @@ export default function UpdateExpensesForm(props)
             <option key={index} value={option}>{option}</option>
         );
     }
+
 
     function renderExpenseSelect()
     {
@@ -79,9 +80,10 @@ export default function UpdateExpensesForm(props)
     
     const expensesSelect = renderExpenseSelect();
 
+
     return(
         <form onSubmit={handleSubmit}>
-            <label htmlFor="expense-select">Escolha a despesa:</label>
+            <label htmlFor="expenses-select">Escolha a despesa:</label>
             {expensesSelect}
             
             <label htmlFor="new-value-input">Digite o novo valor:</label>

@@ -12,6 +12,8 @@ import
     
 } from "@tanstack/react-table";
 
+import "./ExpensesTable.css";
+
 
 export default function ExpensesTable(props)
 {
@@ -32,7 +34,7 @@ export default function ExpensesTable(props)
         {
             accessorKey: "amount",
             header: "Valor (R$)",
-            cell: info => `R$ ${info.getValue().toFixed(2)}`
+            cell: info => `${info.getValue().toFixed(2)}`
         },
         
     ], []);
@@ -60,10 +62,12 @@ export default function ExpensesTable(props)
                 setGlobalFilter={setGlobalFilter}
             />
             
-            <table>
-                <ExpensesTableHeader table={table}/>
-                <ExpensesTableBody table={table}/>
-            </table>
+            <div className="table-wrapper">
+                <table className="expenses-table">
+                    <ExpensesTableHeader table={table}/>
+                    <ExpensesTableBody table={table}/>
+                </table>
+            </div>
             
             <ExpensesTablePagination table={table}/>
         </div>

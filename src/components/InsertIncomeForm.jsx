@@ -1,22 +1,21 @@
 import { useState } from "react";
 
+
 export default function InsertIncomeForm(props)
 {
     const { onSubmitSuccess, onValueChange, onCancel } = props;
     
-    const [income, setIncome] = useState("");
+    const [income, setIncome] = useState(0);
     
     
     function handleSubmit(event)
     {
         event.preventDefault();
-        console.log("Receita inserida: ", income);
-        
         onValueChange("insertIncome", parseFloat(income).toFixed(2));
-        
-        setIncome("");
+        setIncome(0);
         onSubmitSuccess();
     }
+    
     
     return(
         <form onSubmit={handleSubmit}>

@@ -90,14 +90,15 @@ export default function Auth()
     function renderAuthScreen()
     {
         const heading2Text = isSignUp ? "Criar conta" : "Entrar";
-        const hasAccountText  = isSignUp ? "Já tem uma conta?" : "Não tem uma conta?";
         const submitText = loading ? "Carregando" :
             isSignUp ? "Criar conta" : "Entrar";
         
         return(
             <>
+                <h1 className="visually-hidden">Autenticação</h1>
                 <h2>{heading2Text}</h2>
                 <form onSubmit={handleAuth}>
+                    
                     <label htmlFor="email-input">Insira o seu email:</label>
                     <input
                         id="email-input"
@@ -107,7 +108,6 @@ export default function Auth()
                         onChange={(event) => setEmail(event.target.value)}
                         required
                     />
-                    <br/>
                     
                     <label htmlFor="password-input">Insira uma senha:</label>
                     <input
@@ -118,30 +118,24 @@ export default function Auth()
                         onChange={(event) => setPassword(event.target.value)}
                         required
                     />
-                    <br/>
                     
                     <button type="submit" disabled={loading}>
                         {submitText}
                     </button>
-                </form>
-                
-                <p>
-                    {hasAccountText}
+                    
                     <button type="button" onClick={toggleAuthMode}>
                         {isSignUp ? "Entrar" : "Criar conta"}
                     </button>
-                </p>
                 
-                <p>
                     <button
                         type="button"
                         onClick={() => setIsForgotPassword(true)}
                     >
                         Esqueceu a senha?
                     </button>
-                </p>
-                
-                {error && <p style={{ color: "red" }}>{error}</p>}
+
+                    {error && <p style={{ color: "red" }}>{error}</p>}
+                </form>
             </>
         );
     }
@@ -151,6 +145,7 @@ export default function Auth()
     {
         return(
             <>
+                <h1 className="visually-hidden">Troca de Senha</h1>
                 <h2>Recuperar senha</h2>
                 <form onSubmit={handleForgotPassword}>
                     <label htmlFor="reset-email-input">Digite seu email:</label>
@@ -162,19 +157,16 @@ export default function Auth()
                         onChange={(event) => setEmail(event.target.value)}
                         required
                     />
-                    <br />
                     <button type="submit" disabled={loading}>
                         {loading ? "Enviando..." : "Enviar link de recuperação"}
                     </button>
-                </form>
-                <p>
                     <button
                         type="button"
                         onClick={() => setIsForgotPassword(false)}
                     >
                         Voltar
                     </button>
-                </p>
+                </form>
                 {error && <p style={{ color: "red" }}>{error}</p>}
             </>
         );
@@ -195,8 +187,8 @@ export default function Auth()
     
 
     return (
-        <div style={{ padding: "2rem", maxWidth: "40rem", margin: "0 auto" }}>
-           {getScreenToRender()}
-        </div>
+        <div className="auth-container">
+            {getScreenToRender()}
+       </div>
     );
 }

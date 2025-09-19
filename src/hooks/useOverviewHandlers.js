@@ -13,7 +13,6 @@ import { isFirstUse } from "../services/initApp"
 import { exportToCsv, exportToPdf } from "../utils/exportExpenses";
 
 
-
 export function useOverviewHandlers(props)   
 {
     const
@@ -229,7 +228,6 @@ export function useOverviewHandlers(props)
         
         setExpenses(updatedExpenses);
     }
-    
     
     
     function handleDeleteSingleExpense(category)
@@ -457,20 +455,11 @@ export function useOverviewHandlers(props)
     }
     
     
-    async function handleNavigate(direction)
+    async function navigateToMonth(targetYear, targetMonth)
     {
         try
         {
-            const currentViewYear = getCurrentViewingYear();
-            const currentViewMonth = getCurrentViewingMonth();
-
-            const targetMonth = getTravelDirection({
-                direction: direction,
-                year: currentViewYear,
-                month: currentViewMonth
-            });
-            
-            const stopDate = await getTravelStopDate(direction);
+            const stopDate = await getTravelStopDate("backwards");
             
             if (stopDate.status === false)
             {
@@ -478,11 +467,13 @@ export function useOverviewHandlers(props)
             }
             
             const { intended: toTravel, barrier: limit } = getMonthRanges({
-                targetYear: targetMonth.year,
-                targetMonth: targetMonth.month,
+                targetYear: targetYear,
+                targetMonth: targetMonth,
                 stopYear:   stopDate.stopYear,
                 stopMonth: stopDate.stopMonth
             });
+            
+            const direction = toTravel > limit ? "forward" : "backwards"
                 
             const canTravel = canNavigate({
                 targetMonth: toTravel,
@@ -495,8 +486,8 @@ export function useOverviewHandlers(props)
                 return;
             }
             
-            const monthData = await loadOrCreateMonth(
-                targetMonth.year, targetMonth.month
+             const monthData = await loadOrCreateMonth(
+                targetYear, targetMonth
             );
             
             if (monthData === null)
@@ -510,19 +501,40 @@ export function useOverviewHandlers(props)
                 month: monthData.data.month
             });
         }
-        catch(error)
+        catch (error)
         {
             alert(error);
         }
+    }
+    
+    
+    async function handleNavigate(direction)
+    {
+        const currentViewYear = getCurrentViewingYear();
+        const currentViewMonth = getCurrentViewingMonth();
+        
+        const targetMonth = getTravelDirection({
+            direction: direction,
+            year: currentViewYear,
+            month: currentViewMonth
+        });
+        
+        await navigateToMonth(targetMonth.year, targetMonth.month);
         
     }
     
+    
+    async function handleNavigateToSpecific(year, month)
+    {
+        await navigateToMonth(year, month);
+    }
+
     
     return({
         handleClick, handleExportToCsv,
         handleExportToPdf, handleCloseModal,
         handleSetNewExpense, handleUpdateExpenseValue,
         handleDeleteSingleExpense, handleValueChange,
-        handleNavigate
+        handleNavigate, handleNavigateToSpecific
     });
 }

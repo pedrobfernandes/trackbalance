@@ -1,0 +1,38 @@
+.full-sidebar
+{
+    position: fixed;
+    top: 0;
+    left: 6rem;
+    height: 100vh;
+    width: 24rem;
+    background: #f4f4f4;
+    border-right: 0.1rem solid #ddd;
+    padding: 1rem;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.full-sidebar.open
+{
+    transform: translateX(0);
+}
+
+
+.options-container
+{
+    display: flex;
+    flex-direction: column;
+    gap: var(--main-gap);
+}
+
+.options-income-container,
+.options-expenses-container,
+.options-export-container
+{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
+}

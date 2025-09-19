@@ -1,20 +1,23 @@
 import { useState } from "react";
 
+
 export default function InsertExpensesForm(props)
 {
     const { onSubmitSuccess, onValueChange, onCancel } = props;
     
     const [expense, setExpense] = useState({ category: "", amount: 0 });
     
+    
     function handleCategoryInput(event)
     {
-        const newCategory = event.target.value;
+        const newCategory = event.target.value
         
         setExpense((previous) => ({
             category: newCategory,
             amount: previous.amount,
         }));
     }
+    
     
     function handleAmountInput(event)
     {
@@ -26,18 +29,30 @@ export default function InsertExpensesForm(props)
         }));
     }
     
-    function handleSumbit(event)
+    
+    function handleSubmit(event)
     {
         event.preventDefault();
         
-        onValueChange("insertExpenses", expense);
+        const normalizedCategory = expense.category
+            .trim()
+            .replace(/\s+/g,  ' ')
+            .toUpperCase();
         
+        const normalizedExpense =
+        {
+            category: normalizedCategory,
+            amount: expense.amount
+        }
+        
+        onValueChange("insertExpenses", normalizedExpense);
         setExpense({ category: "", amount: 0 });        
         onSubmitSuccess();
     }
     
+    
     return(
-        <form onSubmit={handleSumbit}>
+        <form onSubmit={handleSubmit}>
             <label htmlFor="expense-category-input">Categoria (ex: Aluguel):</label>
             <input
                 id="expense-category-input"

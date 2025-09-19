@@ -1,6 +1,7 @@
 import { flexRender } from "@tanstack/react-table";
 import { SortIconAsc, SortIconDesc } from "./SortIcons";
 
+
 export default function ExpensesTableHeader(props)
 {
     const { table } = props;
@@ -18,6 +19,7 @@ export default function ExpensesTableHeader(props)
             return(undefined);
         }
     }
+    
     
     function getSortingOrder(header)
     {
@@ -47,6 +49,7 @@ export default function ExpensesTableHeader(props)
         );
     }
     
+    
     function renderHeaderCellData(headers)
     {
         return(
@@ -62,6 +65,7 @@ export default function ExpensesTableHeader(props)
         ));
     }
     
+    
     function renderHeaderRows()
     {
         return(
@@ -74,6 +78,7 @@ export default function ExpensesTableHeader(props)
     }
     
     const headerRows = renderHeaderRows();
+    
     
     return(
         <thead>

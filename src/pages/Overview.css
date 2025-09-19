@@ -1,0 +1,130 @@
+.mini-sidebar
+{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 6rem;
+    height: 100vh;
+    background: #fff;
+    border-right: 0.1rem solid gray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    z-index: 1100;
+}
+
+.mini-sidebar button
+{
+    font-size: 1.3rem;
+}
+
+
+.overview-main
+{
+    padding: 2rem;
+    margin: 0 auto;
+}
+
+
+
+.month-navigation-section,
+.summary-section,
+.details-section
+{
+    margin: var(--main-gap) 0;
+}
+
+
+.options-navigation-container
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 0 auto;
+}
+
+
+.summary-container
+{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+
+.income-summary-container,
+.expenses-summary-container,
+.remaining-summary-container
+{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: 0.1rem solid black;
+    border-radius: 1rem;
+    padding: 2rem;
+}
+
+
+.details-container
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--main-gap);
+    overflow: hidden;
+}
+
+
+.donut-container
+{
+    flex: 1;
+    width: var(--max-size);
+}
+
+
+.table-container
+{
+    width: var(--max-size);
+}
+
+
+@media (min-width: 35.5em)
+{
+    .overview-main
+    {
+        max-width: 80%;
+        margin: 0 auto;
+    }
+    
+    .options-navigation-container
+    {
+        flex-direction: row;
+    }
+}
+
+
+@media (min-width: 68.75em)
+{
+    .income-summary-container,
+    .expenses-summary-container,
+    .remaining-summary-container
+    {
+        flex-direction: row;
+    }
+}
+
+
+@media (min-width: 73.75em)
+{
+    .overview-main
+    {
+        width: 120rem;
+    }
+}

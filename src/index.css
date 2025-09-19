@@ -1,0 +1,176 @@
+@charset "UTF-8";
+
+
+:root
+{
+    --first-level-heading-font: clamp(2.2rem, 2.4rem + 4vw, 2.6rem);
+    --second-level-heading-font: clamp(2rem, 2.2rem + 4vw, 2.4rem);
+    --third-level-heading-font: clamp(1.8rem, 2rem + 4vw, 2.2rem);
+    --text-font: 1.6rem;
+    
+    --thin-font: 300;
+    --normal-font: 400;
+    --medium-font: 500;
+    --bolder-font: 700;
+    --heavier-font: 900;
+
+    --main-gap: 4rem;
+    --half-gap: 2rem;
+
+    --max-size: 100%;
+}
+
+
+
+*,
+*::before,
+*::after
+{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+.visually-hidden
+{
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+
+button
+{
+    cursor: pointer;
+    font-family: "Manrope", sans-serif;
+    font-weight: var(--bolder-font);
+    font-size: 1.4rem;
+    padding: 0.5rem 0.8rem;
+    border: none;
+    border-radius: 1rem;
+}
+
+
+#root,
+html,
+body
+{
+    height: var(--max-size);
+}
+
+
+html
+{
+    font-size: 62.5%;
+}
+
+
+body
+{
+    cursor: default;
+    line-height: 1.6;
+    font-size: var(--text-font);
+    font-weight: var(--normal-font);
+    font-family: "Manrope", sans-serif;
+}
+
+main
+{
+    max-width: var(--max-size);
+    margin-left: 6rem;
+}
+
+
+h1
+{
+    text-align: center;
+    font-size: var(--first-level-heading-font);
+    font-weight: var(--heavier-font);
+}
+
+h2
+{
+    text-align:  center;
+    font-size: var(--second-level-heading-font);
+    font-weight: var(--bolder-font);
+    margin-bottom: 2rem;
+}
+
+h3
+{
+    font-size: var(--third-level-heading-font);
+    font-weight: var(--medium-font);
+}
+
+
+input, select
+{
+    outline: none;
+    width: var(--max-size);
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    border: 0.1rem solid black;
+}
+
+
+form
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    text-align: center;
+}
+
+form button
+{
+    width: var(--max-size);
+}
+
+
+label
+{
+    font-weight: var(--bolder-font);
+}
+
+
+.ReactModal__Overlay
+{
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1200;
+    overflow-y: auto;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ReactModal__Content
+{
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.2);
+    max-height: 70vh;
+    width: 80%;
+    overflow-y: auto;
+    outline: none;
+}
+
+
+@media (min-width: 50em)
+{
+    .ReactModal__Content
+    {
+    
+        max-width: 50rem;
+        max-height: 50rem;
+    }
+}

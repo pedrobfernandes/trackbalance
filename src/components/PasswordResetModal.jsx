@@ -52,16 +52,12 @@ export default function PasswordResetModal(props)
             onRequestClose={onClose}
             contentLabel="Redefinir senha"
             shouldCloseOnOverlayClick={false}
-            style={{
-                content: {
-                    maxWidth: "30rem",
-                    margin: "auto",
-                    padding: "2rem",
-                    inset: "auto",
-                },
+            aria={{
+                modal: true,
+                labelledby: "password-reset-modal-title",
             }}
         >
-            <h2>Redefinir senha</h2>
+            <h2 id="password-reset-modal-title">Redefinir senha</h2>
             <form onSubmit={handlePasswordReset}>
                 <label htmlFor="new-password">Nova senha:</label>
                 <input

@@ -5,8 +5,9 @@ export default function ExpensesTablePagination(props)
     const pageCount = table.getPageCount();
     const pageIndex = table.getState().pagination.pageIndex;
     
+    
     return(
-        <div>
+        <div className="table-pagination-container">
             <button
                 type="button"
                 onClick={() => table.previousPage()}

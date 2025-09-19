@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Modal from "react-modal";
 import InsertIncomeForm from "./InsertIncomeForm";
 import UpdateIncomeForm from "./UpdateIncomeForm";
@@ -55,10 +56,31 @@ export default function FormModal(props)
             onCancel={onCancel}
         />,
     };
+    
+    
+    useEffect(() =>
+    {
+        if (isFormModalOpen)
+        {
+            document.body.style.overflow = "hidden";
+        }
+        else
+        {
+            document.body.style.overflow = "auto";
+        }
+        
+        return(() =>
+        {
+            document.body.style.overflow = "auto";
+        })
+    
+    }, [isFormModalOpen]);
 
     
     return(
         <Modal
+            overlayClassName="ReactModal__Overlay"
+            className="ReactModal__Content"
             isOpen={isFormModalOpen}
             onRequestClose={onRequestClose}
             shouldCloseOnOverlayClick={shouldCloseOnOverlayClick}

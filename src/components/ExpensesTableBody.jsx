@@ -1,5 +1,6 @@
 import { flexRender } from "@tanstack/react-table";
 
+
 export default function ExpensesTableBody(props)
 {
     const { table } = props;
