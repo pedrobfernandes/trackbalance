@@ -10,6 +10,7 @@ export default function MonthNavigation(props)
     const { handleMonthNavigation } = props;
     const [selectedDate, setSelectedDate] = useState(new Date());
     
+    
     function handleDateChange(date)
     {
         setSelectedDate(date);
@@ -18,6 +19,7 @@ export default function MonthNavigation(props)
         });
         
     }
+    
     
     return(
         <>

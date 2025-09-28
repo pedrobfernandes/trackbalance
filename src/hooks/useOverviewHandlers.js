@@ -198,11 +198,8 @@ export function useOverviewHandlers(props)
         const category = newExpense.category;
         const amount = newExpense.amount;
         
-        setExpenses(
-            previousExpenses => [
-                ...previousExpenses,
-                {category, amount}
-            ]
+        setExpenses(previousExpenses =>
+            previousExpenses.concat({ category, amount })
         );
     }
     
@@ -211,19 +208,15 @@ export function useOverviewHandlers(props)
     {
         const updatedExpenses = getExpenses().map(expense =>
         {
-            const isSameCategory = expense.category === updatedExpense.category;
-            
-            if (isSameCategory === true)
+            if (expense.category === updatedExpense.category)
             {
                 return({
                     category: expense.category,
                     amount: updatedExpense.amount,
                 });
             }
-            else
-            {
-                return(expense);
-            }
+            
+            return(expense);
         });
         
         setExpenses(updatedExpenses);
@@ -297,8 +290,11 @@ export function useOverviewHandlers(props)
         setCurrentViewingMonth(month);
         setCurrentViewingMonthId(monthId);
         
-        const monthIncome = await hasMonthIncome(monthId);
-        const monthExpenses = await hasMonthExpenses(monthId);
+        const [monthIncome, monthExpenses] = await Promise.all
+        ([
+            hasMonthIncome(monthId),
+            hasMonthExpenses(monthId)
+        ]);
         
         setIncome(monthIncome.data?.amount || 0);
         setExpenses(monthExpenses.data || []);
@@ -407,14 +403,12 @@ export function useOverviewHandlers(props)
             
             return(previousMonth)
         }
-        else
-        {
-            const nextMonth = getNextMonth(
-                year, month
-            );
-            
-            return(nextMonth);
-        }
+
+        const nextMonth = getNextMonth(
+            year, month
+        );
+        
+        return(nextMonth);
     }
     
     
@@ -444,14 +438,12 @@ export function useOverviewHandlers(props)
                 stopMonth: firstMonthRecord.month
             });
         }
-        else
-        {
-            return({
-                status: true,
-                stopYear: getCurrentYear(),
-                stopMonth: getCurrentMonth()
-            });
-        }
+
+        return({
+            status: true,
+            stopYear: getCurrentYear(),
+            stopMonth: getCurrentMonth()
+        });
     }
     
     

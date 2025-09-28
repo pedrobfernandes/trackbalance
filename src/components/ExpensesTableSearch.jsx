@@ -1,7 +1,6 @@
 export default function ExpensesTableSearch(props)
 {
-    const { globalFilter, setGlobalFilter } = props;
-
+    const { filter, setFilter } = props;
 
     return(
         <form
@@ -18,8 +17,8 @@ export default function ExpensesTableSearch(props)
             <input
                 id="table-search-input"
                 type="text"
-                value={globalFilter}
-                onChange={event => setGlobalFilter(event.target.value)}
+                value={filter}
+                onChange={event => setFilter(event.target.value)}
                 className="table-search-input"
                 placeholder="Digite para filtrar..."
             />

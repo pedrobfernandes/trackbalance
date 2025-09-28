@@ -334,34 +334,46 @@ export async function fillEmptyMonth(lastMonthId, currentMonthId)
     // Aqui, nos permitimos, que um mes tenha apenas receita,
     // apenas despesas, ou ambos. Temos que verificar, se o mês
     // lastMonthId tem um, outro ou ambos.
-    const lastMonthIncome = await hasMonthIncome(lastMonthId);
-    const lastMonthExpenses = await hasMonthExpenses(lastMonthId);
     
-    let thisMonthIncome = await hasMonthIncome(currentMonthId);
-    let thisMonthExpenses = await hasMonthExpenses(currentMonthId);
+    const
+    [
+        lastMonthIncome, lastMonthExpenses,
+        thisMonthIncome, thisMonthExpenses
+    
+    ] = await Promise.all
+    ([
+        hasMonthIncome(lastMonthId),
+        hasMonthExpenses(lastMonthId),
+        hasMonthIncome(currentMonthId),
+        hasMonthExpenses(currentMonthId)
+    ]);
+    
     
     if (thisMonthIncome.status === "not_found" &&
         lastMonthIncome.status !== "not_found")
     {
         // podemos copiar a receita
-        thisMonthIncome = await insertMonthIncome(
-            currentMonthId, lastMonthIncome.data.amount
+        await insertMonthIncome(
+            currentMonthId,
+            lastMonthIncome.data.amount
         );
     }
     
     if (thisMonthExpenses.status === "not_found" &&
         lastMonthExpenses.status !== "not_found")
     {
-        let insertedExpense = null;
-        // podemos copiar as despesas
-        for (const expense of lastMonthExpenses.data)
+        const insertedPromises = lastMonthExpenses.data.map(expense =>
         {
-            insertedExpense = await insertMonthExpense({
-                monthId: currentMonthId,
-                category: expense.category,
-                amount: expense.amount
-            });
-        }
+            return(
+                insertMonthExpense({
+                    monthId: currentMonthId,
+                    category: expense.category,
+                    amount: expense.amount
+                })
+            );
+        });
+        
+        await Promise.all(insertedPromises);
     }
 }
 

@@ -126,20 +126,19 @@ export async function initData({ testYear = null, testMonth = null } = {})
         // 4.3 - Se tiver, e o usuario não quiser preencher,
         // apenas criamos e preenchemos o mes atual.
         // Depois saimos.
-        else
-        {
-            userFlags = await fillCurrentMonth({
-                userId: loggedUserId,
-                year: currentYear,
-                month: currentMonth,
-                lastMonthId: lastMonthWithDataId
-            });
-            
-            return({
-                loggedUserId, currentYear,
-                currentMonth, userFlags: userFlags
-            });
-        }
+
+        userFlags = await fillCurrentMonth({
+            userId: loggedUserId,
+            year: currentYear,
+            month: currentMonth,
+            lastMonthId: lastMonthWithDataId
+        });
+        
+        return({
+            loggedUserId, currentYear,
+            currentMonth, userFlags: userFlags
+        });
+
     }
     catch (error)
     {

@@ -1,17 +1,57 @@
 export default function ExpensesTablePagination(props)
 {
-    const { table } = props;
-    
-    const pageCount = table.getPageCount();
-    const pageIndex = table.getState().pagination.pageIndex;
+    const { pagination, setPagination, totalPages} = props;    
+    const pageIndex = pagination.pageIndex;
     
     
+    function canGoToPrevious()
+    {
+        if (pageIndex === 0)
+        {
+            return(false);
+        }
+        
+        return(true);
+    }
+    
+    
+    function canGoToNext()
+    {
+        if (pageIndex === totalPages - 1)
+        {
+            return(false);
+        }
+        
+        return(true);
+    }
+    
+    
+    function handleGoToPrevious()
+    {
+        setPagination(previousPagination => ({
+            pageIndex: previousPagination.pageIndex - 1,
+            pageSize: previousPagination.pageSize
+        }));
+    }
+    
+    
+    function handleGoToNext()
+    {
+        setPagination(previousPagination => ({
+            pageIndex: previousPagination.pageIndex + 1,
+            pageSize: previousPagination.pageSize
+        }));
+    }
+    
+    
+    
+
     return(
         <div className="table-pagination-container">
             <button
                 type="button"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
+                onClick={handleGoToPrevious}
+                disabled={canGoToPrevious() === false}
             >
                 Anterior
             </button>
@@ -19,14 +59,14 @@ export default function ExpensesTablePagination(props)
             <span>
                 Página{" "}
                 <strong>
-                    {pageIndex + 1} de {pageCount}
+                    {pageIndex + 1} de {totalPages}
                 </strong>
             </span>
             
             <button
                 type="button"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
+                onClick={handleGoToNext}
+                disabled={canGoToNext() === false}
             >
                 Próxima
             </button>

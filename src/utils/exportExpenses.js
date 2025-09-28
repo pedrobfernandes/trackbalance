@@ -73,10 +73,14 @@ export async function exportToPdf({ expensesData, summary, chartRef })
     
     
     const tableData = expensesData.map(expense =>
-    [
-        expense.category,
-        `R$ ${expense.amount.toFixed(2)}`
-    ]);
+    {
+        return(
+            [
+                expense.category,
+                `R$ ${expense.amount.toFixed(2)}`
+            ]
+        );
+    });
     
     autoTable(doc,
     {

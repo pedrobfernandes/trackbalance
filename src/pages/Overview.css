@@ -43,10 +43,18 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
     margin: 0 auto;
 }
 
+.options-navigation-container button:first-child
+{
+    margin-bottom: -2rem;
+}
+
+.options-navigation-container button:last-child
+{
+    margin-top: -2rem;
+}
 
 .summary-container
 {
@@ -107,6 +115,20 @@
     {
         flex-direction: row;
     }
+    
+
+    .options-navigation-container button:first-child
+    {
+        margin-bottom: 0;
+        margin-right: -2rem;
+    }
+
+    .options-navigation-container button:last-child
+    {
+        margin-top: 0;
+        margin-left: -2rem;
+    }
+
 }
 
 

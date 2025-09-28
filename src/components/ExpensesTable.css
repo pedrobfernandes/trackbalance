@@ -23,7 +23,8 @@ th, td
 }
 
 
-.expenses-table thead tr:first-child th
+.expenses-table thead tr:first-child th,
+.expenses-table tbody tr:first-child td
 {
     border-top: none;
 }
@@ -31,22 +32,22 @@ th, td
 
 .expenses-table tbody tr:last-child td
 {
-  border-bottom: none;
+    border-bottom: none;
 }
-
 
 .expenses-table tr th:first-child,
 .expenses-table tr td:first-child
 {
-  border-left: none;
+    border-left: none;
 }
-
 
 .expenses-table tr th:last-child,
 .expenses-table tr td:last-child
 {
-  border-right: none;
+    border-right: none;
 }
+
+
 
 
 td
@@ -56,11 +57,16 @@ td
     text-overflow: ellipsis;
 }
 
+.table-search-form
+{
+    width: var(--max-size);
+    margin: 0 auto;
+}
 
 .table-search-input
 {
     font-size: var(--text-font);
-    margin-bottom: 1.5rem;
+    margin-bottom: 3rem;
 }
 
 

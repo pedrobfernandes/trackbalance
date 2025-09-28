@@ -10,8 +10,9 @@ export default function Sidebar(props)
             <aside
                 className={`full-sidebar ${isOpen ? "open" : "closed"}`}
                 aria-label="Menu lateral completo com opções detalhadas"
+                aria-hidden={!isOpen}
             >
-                {children}
+                {isOpen && children}
             </aside>
         </>
     );

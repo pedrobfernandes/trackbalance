@@ -33,8 +33,11 @@ export async function initializeData(props)
             
             try
             {
-                const incomeData = await hasMonthIncome(monthId);
-                const expensesData = await hasMonthExpenses(monthId);
+                const [incomeData, expensesData] = await Promise.all
+                ([
+                    hasMonthIncome(monthId),
+                    hasMonthExpenses(monthId)
+                ]);
                 
                 setIncome(incomeData.data?.amount || 0);
                 setExpenses(expensesData.data || []);

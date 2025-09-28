@@ -21,8 +21,8 @@ export function SortIconDesc()
 {
     return(
          <svg
-            width="10"
-            height="10"
+            width={10}
+            height={10}
             viewBox="0 0 10 10"
             style={{ marginLeft: "4px" }}
             aria-hidden="true"

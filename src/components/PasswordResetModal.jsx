@@ -1,15 +1,36 @@
-import { useState } from "react";
-import Modal from "react-modal";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
 
 
 export default function PasswordResetModal(props)
 {
-    const { isOpen, onClose } = props;
+    const { isOpen, onClose, dialogRef } = props;
     
     const [newPassword, setNewPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    
+    const newPasswordInputRef = useRef(null);
+    
+    useEffect(() =>
+    {
+        if (isOpen === true)
+        {
+            setNewPassword("");
+        }
+    
+    }, [isOpen]);
+   
+   
+    useEffect(() =>
+    {
+        if (isOpen === true &&
+            newPasswordInputRef.current !== null)
+        {
+            newPasswordInputRef.current.focus();
+        }
+    
+    }, [isOpen]);
 
 
     async function handlePasswordReset(event)
@@ -47,20 +68,18 @@ export default function PasswordResetModal(props)
 
 
     return(
-        <Modal
-            isOpen={isOpen}
-            onRequestClose={onClose}
-            contentLabel="Redefinir senha"
-            shouldCloseOnOverlayClick={false}
-            aria={{
-                modal: true,
-                labelledby: "password-reset-modal-title",
-            }}
+        <dialog
+            ref={dialogRef}
+            tabIndex={-1}
+            className="modal-content"
+            aria-label="Modal de redefinição de senha"
+            aria-modal="true"
         >
-            <h2 id="password-reset-modal-title">Redefinir senha</h2>
             <form onSubmit={handlePasswordReset}>
+                <h2>Redefinir senha</h2>
                 <label htmlFor="new-password">Nova senha:</label>
                 <input
+                    ref={newPasswordInputRef}
                     id="new-password"
                     type="password"
                     placeholder="Digite a nova senha"
@@ -68,12 +87,11 @@ export default function PasswordResetModal(props)
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
                 />
-                <br />
                 <button type="submit" disabled={loading}>
                     {loading ? "Salvando..." : "Redefinir senha"}
                 </button>
+                 {error && <p style={{ color: "red" }}>{error}</p>}
             </form>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-        </Modal>
+        </dialog>
     );
 }

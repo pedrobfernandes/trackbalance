@@ -1,15 +1,55 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
 
 
-export default function Auth()
+export default function Auth(props)
 {
+    const { isOpen } = props;
+    
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isSignUp, setIsSignUp] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [isForgotPassword, setIsForgotPassword] = useState(false);
+    
+    const emailInputRef = useRef(null);
+    const resetEmailInputRef = useRef(null);
+
+
+    useEffect(() =>
+    {
+        if (
+            isOpen === true &&
+            isForgotPassword === false &&
+            emailInputRef.current !== null
+        )
+        {
+            emailInputRef.current.focus();
+        }
+    
+    }, [isOpen, isForgotPassword]);
+    
+    
+    useEffect(() =>
+    {
+        if (isForgotPassword === true &&
+            resetEmailInputRef.current !== null)
+        {
+            resetEmailInputRef.current.focus();
+        }
+    
+    }, [isForgotPassword]);
+
+
+    useEffect(() =>
+    {
+        setEmail("");
+        setPassword("");
+        setError(null);
+        setIsForgotPassword(false);
+    
+    }, [isOpen]);
 
 
     async function handleAuth(event)
@@ -83,24 +123,48 @@ export default function Auth()
 
     function toggleAuthMode()
     {
-        setIsSignUp((prev) => !prev);
+        //~ setIsSignUp((previous) => !previous);
+        setIsSignUp((previous) =>
+        {
+            if (previous === true)
+            {
+                return(false);
+            }
+            
+            return(true);
+        });
     }
     
     
     function renderAuthScreen()
     {
         const heading2Text = isSignUp ? "Criar conta" : "Entrar";
-        const submitText = loading ? "Carregando" :
-            isSignUp ? "Criar conta" : "Entrar";
+        //~ const submitText = loading ? "Carregando" :
+            //~ isSignUp ? "Criar conta" : "Entrar";
+        
+        let submitText;
+        
+        if (loading === true)
+        {
+            submitText = "Carregando";
+        }
+        else if (isSignUp === true)
+        {
+            submitText = "Criar Conta";
+        }
+        else
+        {
+            submitText = "Entrar";
+        }
         
         return(
             <>
                 <h1 className="visually-hidden">Autenticação</h1>
-                <h2>{heading2Text}</h2>
                 <form onSubmit={handleAuth}>
-                    
-                    <label htmlFor="email-input">Insira o seu email:</label>
+                    <h2>{heading2Text}</h2>
+                    <label htmlFor="email-input">Insira seu email:</label>
                     <input
+                        ref={emailInputRef}
                         id="email-input"
                         type="email"
                         placeholder="Seu email"
@@ -109,7 +173,7 @@ export default function Auth()
                         required
                     />
                     
-                    <label htmlFor="password-input">Insira uma senha:</label>
+                    <label htmlFor="password-input">Insira a senha:</label>
                     <input
                         id="password-input"
                         type="password"
@@ -146,10 +210,11 @@ export default function Auth()
         return(
             <>
                 <h1 className="visually-hidden">Troca de Senha</h1>
-                <h2>Recuperar senha</h2>
                 <form onSubmit={handleForgotPassword}>
-                    <label htmlFor="reset-email-input">Digite seu email:</label>
+                    <h2>Recuperar senha</h2>
+                    <label htmlFor="reset-email-input">Insira seu email:</label>
                     <input
+                        ref={resetEmailInputRef}
                         id="reset-email-input"
                         type="email"
                         placeholder="Seu email"
@@ -166,8 +231,8 @@ export default function Auth()
                     >
                         Voltar
                     </button>
+                    {error && <p style={{ color: "red" }}>{error}</p>}
                 </form>
-                {error && <p style={{ color: "red" }}>{error}</p>}
             </>
         );
     }
@@ -179,10 +244,8 @@ export default function Auth()
         {
             return(renderAuthScreen());
         }
-        else
-        {
-            return(renderPasswordRecoveryScreen());
-        }
+        
+        return(renderPasswordRecoveryScreen());
     }
     
 

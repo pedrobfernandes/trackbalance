@@ -38,6 +38,8 @@ export default function Overview(props)
     
     const remaining = parseFloat(income - totalExpenses).toFixed(2);
     const donutChartRef = useRef(null);
+    const menuButtonRef = useRef(null);
+    
     
     const didInitialize = useRef(false);
 
@@ -62,7 +64,7 @@ export default function Overview(props)
     
     useEffect(() =>
     {
-        if (!didInitialize.current)
+        if (didInitialize.current === false)
         {
             didInitialize.current = true;
             initializeData({
@@ -160,12 +162,11 @@ export default function Overview(props)
                 <FormModal
                     formType={formType}
                     isFormModalOpen={isFormModalOpen}
-                    onRequestClose={() => {}}
-                    shouldCloseOnOverlayClick={false}
                     expensesData={expenses}
                     onSubmitSuccess={overviewHandlers.handleCloseModal}
                     onValueChange={overviewHandlers.handleValueChange}
                     onCancel={overviewHandlers.handleCloseModal}
+                    menuButtonRef={menuButtonRef}
                 />
             );
         }
@@ -176,7 +177,11 @@ export default function Overview(props)
         <>
         <div className="sidebar-layout">
             <nav className="mini-sidebar">
-                <button type="button" onClick={() => setIsOpen(!isOpen)}>
+                <button
+                    type="button"
+                    ref={menuButtonRef}
+                    onClick={() => setIsOpen(!isOpen)}
+                >
                     Menu
                 </button>
                 <button

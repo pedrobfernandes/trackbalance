@@ -1,12 +1,9 @@
-import { useState, useEffect } from "react";
-import Modal from "react-modal";
+import { useState, useEffect, useRef } from "react";
 import Auth from "./components/Auth";
-import Header from "./components/Header";
 import PasswordResetModal from "./components/PasswordResetModal";
+import Header from "./components/Header";
 import Overview from "./pages/Overview";
 import { supabase } from "./lib/supabaseClient";
-
-Modal.setAppElement("#root");
 
 
 export default function App()
@@ -15,12 +12,50 @@ export default function App()
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [isPasswordResetModalOpen, setIsPasswordResetModalOpen] =
         useState(false);
+    
+    
+    const authDialogRef = useRef(null);
+    const passwordDialogRef = useRef(null);
+
+
+    useEffect(() =>
+    {
+        if (authDialogRef.current !== null)
+        {
+            if (isAuthModalOpen === true)
+            {
+                authDialogRef.current.showModal();
+            }
+            else
+            {
+                authDialogRef.current.close();
+            }
+        }
+    
+    }, [isAuthModalOpen]);
+    
+    
+    useEffect(() =>
+    {
+        if (passwordDialogRef.current !== null)
+        {
+            if (isPasswordResetModalOpen === true)
+            {
+                passwordDialogRef.current.showModal();
+            }
+            else
+            {
+                passwordDialogRef.current.close();
+            }
+        }
+    
+    }, [isPasswordResetModalOpen]);
 
 
     async function getUserSession()
     {
         const userSession = await supabase.auth.getSession();
-        return userSession;
+        return(userSession);
     }
 
 
@@ -91,6 +126,15 @@ export default function App()
 
     function handleLogout()
     {
+        const wantsToExit = window.confirm(
+            "Tem a certeza que deseja sair da aplicação?"
+        );
+        
+        if (wantsToExit === false)
+        {
+            return;
+        }
+        
         supabase.auth.signOut();
     }
     
@@ -112,31 +156,25 @@ export default function App()
 
     return(
         <>
-                <Modal
-                    overlayClassName="ReactModal__Overvaly"
-                    className="ReactModal__Content"
-                    isOpen={isAuthModalOpen}
-                    onRequestClose={() => {}}
-                    contentLabel="Autenticação"
-                    shouldCloseOnOverlayClick={false}
-                    aria={{
-                        modal: true,
-                        labelledby: "auth-modal-title",
-                    }}
-                    
-                >
-                    <h2 id="auth-modal-title" className="visually-hidden">Autenticação</h2>
-                    <Auth />
-                </Modal>
-
-                <PasswordResetModal
-                    isOpen={isPasswordResetModalOpen}
-                    onClose={() => setIsPasswordResetModalOpen(false)}
-                />
-        
-                <main>
-                    {renderApp()}
-                </main>
+            <dialog
+                ref={authDialogRef}
+                tabIndex={-1}
+                className="modal-content"
+                aria-label="Modal de autenticação / criação de conta"
+                aria-modal="true"
+            >
+                <Auth isOpen={isAuthModalOpen}/>
+            </dialog>
+            
+            <PasswordResetModal
+                isOpen={isPasswordResetModalOpen}
+                dialogRef={passwordDialogRef}
+                onClose={() => setIsPasswordResetModalOpen(false)}
+            />
+    
+            <main>
+                {renderApp()}
+            </main>
         </>
     );
 }

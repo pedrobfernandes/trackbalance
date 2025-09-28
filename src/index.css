@@ -62,7 +62,6 @@ body
     height: var(--max-size);
 }
 
-
 html
 {
     font-size: 62.5%;
@@ -77,6 +76,13 @@ body
     font-weight: var(--normal-font);
     font-family: "Manrope", sans-serif;
 }
+
+
+body:has(.modal-content[open])
+{
+    overflow: hidden;
+}
+
 
 main
 {
@@ -119,6 +125,7 @@ input, select
 
 form
 {
+    margin: var(--main-gap);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -132,6 +139,10 @@ form button
     width: var(--max-size);
 }
 
+form h2
+{
+    margin: auto
+}
 
 label
 {
@@ -139,38 +150,26 @@ label
 }
 
 
-.ReactModal__Overlay
+.modal-content
 {
+    width: 80vw;
+    max-width: 80rem;
+    height: 60vh;
+    max-height: 45rem;
+
     position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1200;
-    overflow-y: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border: none;
+    border-radius: 0.8rem;
+    padding: 0;
+    background: gray;
+    overflow: auto;
 }
 
-.ReactModal__Content
+.modal-content::backdrop
 {
-    padding: 2rem;
-    background-color: #fff;
-    border-radius: 1rem;
-    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.2);
-    max-height: 70vh;
-    width: 80%;
-    overflow-y: auto;
-    outline: none;
-}
-
-
-@media (min-width: 50em)
-{
-    .ReactModal__Content
-    {
-    
-        max-width: 50rem;
-        max-height: 50rem;
-    }
+    background-color: rgba(0, 0, 0, 0.9);
 }

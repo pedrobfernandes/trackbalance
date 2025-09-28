@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import Modal from "react-modal";
+import { useEffect, useRef } from "react";
 import InsertIncomeForm from "./InsertIncomeForm";
 import UpdateIncomeForm from "./UpdateIncomeForm";
 import InsertExpensesForm from "./InsertExpensesForm";
@@ -13,14 +12,15 @@ export default function FormModal(props)
     {
         formType,
         isFormModalOpen,
-        onRequestClose,
-        shouldCloseOnOverlayClick,
         expensesData,
         onSubmitSuccess,
         onValueChange,
         onCancel,
+        menuButtonRef
         
     } = props;
+    
+    const formDialogRef = useRef(null);
     
     const formsToShow =
     {
@@ -58,34 +58,43 @@ export default function FormModal(props)
     };
     
     
+    function handleDialogEscape(event)
+    {
+        event.preventDefault();
+        onCancel();
+    }
+    
+    
     useEffect(() =>
     {
-        if (isFormModalOpen)
+        if (isFormModalOpen === true &&
+            formDialogRef.current !== null)
         {
-            document.body.style.overflow = "hidden";
+            formDialogRef.current.showModal();
+            const firstFocusable = formDialogRef.current.querySelector("input, select");
+            firstFocusable.focus();
         }
-        else
+        else if (isFormModalOpen === false &&
+            formDialogRef.current.open === true)
         {
-            document.body.style.overflow = "auto";
+            formDialogRef.current.close();
         }
         
-        return(() =>
-        {
-            document.body.style.overflow = "auto";
-        })
+        return(() => menuButtonRef.current.focus());
     
     }, [isFormModalOpen]);
 
     
     return(
-        <Modal
-            overlayClassName="ReactModal__Overlay"
-            className="ReactModal__Content"
-            isOpen={isFormModalOpen}
-            onRequestClose={onRequestClose}
-            shouldCloseOnOverlayClick={shouldCloseOnOverlayClick}
+        <dialog
+            tabIndex={-1}
+            className="modal-content"
+            ref={formDialogRef}
+            onCancel={handleDialogEscape}
+            aria-label="Modal de receita / despesas"
+            aria-modal="true"
         >
             {formsToShow[formType]}
-        </Modal>
+        </dialog>
     );
 }
