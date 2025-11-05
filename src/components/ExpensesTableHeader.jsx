@@ -7,7 +7,8 @@ export default function ExpensesTableHeader(props)
     {
         categoryOrder, setCategoryOrder,
         amountOrder, setAmountOrder,
-        activeColumn, setActiveColumn
+        activeColumn, setActiveColumn,
+        totalExpenses
    
     } = props;
    
@@ -107,28 +108,26 @@ export default function ExpensesTableHeader(props)
                 <th scope="col" aria-sort={getAriaSort("category")}>
                     <button
                         type="button"
-                        aria-describedby="desc-category"
+                        className="sort-button"
+                        aria-label=" Ordene as despesas em modo ascendente ou descendente pela categoria"
                         onClick={() => handleSortOrder("category")}
+                        disabled={totalExpenses === 0}
                     >
                         Categoria
                         {renderSortIcon("category")}
                     </button>
-                    <p id="desc-category" className="visually-hidden">
-                        Ordene suas despesas em modo ascendente ou descendente pela categoria
-                    </p>
                 </th>
                 <th scope="col" aria-sort={getAriaSort("amount")}>
                      <button
                         type="button"
-                        aria-describedby="desc-value"
+                        className="sort-button"
+                        aria-label="Ordene as despesas em modo ascendente ou descendente pelo valor"
                         onClick={() => handleSortOrder("amount")}
+                        disabled={totalExpenses === 0}
                     >
-                        Valor R$
+                        Valor
                         {renderSortIcon("amount")}
                     </button>
-                    <p id="desc-value" className="visually-hidden">
-                        Ordene suas despesas em modo ascendente ou descendente pelo valor
-                    </p>
                 </th>
             </tr>
         </thead>

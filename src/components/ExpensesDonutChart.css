@@ -4,15 +4,19 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2rem;
+    gap: 1rem;
     flex-wrap: wrap;
     margin: 0 auto;
-    width: var(--max-size);
 }
 
 
 .chart-container
 {
+    /*
+        Pelo que vi se uso flex no wrapper
+        se não usar isto o donut desaparece
+        não sei por que mas.. emfim.
+    */
     flex: 1;
     width: var(--max-size);
 }
@@ -23,6 +27,9 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    
+    display: grid;
+    grid-template-columns: 1fr;
 }
 
 
@@ -36,9 +43,8 @@
 
 .legend-container li p
 {
-    font-size: 1.4rem;
+    font-size: var(--text-font);
     font-weight: var(--medium-font);
-    max-width: 20ch;
 }
 
 
@@ -58,13 +64,32 @@
     {
         flex-direction: row;
         gap: 0;
-/*
-        margin-left: -2rem;
-*/
     }
-    
+}
+
+
+@media (min-width: 62.5em)
+{
+    /*
+        Tenta ajudar com layout-shift quando a
+        legenda e o donut estão em flex row
+    */
     .legend-container
     {
-        width: 50%;
+        min-width: 60rem;
+    }
+    
+    .legend-container ul
+    {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .legend-container li p
+    {
+        /*
+            O mesmo que no .legend-container
+        */
+        min-width: 30ch;
     }
 }

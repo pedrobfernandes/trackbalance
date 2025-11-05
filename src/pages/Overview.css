@@ -1,60 +1,98 @@
-.mini-sidebar
+.sidebar
 {
     position: fixed;
     left: 0;
     top: 0;
     width: 6rem;
     height: 100vh;
-    background: #fff;
-    border-right: 0.1rem solid gray;
+    background: var(--main-background-color);
+    border-right: var(--border-style);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     padding: 1rem 0;
-    z-index: 1100;
+    z-index: 1001;
 }
 
-.mini-sidebar button
+
+.action-panel
 {
-    font-size: 1.3rem;
+    position: fixed;
+    top: 0;
+    left: 6rem;
+    height: 100vh;
+    width: 24rem;
+    background: var(--main-background-color);
+    border-right: var(--border-style);
+    padding: 1rem;
+    overflow-y: auto;
+    z-index: 1002;
+}
+
+.sidebar button
+{
+    font-size: 1.4rem;
+    padding: 0.5rem;
+}
+
+
+.sidebar button:hover
+{
+    transform: translateY(0.3rem);
+}
+
+.sidebar button:active
+{
+    transform: translateY(0.6rem);
+}
+
+
+.options-container
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--main-gap);
+    margin: 2rem 0;
+}
+
+.options-income-container,
+.options-expenses-container,
+.options-export-container,
+.options-navigation-container
+{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
 }
 
 
 .overview-main
 {
+    margin-left: 6rem;
     padding: 2rem;
-    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    outline: none;
 }
 
 
+.current-date
+{
+    margin-top: 4rem;
+}
 
-.month-navigation-section,
+
 .summary-section,
 .details-section
 {
-    margin: var(--main-gap) 0;
+    margin: var(--main-gap) auto;
+    width: var(--max-size);
 }
 
-
-.options-navigation-container
-{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-}
-
-.options-navigation-container button:first-child
-{
-    margin-bottom: -2rem;
-}
-
-.options-navigation-container button:last-child
-{
-    margin-top: -2rem;
-}
 
 .summary-container
 {
@@ -74,7 +112,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    border: 0.1rem solid black;
+    border:var(--border-style);
     border-radius: 1rem;
     padding: 2rem;
 }
@@ -97,56 +135,23 @@
 }
 
 
-.table-container
+@media (min-width: 62.5em)
 {
-    width: var(--max-size);
-}
-
-
-@media (min-width: 35.5em)
-{
-    .overview-main
+    .summary-section,
+    .details-section
     {
-        max-width: 80%;
-        margin: 0 auto;
+        max-width: 100rem;
     }
-    
-    .options-navigation-container
-    {
-        flex-direction: row;
-    }
-    
-
-    .options-navigation-container button:first-child
-    {
-        margin-bottom: 0;
-        margin-right: -2rem;
-    }
-
-    .options-navigation-container button:last-child
-    {
-        margin-top: 0;
-        margin-left: -2rem;
-    }
-
 }
 
 
 @media (min-width: 68.75em)
 {
+    
     .income-summary-container,
     .expenses-summary-container,
     .remaining-summary-container
     {
         flex-direction: row;
-    }
-}
-
-
-@media (min-width: 73.75em)
-{
-    .overview-main
-    {
-        width: 120rem;
     }
 }

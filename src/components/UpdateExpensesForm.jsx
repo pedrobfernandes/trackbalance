@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { NumberInput } from "../custom-components/inputs";
+import { CustomSelect } from "../custom-components/inputs";
 
 
 export default function UpdateExpensesForm(props)
@@ -20,10 +22,8 @@ export default function UpdateExpensesForm(props)
     });
     
     
-    function handleCategoryChange(event)
+    function handleCategoryChange(category)
     {
-        const category = event.target.value;
-        
         setNewExpense((previous) => ({
             category: category,
             amount: previous.amount,
@@ -49,52 +49,27 @@ export default function UpdateExpensesForm(props)
         setNewExpense({ category: "", amount: 0 });        
         onSubmitSuccess();
     }
-    
-    
-    function renderSelectOption(option, index)
-    {
-        return(
-            <option key={index} value={option}>{option}</option>
-        );
-    }
-
-
-    function renderExpenseSelect()
-    {
-        const selectOptions = categories.map((category, index) =>
-        {
-            return(renderSelectOption(category, index))
-        });
-        
-        return(
-            <select
-                name="expenses"
-                id="expenses-select"
-                value={newExpense.category}
-                onChange={handleCategoryChange}
-            >
-                {selectOptions}
-            </select>
-        );
-    }
-    
-    const expensesSelect = renderExpenseSelect();
 
 
     return(
         <form onSubmit={handleSubmit}>
-            <label htmlFor="expenses-select">Escolha a despesa:</label>
-            {expensesSelect}
+
+            <CustomSelect
+                value={newExpense.category}
+                onChange={handleCategoryChange}
+                options={categories}
+                label="Escolha a categoria para atualizar o valor"
+            />
             
             <label htmlFor="new-value-input">Digite o novo valor:</label>
-            <input
+            <NumberInput
                 id="new-value-input"
-                type="number"
                 value={newExpense.amount}
                 onChange={handleAmountChange}
                 step={0.01}
                 min={1}
             />
+            
             <button type="submit">Enviar</button>
             <button type="button" onClick={onCancel}>Cancelar</button>
         </form>

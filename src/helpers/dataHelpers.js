@@ -206,7 +206,7 @@ export async function hasMonthIncome(monthId)
 }
 
 
-export  async function hasMonthExpenses(monthId)
+export async function hasMonthExpenses(monthId)
 {
     const monthExpenses = await fetchExpenses(monthId);
     
@@ -331,7 +331,7 @@ export async function fillCurrentMonth({ userId, year, month, lastMonthId })
 
 export async function fillEmptyMonth(lastMonthId, currentMonthId)
 {
-    // Aqui, nos permitimos, que um mes tenha apenas receita,
+    // Aqui, nós permitimos, que um mes tenha apenas receita,
     // apenas despesas, ou ambos. Temos que verificar, se o mês
     // lastMonthId tem um, outro ou ambos.
     

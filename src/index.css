@@ -18,6 +18,18 @@
     --half-gap: 2rem;
 
     --max-size: 100%;
+    
+    
+    --main-background-color: #0D0D1A;
+    --text-color: #B7B7B7;
+    --button-color: #0D0D1A;
+    
+    
+    --border-style: 0.1rem solid #1C2331;
+    --outline-style: 0.2rem solid #1C2331;
+    --transitions: transform 0.3s ease-in-out;
+    --transform-hover: translate(0.3rem, 0.3rem);
+    --transform-active: translate(0.6rem, 0.6rem);
 }
 
 
@@ -43,24 +55,13 @@
 }
 
 
-button
-{
-    cursor: pointer;
-    font-family: "Manrope", sans-serif;
-    font-weight: var(--bolder-font);
-    font-size: 1.4rem;
-    padding: 0.5rem 0.8rem;
-    border: none;
-    border-radius: 1rem;
-}
-
-
 #root,
 html,
 body
 {
-    height: var(--max-size);
+    height: 100%;
 }
+
 
 html
 {
@@ -75,19 +76,8 @@ body
     font-size: var(--text-font);
     font-weight: var(--normal-font);
     font-family: "Manrope", sans-serif;
-}
-
-
-body:has(.modal-content[open])
-{
-    overflow: hidden;
-}
-
-
-main
-{
-    max-width: var(--max-size);
-    margin-left: 6rem;
+    background-color: var(--main-background-color);
+    color: var(--text-color);
 }
 
 
@@ -113,13 +103,32 @@ h3
 }
 
 
-input, select
+button
+{
+    cursor: pointer;
+    font-family: "Manrope", sans-serif;
+    font-weight: var(--bolder-font);
+    font-size: var(--text-font);
+    padding: 0.5rem 1rem;
+    border: var(--border-style);
+    border-radius: 1rem;
+    background-color: var(--button-color);
+    color: var(--text-color);
+    transition: var(--transitions);
+}
+
+
+
+input
 {
     outline: none;
     width: var(--max-size);
     padding: 0.5rem 1rem;
     border-radius: 1rem;
-    border: 0.1rem solid black;
+    border: var(--border-style);
+    background-color: var(--main-background-color);
+    color: var(--text-color);
+    font-size: var(--text-font);
 }
 
 
@@ -132,6 +141,7 @@ form
     justify-content: center;
     gap: 2rem;
     text-align: center;
+    background-color: var(--main-background-color);
 }
 
 form button
@@ -147,29 +157,35 @@ form h2
 label
 {
     font-weight: var(--bolder-font);
+    color: var(--text-color);
 }
 
 
-.modal-content
+button:hover,
+a:hover
 {
-    width: 80vw;
-    max-width: 80rem;
-    height: 60vh;
-    max-height: 45rem;
-
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    
-    border: none;
-    border-radius: 0.8rem;
-    padding: 0;
-    background: gray;
-    overflow: auto;
+    transform: var(--transform-hover);
 }
 
-.modal-content::backdrop
+button:active,
+a:active
 {
-    background-color: rgba(0, 0, 0, 0.9);
+    transform: var(--transform-active);
+}
+
+
+button:disabled
+{
+    cursor: not-allowed;
+    transition: none;
+    transform: none;
+}
+
+
+button:focus,
+input:focus,
+a:focus
+{
+    outline: var(--outline-style);
+    outline-offset: 0;
 }

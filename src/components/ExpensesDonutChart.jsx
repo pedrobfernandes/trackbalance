@@ -2,8 +2,7 @@ import { useEffect } from "react";
 import
 {
     PieChart, Pie, Cell,
-    ResponsiveContainer,
-    Tooltip
+    ResponsiveContainer
 
 } from "recharts";
 
@@ -24,7 +23,7 @@ export default function ExpensesDonutChart(props)
     
     function renderDonutCellData()
     {
-        const donnutCelldata = expensesData.map((_, index) =>
+        const donutCelldata = expensesData.map((_, index) =>
         {
             return(
                 <Cell
@@ -34,7 +33,7 @@ export default function ExpensesDonutChart(props)
             );
         });
         
-        return(donnutCelldata);
+        return(donutCelldata);
     }
 
 
@@ -63,9 +62,30 @@ export default function ExpensesDonutChart(props)
     }
     
     
+    // Tenta evitar layout-shift
+    function getPlaceholderChartData()
+    {
+        const slices = Array.from({ length: 5 }, () =>
+        {
+            return({
+                category: "Sem dados",
+                amount: 1
+            });
+        });
+        
+        return(slices);
+    }
+    
+    
     function renderChartLegend()
     {
-        const chartlegend = expensesData.map((entry, index) =>
+        // O mesmo que a função acima mas para a legenda
+        const dataToRender = expensesData.length === 0
+            ? getPlaceholderChartData()
+            : expensesData;
+        
+        const placeholderMessage = "SEM DADOS NO MOMENTO - R$ 000.00"
+        const chartlegend = dataToRender.map((entry, index) =>
         {
             return(
                 <li key={index}>
@@ -74,7 +94,7 @@ export default function ExpensesDonutChart(props)
                         style={{ backgroundColor: COLORS[index % COLORS.length] }}
                     >
                     </span>
-                    <p>{`${entry.category} — R$ ${entry.amount.toFixed(2)}`}</p>
+                    <p>{expensesData.length === 0 ? `${placeholderMessage}` : `${entry.category} — R$ ${entry.amount.toFixed(2)}` }</p>
                 </li>
             );
         });
@@ -83,6 +103,9 @@ export default function ExpensesDonutChart(props)
     }
 
 
+    // Solução para o erro do IBM EQUAL Accessibility Checker:
+    // Element "g / svg" should not be focusable within the subtree of an element
+    // with an 'aria-hidden' attribute with value 'true'
     function cleanFocusable(element)
     {
         element.querySelectorAll("[tabindex], [role]").forEach((child) =>
@@ -95,50 +118,19 @@ export default function ExpensesDonutChart(props)
             }
         });
     }
+    
+    
+    function renderData()
+    {
+        if (expensesData.length === 0)
+        {
+            return(getPlaceholderChartData());
+        }
+        
+        return(expensesData);
+    }
   
-  
-  
-  // Abordagem alternativa:
-  // Injetar aria-label diretamente no elemento Recharts para tornar o gráfico acessível.
-  // Funciona, mas depende de detalhes internos da lib (role="application", classe "recharts-wrapper").
-  // Se a lib atualizar, pode quebrar.
-  
-  //~ useEffect(() =>
-  //~ {
-      //~ const updateAriaLabel = () =>
-      //~ {
-          //~ const applicationDiv = chartRef.current?.querySelector('.recharts-wrapper[role="application"]');
-          
-          //~ if (applicationDiv)
-          //~ {
-              //~ applicationDiv.setAttribute("aria-label", "Gráfico de pizza mostrando a distribuição de despesas por categoria");
-              //~ observer.disconnect();
-          //~ }
-      //~ };
-      
-      //~ updateAriaLabel();
-      
-      //~ const observer = new MutationObserver(updateAriaLabel);
-      
-      //~ if (chartRef.current)
-      //~ {
-          //~ observer.observe(chartRef.current, 
-          //~ {
-              //~ childList: true,
-              //~ subtree: true,
-              //~ attributes: false,
-              //~ characterData: false
-          //~ });
-      //~ }
-      
-      //~ return(() =>
-      //~ {
-          //~ observer.disconnect();
-      //~ });
-  
-  //~ }, []);
-  
-  
+
     useEffect(() =>
     {
         if (chartRef.current === null)
@@ -166,7 +158,7 @@ export default function ExpensesDonutChart(props)
                 <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                         <Pie
-                            data={expensesData}
+                            data={renderData()}
                             dataKey="amount"
                             nameKey="category"
                             cx="50%"
@@ -179,7 +171,7 @@ export default function ExpensesDonutChart(props)
                         >
                             {renderDonutCellData()}
                         </Pie>
-                        <Tooltip formatter={(value) => `R$ ${value.toFixed(2)}`}/>
+                        
                     </PieChart>
                 </ResponsiveContainer>
             </div>

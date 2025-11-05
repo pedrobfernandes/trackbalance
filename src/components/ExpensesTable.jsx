@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import ExpensesTableHeader from "./ExpensesTableHeader";
 import ExpensesTableBody from "./ExpensesTableBody"
 import ExpensesTablePagination from "./ExpensesTablePagination";
@@ -13,10 +13,23 @@ export default function ExpensesTable(props)
     const { expensesData } = props;
     
     const [filter, setFilter] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
     const [categoryOrder, setCategoryOrder] = useState("asc");
     const [amountOrder, setAmountOrder] = useState("asc");
     const [activeColumn, setActiveColumn] = useState("category");
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
+    
+    
+    useEffect(() =>
+    {
+        if (expensesData.length > 0)
+        {
+            setIsLoading(false);
+        }
+    
+    }, [expensesData]);
+    
+    
     
     const totalPages = Math.ceil(expensesData.length / pagination.pageSize);
     
@@ -101,27 +114,38 @@ export default function ExpensesTable(props)
     
     
     return(
-        <div>
-            <ExpensesTableSearch filter={filter} setFilter={setFilter}/>
-            <div className="table-wrapper">
-                <table className="expenses-table">
-                    <caption className="visually-hidden">Tabela de Despesas</caption>
-                    <ExpensesTableHeader
-                        categoryOrder={categoryOrder}
-                        setCategoryOrder={setCategoryOrder}
-                        amountOrder={amountOrder}
-                        setAmountOrder={setAmountOrder}
-                        activeColumn={activeColumn}
-                        setActiveColumn={setActiveColumn}
-                    />
-                   <ExpensesTableBody expenses={expensesToShow}/>
-                </table>
-            </div>
-            <ExpensesTablePagination
-                pagination={pagination}
-                setPagination={setPagination}
-                totalPages={totalPages}
-            />
+        <>
+        <ExpensesTableSearch
+            filter={filter}
+            setFilter={setFilter}
+        />
+        <div className="table-wrapper">
+            <table className="expenses-table">
+                <caption className="visually-hidden">Tabela de Despesas</caption>
+                <ExpensesTableHeader
+                    categoryOrder={categoryOrder}
+                    setCategoryOrder={setCategoryOrder}
+                    amountOrder={amountOrder}
+                    setAmountOrder={setAmountOrder}
+                    activeColumn={activeColumn}
+                    setActiveColumn={setActiveColumn}
+                    totalExpenses={expensesData.length}
+                />
+               <ExpensesTableBody
+                    expenses={expensesToShow}
+                    isLoading={isLoading}
+                    pageSize={pagination.pageSize}
+                />
+            </table>
         </div>
+        <ExpensesTablePagination
+            pagination={pagination}
+            setPagination={setPagination}
+            totalPages={totalPages}
+            totalExpenses={expensesData.length}
+        />
+        
+        </>
+            
     );
 }

@@ -1,12 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 import GrouppedButtons from "../components/GrouppedButtons";
-import FormModal from "../components/FormModal";
-import Sidebar from "../components/Sidebar";
+import { FormModal } from "../custom-components/modals";
+import InsertIncomeForm from "../components/InsertIncomeForm";
+import UpdateIncomeForm from "../components/UpdateIncomeForm";
+import InsertExpensesForm from "../components/InsertExpensesForm";
+import UpdateExpensesForm from "../components/UpdateExpensesForm";
+import DeleteExpensesForm from "../components/DeleteExpensesForm";
+import MonthNavigation from "../components/MonthNavigation";
+import ActionPanel from "../components/ActionPanel";
 import ExpensesTable from "../components/ExpensesTable";
 import ExpensesDonutChart from "../components/ExpensesDonutChart";
 import { initializeData } from "../services/initApp";
 import { useOverviewHandlers } from "../hooks/useOverviewHandlers";
-import MonthNavigation from "../components/MonthNavigation";
+import { useAriaActionStatusAnnouncer } from "../hooks/useAriaActionStatusAnnouncer";
 
 import "./Overview.css";
 
@@ -16,34 +22,34 @@ export default function Overview(props)
     const { onExit } = props;
     
     const [loggedUserId, setLoggedUserId] = useState(null);
+    const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+    const [formType, setFormType] = useState("")
+    const [userFlags, setUserFlags] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);   
+    
     const [currentYear, setCurrentYear] = useState(null);
     const [currentMonth, setCurrentMonth] = useState(null);
-    const [userFlags, setUserFlags] = useState(null);
-    
     const [currentViewingYear, setCurrentViewingYear] = useState(currentYear);
     const [currentViewingMonth, setCurrentViewingMonth] = useState(currentMonth);
     
-    const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-    const [formType, setFormType] = useState("");
     
     const [income, setIncome] = useState(0);
     const [expenses, setExpenses] = useState([]);
     
-    const [isOpen, setIsOpen] = useState(false);
+    const { ariaMessage, announce } = useAriaActionStatusAnnouncer();
     
-    const totalExpenses = parseFloat(expenses.reduce(
+    const totalExpenses = expenses.reduce(
         (accumulator, expense) =>
-            accumulator + expense.amount, 0)).toFixed(2);
+            accumulator + expense.amount, 0);
 
     
-    const remaining = parseFloat(income - totalExpenses).toFixed(2);
+    const remaining = income - totalExpenses;
     const donutChartRef = useRef(null);
     const menuButtonRef = useRef(null);
-    
-    
+    const mainRef = useRef(null);
     const didInitialize = useRef(false);
 
-    
+
     const formTypeMap =
     {
         receita:
@@ -58,15 +64,16 @@ export default function Overview(props)
             insert: "insertExpenses",
             update: "updateExpenses",
             delete: "deleteExpenses"
-        }
+        },
     };
-    
-    
+
+
     useEffect(() =>
     {
         if (didInitialize.current === false)
         {
             didInitialize.current = true;
+            
             initializeData({
                 setLoggedUserId, setCurrentYear,
                 setCurrentMonth, setUserFlags,
@@ -79,6 +86,34 @@ export default function Overview(props)
     
     useEffect(() =>
     {
+        document.title = "TrackBalance - Visão Geral";
+        
+        const announcer = document.getElementById("overview-page-announcer");
+        
+        if (announcer !== null)
+        {
+            announcer.innerHTML =
+            `
+                <p>Você está agora na página principal da aplicação, Visão Geral.</p>
+                <p>Manipule a receita, despesas, exporte dados e navegue entre os meses.</p>
+            `
+        }
+    
+    }, []);
+    
+    
+    useEffect(() =>
+    {
+       if (mainRef.current !== null)
+       {
+           mainRef.current.focus();
+       }
+       
+    }, []); 
+    
+    
+    useEffect(() =>
+    {
         if (currentYear !== null && currentMonth !== null)
         {
             setCurrentViewingYear(currentYear);
@@ -86,9 +121,17 @@ export default function Overview(props)
         }
     
     }, [currentYear, currentMonth]);
+        
     
+    const
+    {
+        handleClick, handleValueChange,
+        handleCloseModal, handleExportToCsv,
+        handleExportToPdf, openMonthNavigationalModal,
+        handleCloseNavigate, navigateToMonth
     
-    const overviewHandlers = useOverviewHandlers({
+    } = useOverviewHandlers
+    ({
         getUserFlags: () => userFlags, setUserFlags,
         getLoggedUserId: () => loggedUserId,
         getCurrentYear: () => currentYear,
@@ -103,6 +146,78 @@ export default function Overview(props)
     });
     
     
+    const formsToShow =
+    {
+        insertIncome: <InsertIncomeForm
+            onSubmitSuccess={async () => {
+                handleCloseModal();
+                await announce("Receita adicionada com sucesso");
+            }}
+            onValueChange={handleValueChange}
+            onCancel={handleCloseModal}
+        />,
+    
+        updateIncome: <UpdateIncomeForm
+            onSubmitSuccess={async () => {
+                handleCloseModal();
+                await announce("Receita atualizada com sucesso");
+            }}
+            onValueChange={handleValueChange}
+            onCancel={handleCloseModal}
+        />,
+
+    
+        insertExpenses: <InsertExpensesForm
+            onSubmitSuccess={async () => {
+                handleCloseModal();
+                await announce("Despesa adicionada com sucesso");
+            }}
+            onValueChange={handleValueChange}
+            onCancel={handleCloseModal}
+        />,
+    
+        updateExpenses: <UpdateExpensesForm
+            onSubmitSuccess={async () => {
+                handleCloseModal();
+                await announce("Despesa atualizada com sucesso");
+            }}
+            expensesData={expenses}
+            onValueChange={handleValueChange}
+            onCancel={handleCloseModal}
+        />,
+    
+        deleteExpenses: <DeleteExpensesForm
+            onSubmitSuccess={async () => {
+                handleCloseModal();
+                await announce("Despesa deletada com sucesso");
+            }}
+            expensesData={expenses}
+            onValueChange={handleValueChange}
+            onCancel={handleCloseModal}
+        />,
+        
+        monthNavigation: <MonthNavigation
+            onSubmitSuccess={async () => {
+                handleCloseNavigate();
+                await announce("Mês selecionado com sucesso");
+            }}
+            onValueChange={navigateToMonth}
+            onCancel={handleCloseNavigate}
+        />,
+    }
+    
+    
+    const formLabels =
+    {
+        insertIncome: "Modal para inserir uma receita",
+        updateIncome: "Modal para atualizar uma receita",
+        insertExpenses: "Modal para inserir uma despesa",
+        updateExpenses: "Modal para atualizar uma despesa",
+        deleteExpenses: "Modal para deletar uma despesa",
+        monthNavigation: "Modal para escolher mês de navegação",
+    };
+    
+    
     function handleActionAndClose(callback)
     {
         return(() =>
@@ -113,41 +228,38 @@ export default function Overview(props)
     }
     
     
-    function handleMonthNavigation({ date, direction } = {})
-    {
-        if (date)
-        {
-            const year = date.getFullYear();
-            const month = date.getMonth() + 1;
-            overviewHandlers.handleNavigateToSpecific(year, month);
-            return;
-        }
-        else
-        {
-            if (direction === "forward")
-            {
-                overviewHandlers.handleNavigate("forward");
-                return;
-            }
-            else
-            {
-                overviewHandlers.handleNavigate("backwards");
-                return;
-            }
-        }
-    }
-    
-    
     function showCurrentViewingDate()
     {
+        let formattedViewingMonth;
+        let currentViewingDate;
+        
         if (currentViewingYear !== null
             && currentViewingMonth !== null)
         {
-            const formattedViewingMonth = String(
+            formattedViewingMonth = String(
                 currentViewingMonth).padStart(2, "0");
+            currentViewingDate = `${formattedViewingMonth}/${currentViewingYear}`;
+            
             return(
                 <h2 className="current-date">
-                    {`${formattedViewingMonth}/${currentViewingYear}`}
+                    <span className="visually-hidden">Mês atualmente em visualização: </span>
+                    {currentViewingDate}
+                </h2>
+            );
+        }
+        else
+        {
+            const date = new Date();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            
+            formattedViewingMonth = String(month).padStart(2, "0");
+            currentViewingDate = `${formattedViewingMonth}/${year}`;
+            
+            return(
+                <h2 className="current-date">
+                    <span className="visually-hidden">Mês atualmente em visualização: </span>
+                    {currentViewingDate}
                 </h2>
             );
         }
@@ -160,14 +272,16 @@ export default function Overview(props)
         {
             return(
                 <FormModal
-                    formType={formType}
-                    isFormModalOpen={isFormModalOpen}
-                    expensesData={expenses}
-                    onSubmitSuccess={overviewHandlers.handleCloseModal}
-                    onValueChange={overviewHandlers.handleValueChange}
-                    onCancel={overviewHandlers.handleCloseModal}
                     menuButtonRef={menuButtonRef}
-                />
+                    focusableClasses={{
+                        customSelectTrigger: "custom-select-trigger"
+                    }}
+                    label={formLabels[formType]}
+                    isFormModalOpen={isFormModalOpen}
+                    onCancel={handleCloseModal}
+                >
+                    {formsToShow[formType]}
+                </FormModal>
             );
         }
     }
@@ -175,136 +289,200 @@ export default function Overview(props)
     
     return(
         <>
-        <div className="sidebar-layout">
-            <nav className="mini-sidebar">
-                <button
-                    type="button"
-                    ref={menuButtonRef}
-                    onClick={() => setIsOpen(!isOpen)}
-                >
-                    Menu
-                </button>
-                <button
-                    type="button"
-                    onClick={onExit}
-                >
-                    Sair
-                </button>
-            </nav>
-            <Sidebar isOpen={isOpen}>
-                <section className="options-section">
-                    <h2>Opções</h2>
-                    <div className="options-container">
-                        
-                        <div className="options-income-container">
-                            <h3>Receita</h3>
-                            <GrouppedButtons
-                                type="receita"
-                                onInsert={handleActionAndClose(() => overviewHandlers.handleClick("receita", "insert"))}
-                                onUpdate={handleActionAndClose(() => overviewHandlers.handleClick("receita", "update"))}
-                                onDelete={handleActionAndClose(() => overviewHandlers.handleClick("receita", "delete"))}
-                                disabledButtons={{
-                                    Inserir: income > 0,
-                                    Atualizar: income === 0,
-                                    Deletar: income === 0,
-                                }}
-                            />
-                        </div>
-                        
-                        <div className="options-expenses-container">
-                            <h3>Despesas</h3>
-                            <GrouppedButtons
-                                type="despesa"
-                                onInsert={handleActionAndClose(() => overviewHandlers.handleClick("despesa", "insert"))}
-                                onUpdate={handleActionAndClose(() => overviewHandlers.handleClick("despesa", "update"))}
-                                onDelete={handleActionAndClose(() => overviewHandlers.handleClick("despesa", "delete"))}
-                                disabledButtons={{
-                                    Inserir: false,
-                                    Atualizar: expenses.length === 0,
-                                    Deletar: expenses.length === 0,
-                                }}
-                            />
-                        </div>
-                        
-                        <div className="options-export-container">
-                            <h3>Exportar</h3>
-                            <GrouppedButtons
-                                type="exportar"
-                                onExportToCsv={handleActionAndClose(overviewHandlers.handleExportToCsv)}
-                                onExportToPdf={handleActionAndClose(overviewHandlers.handleExportToPdf)}
-                            />
-                        </div>
-                        
-                        
-                    </div>
-                    
-                </section>
-            </Sidebar>
-        </div>
-            
-        <div className="overview-main">
-            
-            {showCurrentViewingDate()}
-            
-            <section className="month-navigation-section">
-                    <h2>Navegar nos Meses</h2>
-                
-                    <div className="options-navigation-container">
-                        <MonthNavigation
-                            handleMonthNavigation={handleMonthNavigation}
-                        />
-                    </div>
-            </section>
-            
-            
-            <section className="summary-section">
-                <h2>Sumário</h2>
-                <div className="summary-container">
-                    
-                    
-                    <div className="income-summary-container">
-                        <h3>Receita:</h3>
-                        <p>R$ {parseFloat(income).toFixed(2)}</p>
-                    </div>
-                    
-                    <div className="expenses-summary-container">
-                        <h3>Despesas:</h3>
-                        <p>R$ {totalExpenses}</p>
-                    </div>
-                    
-                    <div className="remaining-summary-container">
-                        <h3>Restante:</h3>
-                        <p>R$ {remaining}</p>
-                    </div>
-                    
-                </div>
-                
-            </section>
-            
-            
-            <section className="details-section">
-                <h2>Detalhes</h2>
-                <div className="details-container">
-                    
-                    
-                    <div className="table-container">
-                        <ExpensesTable expensesData={expenses}/>
-                    </div>
-                    
-                    <div className="donut-container">
-                        <ExpensesDonutChart
-                            expensesData={expenses}
-                            chartRef={donutChartRef}
-                        />
-                    </div>
-                    
-                </div>
-                
-            </section>
-            
-           {renderFormModal()}
         
-        </div>
+            <main
+                className="overview-main"
+                ref={mainRef}
+                tabIndex={-1}
+            >
+                
+                <div
+                    className="visually-hidden"
+                    id="overview-page-announcer"
+                    aria-live="polite"
+                    aria-atomic="true"
+                ></div>
+                
+                
+                <div
+                    className="visually-hidden"
+                    aria-live="polite"
+                    aria-atomic="true"
+                >
+                    {ariaMessage}
+                </div>
+                
+                
+                <aside
+                    className="sidebar"
+                    aria-labelledby="sidebar-desc"
+                >
+                    <p id="sidebar-desc" className="visually-hidden">
+                        Barra lateral de ações do usuário
+                    </p>
+
+                    <button
+                        type="button"
+                        ref={menuButtonRef}
+                        aria-expanded={isOpen}
+                        aria-controls="action-panel-options"
+                        aria-label="Botão de menu. Abre painel para executar ações."
+                        onClick={() => setIsOpen(!isOpen)}
+                    >
+                        Menu
+                    </button>
+
+                    <ActionPanel
+                        id={"action-panel-options"}
+                        menuButtonRef={menuButtonRef}
+                        isOpen={isOpen}
+                        setIsOpen={setIsOpen}
+                    >
+
+                        <section className="options-section">
+                            
+                            <p id="action-panel-title" className="visually-hidden">
+                                Painel com opões para manipular receita e despesas,
+                                exportar dados e navegar pelos meses
+                            </p>
+                            
+                            <div className="options-container">
+                            
+                                <div
+                                    className="options-income-container"
+                                    role="region"
+                                    aria-labelledby="income-section-title"
+                                >
+                                    <h3 id="income-section-title">Receita</h3>
+                                    <GrouppedButtons
+                                        type="receita"
+                                        onInsert={handleActionAndClose(() => handleClick("receita", "insert"))}
+                                        onUpdate={handleActionAndClose(() => handleClick("receita", "update"))}
+                                        onDelete={handleActionAndClose(() => handleClick("receita", "delete"))}
+                                        disabledButtons={{
+                                            Inserir: income > 0,
+                                            Atualizar: income === 0,
+                                            Deletar: income === 0,
+                                        }}
+                                    />
+                                </div>
+                            
+                                <div
+                                    className="options-expenses-container"
+                                    role="region"
+                                    aria-labelledby="expenses-section-title"
+                                >
+                                    <h3 id="expenses-section-title">Despesas</h3>
+                                    <GrouppedButtons
+                                        type="despesa"
+                                        onInsert={handleActionAndClose(() => handleClick("despesa", "insert"))}
+                                        onUpdate={handleActionAndClose(() => handleClick("despesa", "update"))}
+                                        onDelete={handleActionAndClose(() => handleClick("despesa", "delete"))}
+                                        disabledButtons={{
+                                            Inserir: false,
+                                            Atualizar: expenses.length === 0,
+                                            Deletar: expenses.length === 0,
+                                        }}
+                                    />
+                                </div>
+                            
+                                <div
+                                    className="options-export-container"
+                                    role="region"
+                                    aria-labelledby="export-section-title"
+                                >
+                                    <h3 id="export-section-title">Exportar</h3>
+                                    <GrouppedButtons
+                                        type="exportar"
+                                        onExportToCsv={handleActionAndClose(handleExportToCsv)}
+                                        onExportToPdf={handleActionAndClose(handleExportToPdf)}
+                                        disabledButtons={{
+                                            CSV: income === 0 && expenses.length === 0,
+                                            PDF: income === 0 && expenses.length === 0,
+                                        }}
+                                    />
+                                </div>
+                                
+                                <div
+                                    className="options-navigation-container"
+                                    role="region"
+                                    aria-labelledby="navigation-section-title"
+                                >
+                                    <h3 id="navigation-section-title">Navegar</h3>
+                                    
+                                    <button
+                                        type="button"
+                                        aria-label="Escolha o mês e ano para onde quer navegar"
+                                        onClick={handleActionAndClose(() => openMonthNavigationalModal("monthNavigation"))}
+                                        disabled={userFlags === null}
+                                    >
+                                        Navegar
+                                    </button>
+                                </div>
+                            
+                            </div>
+                        </section>
+                    </ActionPanel>
+
+                    <button
+                        type="button"
+                        onClick={onExit}
+                        aria-label="Sair da aplicação e voltar á página de login"
+                    >
+                        Sair
+                    </button>
+                </aside>
+                
+                <h1>
+                    TrackBalance - Visão Geral
+                </h1>
+                
+                {showCurrentViewingDate()}
+
+                <section className="summary-section">
+                    <h2>Sumário</h2>
+                    <div className="summary-container">
+                        
+                        <div className="income-summary-container">
+                            <h3>Receita:</h3>
+                            <p>{income === 0 ? '0' : parseFloat(income).toFixed(2)}</p>
+                        </div>
+                        
+                        <div className="expenses-summary-container">
+                            <h3>Despesas:</h3>
+                            <p>{totalExpenses === 0 ? '0' : parseFloat(totalExpenses).toFixed(2)}</p>
+                        </div>
+                        
+                        <div className="remaining-summary-container">
+                            <h3>Restante:</h3>
+                            <p>{remaining === 0 ? '0' : parseFloat(remaining).toFixed(2)}</p>
+                        </div>
+                        
+                    </div>
+                </section>
+
+                <section className="details-section">
+                    <h2>Detalhes</h2>
+                    <div className="details-container">
+                        
+                        <div className="table-container">
+                            <ExpensesTable
+                                expensesData={expenses}
+                            />
+                        </div>
+                        
+                        <div className="donut-container">
+                            <ExpensesDonutChart
+                                expensesData={expenses}
+                                chartRef={donutChartRef}
+                            />
+                        </div>
+                        
+                    </div>
+                </section>
+            </main>
+            
+            {renderFormModal()}
         </>
     );
 }

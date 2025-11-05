@@ -1,0 +1,49 @@
+.formModal-wrapper
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1200;
+}
+
+
+.formModal-backdrop
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.300);
+    z-index: 1100;
+}
+
+
+.formModal
+{
+    width: 80vw;
+    max-width: 80rem;
+    height: 80vh;
+    min-height: 20rem;
+    max-height: 40rem;
+    border: var(--border-style);
+    background-color: var(--main-background-color);
+    border-radius: 1rem;
+    z-index: 1110;
+    overflow: auto;
+}
+
+
+.formModal .formModal-content-container
+{
+    height: var(--max-size);
+    width: var(--max-size);
+    overflow: auto;
+    padding: 0;
+}

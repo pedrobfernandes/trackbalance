@@ -18,17 +18,20 @@ export default function GrouppedButtons(props)
         [
             {
                 text: "Inserir", action: onInsert,
-                disabled: disabledButtons["Inserir"]
+                disabled: disabledButtons["Inserir"],
+                label: "Inserir a receita"
             },
             
             {
                 text: "Atualizar", action: onUpdate,
-                disabled: disabledButtons["Atualizar"]
+                disabled: disabledButtons["Atualizar"],
+                label: "Atualizar o valor da receita"
             },
             
             {
                 text: "Deletar", action: onDelete,
-                disabled: disabledButtons["Deletar"]
+                disabled: disabledButtons["Deletar"],
+                label: "Deletar a receita"
             },
         ],
         
@@ -36,24 +39,36 @@ export default function GrouppedButtons(props)
         [
             {
                 text: "Inserir", action: onInsert,
-                disabled: disabledButtons["Inserir"]
+                disabled: disabledButtons["Inserir"],
+                label: "Inserir uma despesa"
             },
             
             {
                 text: "Atualizar", action: onUpdate,
-                disabled: disabledButtons["Atualizar"]
+                disabled: disabledButtons["Atualizar"],
+                label: "Atualizar o valor de uma despesa"
             },
             
             {
                 text: "Deletar", action: onDelete,
-                disabled: disabledButtons["Deletar"]
+                disabled: disabledButtons["Deletar"],
+                label: "Deletar uma despesa"
             },
         ],
         
         exportar:
         [
-            { text: "CSV", action: onExportToCsv },
-            { text: "PDF", action: onExportToPdf },
+            {
+                text: "CSV", action: onExportToCsv,
+                disabled: disabledButtons["CSV"],
+                label: "Exportar os dados para CSV"
+            },
+            
+            {
+                text: "PDF", action: onExportToPdf,
+                disabled: disabledButtons["PDF"],
+                label: "Exportar os dados para PDF"
+            },
         ],
     };
     
@@ -66,6 +81,7 @@ export default function GrouppedButtons(props)
                 text={item.text}
                 action={item.action}
                 disabled={item.disabled || false}
+                label={item.label}
             />
         );
     }

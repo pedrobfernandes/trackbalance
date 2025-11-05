@@ -2,7 +2,7 @@
 {
     border-radius: 1rem;
     overflow: hidden;
-    border: 0.1rem solid;
+    border:var(--border-style);
     width: var(--max-size);
 }
 
@@ -18,10 +18,15 @@
 
 th, td
 {
-    border: 0.1rem solid;
+    border: var(--border-style);
     padding: 0.5rem;
 }
 
+
+tbody td
+{
+    padding-left: 1rem;
+}
 
 .expenses-table thead tr:first-child th,
 .expenses-table tbody tr:first-child td
@@ -48,8 +53,6 @@ th, td
 }
 
 
-
-
 td
 {
     white-space: nowrap;
@@ -57,16 +60,31 @@ td
     text-overflow: ellipsis;
 }
 
+
+.sort-button
+{
+    width: var(--max-size);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .table-search-form
 {
     width: var(--max-size);
     margin: 0 auto;
+    background-color: var(--main-background-color);
+}
+
+.table-search-form label
+{
+    max-width: 20ch;
 }
 
 .table-search-input
 {
-    font-size: var(--text-font);
-    margin-bottom: 3rem;
+    margin: 1rem auto
 }
 
 
@@ -83,6 +101,18 @@ td
 
 @media (min-width: 35.5em)
 {
+
+    .sort-button
+    {
+        flex-direction: row;
+    }
+    
+    
+    .table-search-form label
+    {
+        max-width: none;
+    }
+
     
     .table-pagination-container
     {

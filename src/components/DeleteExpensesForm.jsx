@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CustomSelect } from "../custom-components/inputs";
 
 
 export default function DeleteExpensesForm(props)
@@ -28,40 +29,16 @@ export default function DeleteExpensesForm(props)
     }
     
     
-    function renderSelectOption(option, index)
-    {
-        return(
-            <option key={index} value={option}>{option}</option>
-        );
-    }
-
-
-    function renderExpenseSelect()
-    {
-        const selectOptions = categories.map((category, index) =>
-        {
-            return(renderSelectOption(category, index))
-        });
-        
-        return(
-            <select
-                name="expenses"
-                id="expenses-select"
-                value={toDelete}
-                onChange={(event) => setToDelete(event.target.value)}
-            >
-                {selectOptions}
-            </select>
-        );
-    }
-    
-    const expensesSelect = renderExpenseSelect();
-    
-    
     return(
         <form onSubmit={handleSubmit}>
-            <label htmlFor="expenses-select">Escolha a despesa para deletar:</label>
-            {expensesSelect}
+            
+            <CustomSelect
+                value={toDelete}
+                onChange={setToDelete}
+                options={categories}
+                label="Escolha a despesa para deletar"
+            />
+            
             <button type="submit">Enviar</button>
             <button type="button" onClick={onCancel}>Cancelar</button>
         </form>

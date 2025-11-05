@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { NumberInput } from "../custom-components/inputs";
 
 
 export default function InsertExpensesForm(props)
 {
     const { onSubmitSuccess, onValueChange, onCancel } = props;
-    
     const [expense, setExpense] = useState({ category: "", amount: 0 });
     
     
@@ -37,7 +37,7 @@ export default function InsertExpensesForm(props)
         const normalizedCategory = expense.category
             .trim()
             .replace(/\s+/g,  ' ')
-            .toUpperCase();
+            .toLowerCase();
         
         const normalizedExpense =
         {
@@ -53,7 +53,12 @@ export default function InsertExpensesForm(props)
     
     return(
         <form onSubmit={handleSubmit}>
-            <label htmlFor="expense-category-input">Categoria (ex: Aluguel):</label>
+            <label
+                id="expenses-category-label"
+                htmlFor="expense-category-input"
+            >
+                Digite a categoria da despesa (exemplo: Aluguel):
+            </label>
             <input
                 id="expense-category-input"
                 type="text"
@@ -61,16 +66,16 @@ export default function InsertExpensesForm(props)
                 onChange={handleCategoryInput}
                 required
             />
-            <label htmlFor="expense-amount-input">Valor:</label>
-            <input
+
+            <label htmlFor="expense-amount-input">Digite o valor da despesa:</label>
+            <NumberInput
                 id="expense-amount-input"
-                type="number"
-                step={0.01}
-                min={1}
                 value={expense.amount}
                 onChange={handleAmountInput}
-                required
+                step={0.01}
+                min={1}
             />
+            
             <button type="submit">Enviar</button>
             <button type="button" onClick={onCancel}>Cancelar</button>
         </form>

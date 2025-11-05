@@ -1,0 +1,60 @@
+.custom-number-input
+{
+    display: flex;
+    flex-direction: column;
+    width: var(--max-size);
+    align-items: center;
+    gap: 1rem;
+    border: var(--border-style);
+    border-radius: 1rem;
+    padding: 1rem;
+    background-color: var(--main-background-color);
+    
+}
+
+
+.button-decrement
+{
+    order: 1;
+}
+
+
+.number-input
+{
+    order: 2;
+}
+
+
+.button-increment
+{
+    order: 3;
+}
+
+.custom-number-input input[type="number"]
+{
+    text-align: center;
+}
+
+
+.custom-number-input input[type="number"]::-webkit-outer-spin-button,
+.custom-number-input input[type="number"]::-webkit-inner-spin-button
+{
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+.custom-number-input input[type="number"]
+{
+
+    -moz-appearance: textfield;
+}
+
+
+@media (min-width: 35.5em)
+{
+    .custom-number-input
+    {
+        flex-direction: row;
+    }
+}

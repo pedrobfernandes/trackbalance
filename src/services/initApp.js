@@ -1,8 +1,10 @@
 import { initData } from "./initData";
 import { hasMonthIncome, hasMonthExpenses, createCurrentMonth } from "../helpers/dataHelpers";
 import { insertUserFlags } from "../supabase/userFlags";
+import { showAlert } from "../custom-components/modals";
 
 
+// Cuida de inicializar os dados do app
 export async function initializeData(props)
 {
     const
@@ -13,11 +15,11 @@ export async function initializeData(props)
     
     } = props;
     
-    //~ const testYear = 2025;
-    //~ const testMonth = 12;
+    const testYear = 2026;
+    const testMonth = 5;
     
-    //~ const initResult = await initData({ testYear, testMonth });
-    const initResult = await initData();
+    const initResult = await initData({ testYear, testMonth });
+    //~ const initResult = await initData();
     
     if (initResult !== null)
     {
@@ -44,7 +46,7 @@ export async function initializeData(props)
             }
             catch(error)
             {
-                alert(`${error}`);
+                await showAlert(`${error}`);
                 setIncome(0);
                 setExpenses([]);
             }
@@ -58,6 +60,7 @@ export async function initializeData(props)
 }
 
 
+// Cuida de criar os primeiros registros na tabela months e user_flags
 export async function isFirstUse({ userId, year, month })
 {
     try
@@ -75,7 +78,7 @@ export async function isFirstUse({ userId, year, month })
         
         if (initialUserFlags.error !== null)
         {
-            alert(initialUserFlags.error);
+            await showAlert(initialUserFlags.error);
             return({
                 status: false,
                 data: null
@@ -87,7 +90,7 @@ export async function isFirstUse({ userId, year, month })
             data: initialUserFlags.data
         });
     }
-    catch (error)
+    catch
     {
         return({
             status: false,

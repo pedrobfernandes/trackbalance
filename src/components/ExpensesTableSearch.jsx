@@ -10,17 +10,14 @@ export default function ExpensesTableSearch(props)
         >
             <label
                 htmlFor="table-search-input"
-                className="visually-hidden"
             >
-                Filtar:
+                Digite para filtrar (exemplo: Aluguel):
             </label>
             <input
                 id="table-search-input"
                 type="text"
                 value={filter}
                 onChange={event => setFilter(event.target.value)}
-                className="table-search-input"
-                placeholder="Digite para filtrar..."
             />
         </form>
     );

@@ -1,6 +1,6 @@
 export default function ExpensesTablePagination(props)
 {
-    const { pagination, setPagination, totalPages} = props;    
+    const { pagination, setPagination, totalPages, totalExpenses} = props;    
     const pageIndex = pagination.pageIndex;
     
     
@@ -17,7 +17,8 @@ export default function ExpensesTablePagination(props)
     
     function canGoToNext()
     {
-        if (pageIndex === totalPages - 1)
+        if (pageIndex === totalPages - 1
+            || totalExpenses === 0)
         {
             return(false);
         }
@@ -44,6 +45,23 @@ export default function ExpensesTablePagination(props)
     }
     
     
+    function getCurrentPageOfTotal()
+    {
+        if (totalExpenses === 0)
+        {
+            return("0 Páginas");
+        }
+        
+        return(
+            <>
+            Página{" "}
+            <strong>
+                {pageIndex + 1} de {totalPages}
+            </strong>
+            </>
+        );
+    }
+    
     
 
     return(
@@ -52,24 +70,24 @@ export default function ExpensesTablePagination(props)
                 type="button"
                 onClick={handleGoToPrevious}
                 disabled={canGoToPrevious() === false}
+                aria-label="Página anterior"
             >
                 Anterior
             </button>
             
             <span>
-                Página{" "}
-                <strong>
-                    {pageIndex + 1} de {totalPages}
-                </strong>
+                {getCurrentPageOfTotal()}
             </span>
             
             <button
                 type="button"
                 onClick={handleGoToNext}
                 disabled={canGoToNext() === false}
+                aria-label="Página seguinte"
             >
                 Próxima
             </button>
+            
         </div>
     );
 }

@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { NumberInput }  from "../custom-components/inputs";
 
 
 export default function UpdateIncomeForm(props)
 {
     const { onSubmitSuccess, onValueChange, onCancel } = props;
-    
     const [updatedIncome, setUpdatedIncome] = useState(0);
     
     
@@ -20,14 +20,12 @@ export default function UpdateIncomeForm(props)
     return(
         <form onSubmit={handleSubmit}>
             <label htmlFor="new-income-input">Insira a nova receita:</label>
-            <input
+            <NumberInput
                 id="new-income-input"
-                type="number"
-                step={0.01}
-                min={1}
                 value={updatedIncome}
                 onChange={(event) => setUpdatedIncome(event.target.value)}
-                required
+                step={0.01}
+                min={1}
             />
             <button type="submit">Enviar</button>
             <button type="button" onClick={onCancel}>Cancelar</button>

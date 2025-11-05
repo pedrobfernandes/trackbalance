@@ -1,4 +1,5 @@
 import { getUserId } from "./getUserId";
+import { showAlert, showConfirm } from "../custom-components/modals";
 import
 {
     getCurrentDate, hasUserFlags, getLastMonthDate,
@@ -100,7 +101,7 @@ export async function initData({ testYear = null, testMonth = null } = {})
         // 4.2 - Se tiver, e o usuario quiser preencher,
         // criamos os meses (incluindo o atual), preenchemos
         // e saimos.
-        const wantToFill = window.confirm(
+        const wantToFill = await showConfirm(
         `Há ${monthsDifference} meses sem dados entre o último` +
         " mês registrado e o mês atual. Deseja preencher esses meses" +
         " automaticamente com os dados do último mês?"
@@ -142,7 +143,7 @@ export async function initData({ testYear = null, testMonth = null } = {})
     }
     catch (error)
     {
-        alert(`Erro inicializando os dados da aplicação: ${error}`);
+        await showAlert(`Erro inicializando os dados da aplicação: ${error}`);
         return({
             loggedUserId: null, currentYear: null,
             currentMonth: null, userFlags: null

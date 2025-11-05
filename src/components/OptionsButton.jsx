@@ -1,6 +1,6 @@
 export default function OptionsButton(props)
 {
-    const { text, action, disabled = false } = props;
+    const { text, action, label, disabled = false } = props;
     
     
     return(
@@ -8,6 +8,7 @@ export default function OptionsButton(props)
             type="button"
             onClick={action}
             disabled={disabled}
+            aria-label={label}
         >
             {text}
         </button>
