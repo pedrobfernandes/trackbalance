@@ -14,6 +14,7 @@ export default function NumberInput(props)
     } = props;
     
     const inputRef = useRef(null);
+    const valueChangeRefAnnouncer = useRef(null);
     
     
     function getDecimalPlaces(number)
@@ -38,11 +39,21 @@ export default function NumberInput(props)
     }
     
     
+    function handleValueChangeAnnouncer(newValue)
+    {
+        if (valueChangeRefAnnouncer.current !== null)
+        {
+            valueChangeRefAnnouncer.current.textContent = `${newValue}`;
+        }
+    }
+    
+    
     function handleDecrement()
     {
         const current = isNaN(parseFloat(value)) ? 1 : parseFloat(value);
         const maxRange = roundToStep(current - step);
         const newValue = Math.max(min, maxRange);
+        handleValueChangeAnnouncer(newValue);
         triggerChange(newValue);
     }
     
@@ -52,6 +63,7 @@ export default function NumberInput(props)
         const current = isNaN(parseFloat(value)) ? 1 : parseFloat(value);
         const maxRange = roundToStep(current + step);
         const newValue = Math.min(max, maxRange);
+        handleValueChangeAnnouncer(newValue);
         triggerChange(newValue);
     }
     
@@ -105,7 +117,6 @@ export default function NumberInput(props)
                 min={min}
                 max={max}
                 step={step}
-                role="spinbutton"
             />
             
             <button
@@ -125,6 +136,13 @@ export default function NumberInput(props)
             >
                 +
             </button>
+            
+            <div
+                className="visually-hidden"
+                ref={valueChangeRefAnnouncer}
+                aria-live="polite"
+            ></div>
+            
         </div>
     );
 }

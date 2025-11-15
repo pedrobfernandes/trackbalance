@@ -11,6 +11,7 @@ export default function UpdateIncomeForm(props)
     function handleSubmit(event)
     {
         event.preventDefault();
+        
         onValueChange("updateIncome", parseFloat(updatedIncome).toFixed(2));
         setUpdatedIncome(0);
         onSubmitSuccess();

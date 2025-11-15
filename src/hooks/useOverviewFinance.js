@@ -16,7 +16,8 @@ export function useOverviewFinance(props)
         getCurrentYear, getCurrentMonth,
         setIncome, getExpenses, setExpenses,
         setIsFormModalOpen, setFormType,
-        formTypeMap, currentViewingMonthId
+        formTypeMap, currentViewingMonthId,
+        announce, menuButtonRef
     
     } = props;
     
@@ -81,6 +82,11 @@ export function useOverviewFinance(props)
             
             if (confirmed === false)
             {
+                if (menuButtonRef.current !== null)
+                {
+                    menuButtonRef.current.focus();
+                }
+                
                 return;
             }
             
@@ -91,6 +97,17 @@ export function useOverviewFinance(props)
                 
                 await deleteMonthIncome(monthId);
                 setIncome(0);
+                
+                if (menuButtonRef.current !== null)
+                {
+                    menuButtonRef.current.focus();
+                }
+                
+                if (announce)
+                {
+                    await announce("Receita deletada com sucesso");
+                }
+                
                 return;
             }
             catch(error)
@@ -179,8 +196,8 @@ export function useOverviewFinance(props)
         o registro do mês e isFirstUse cria o primeiro registro em
         user_flags apontando first_month_id para o id desse mes criado.
         last_month_id marca o último mes com dados e current_month_id
-        marca o mes atual. No inicio (na primeira vês), aponta tudo para
-        o mesmo. Futuras atualizações atualizam apenas o last_month_id e
+        marca o mes atual. No inicio, aponta tudo para o mesmo.
+        Futuras atualizações atualizam apenas o last_month_id e
         current_month_id. first_month_id é fixo para marcar sempre o
         primeiro mes de uso.
     */

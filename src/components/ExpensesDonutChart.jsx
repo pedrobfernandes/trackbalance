@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import
 {
     PieChart, Pie, Cell,
-    ResponsiveContainer
+    ResponsiveContainer,
+    Tooltip
 
 } from "recharts";
+import ChartCustomTooltip from "./ChartCustomTooltip";
 
 import "./ExpensesDonutChart.css";
 
@@ -155,7 +157,7 @@ export default function ExpensesDonutChart(props)
             aria-hidden="true"
         >
             <div className="chart-container">
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer>
                     <PieChart>
                         <Pie
                             data={renderData()}
@@ -163,14 +165,19 @@ export default function ExpensesDonutChart(props)
                             nameKey="category"
                             cx="50%"
                             cy="50%"
-                            innerRadius={70}
-                            outerRadius={100}
+                            cornerRadius={5}
+                            stroke="#1C2331"
+                            strokeWidth={2}
+                            innerRadius={90}
+                            outerRadius={130}
+                            paddingAngle={7}
                             fill="#8884d8"
                             label={renderCustomizedLabel}
                             labelLine={false}
                         >
                             {renderDonutCellData()}
                         </Pie>
+                        <Tooltip content={<ChartCustomTooltip />}  />
                         
                     </PieChart>
                 </ResponsiveContainer>

@@ -11,9 +11,9 @@ const root = createRoot(document.getElementById("root"));
 root.render(
     <StrictMode>
         <BrowserRouter>
-        <InfoModalProvider>
-            <App />
-        </InfoModalProvider>
+            <InfoModalProvider>
+                <App />
+            </InfoModalProvider>
         </BrowserRouter>
     </StrictMode>
 );

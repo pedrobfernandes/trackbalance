@@ -28,10 +28,8 @@
 .formModal
 {
     width: 80vw;
-    max-width: 80rem;
-    height: 80vh;
-    min-height: 20rem;
-    max-height: 40rem;
+    max-width: 60rem;
+    max-height: 70%;
     border: var(--border-style);
     background-color: var(--main-background-color);
     border-radius: 1rem;
@@ -42,8 +40,6 @@
 
 .formModal .formModal-content-container
 {
-    height: var(--max-size);
-    width: var(--max-size);
     overflow: auto;
     padding: 0;
 }

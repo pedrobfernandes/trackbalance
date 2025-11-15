@@ -24,7 +24,7 @@ export function InfoModalProvider({ children })
     const overlayRef = useRef(null);
     
     
-    function alert(message)
+    function alert(message, onCloseCallback)
     {
         return(
             new Promise((resolve) =>
@@ -36,6 +36,7 @@ export function InfoModalProvider({ children })
                     {
                         setModal(null);
                         resolve();
+                        if (onCloseCallback) onCloseCallback();
                     }
                 });
             })
@@ -43,7 +44,7 @@ export function InfoModalProvider({ children })
     }
     
     
-    function confirm(message)
+    function confirm(message, onConfirmCallback, onCancelCallback)
     {
         return(
             new Promise((resolve) =>
@@ -55,11 +56,13 @@ export function InfoModalProvider({ children })
                     {
                         setModal(null);
                         resolve(true);
+                        if (onConfirmCallback) onConfirmCallback();
                     },
                     onCancel: () =>
                     {
                         setModal(null);
                         resolve(false);
+                        if (onCancelCallback) onCancelCallback();
                     }
                 });
             })
@@ -75,7 +78,8 @@ export function InfoModalProvider({ children })
     }, []);
     
     
-    // Bloqueio do scroll
+    // Bloqueio do scroll e guarda/restaura o foco ao elemento
+    // focavel antes de mostrar o modal.
     useEffect(() =>
     {
         if (modal !== null)
@@ -159,6 +163,10 @@ export function InfoModalProvider({ children })
     }, [modal]);
     
     
+    // Cuida do clique no overlay. Se em vez do ref
+    // usasse o evento onClick no backdrop, a ferramenta de acessibilidade
+    // do firefox dá um aviso: "Elementos clicaveis devem poder receber foco
+    // e ter semanticas interativas
     useEffect(() =>
     {
         if (modal === null)
@@ -194,7 +202,7 @@ export function InfoModalProvider({ children })
     }, [modal]);
     
     
-    // Focus trap
+    // Cuida de prender o foco no modal.
     useEffect(() =>
     {
         if (modal === null)
@@ -203,6 +211,9 @@ export function InfoModalProvider({ children })
         }
 
         const modalElement = modalRef.current;
+        
+        // Acho meio que exagero esta. Eu criei este codigo apenas para
+        // substituir o alert() e confirm() nativo, mas emfim....
         const focusableElements = modalElement.querySelectorAll(
             "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])"
         );

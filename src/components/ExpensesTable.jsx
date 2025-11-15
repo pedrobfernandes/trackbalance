@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import ExpensesTableHeader from "./ExpensesTableHeader";
 import ExpensesTableBody from "./ExpensesTableBody"
-import ExpensesTablePagination from "./ExpensesTablePagination";
 import ExpensesTableSearch from "./ExpensesTableSearch";
+import { useAriaActionStatusAnnouncer } from "../hooks/useAriaActionStatusAnnouncer";
 
 
 import "./ExpensesTable.css";
@@ -17,7 +17,11 @@ export default function ExpensesTable(props)
     const [categoryOrder, setCategoryOrder] = useState("asc");
     const [amountOrder, setAmountOrder] = useState("asc");
     const [activeColumn, setActiveColumn] = useState("category");
-    const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
+    const [orderMessage, setOrderMessage] = useState("");
+    const [hasOrdered, setHasOrdered] = useState(false);
+
+    
+    const { ariaMessage, announce } = useAriaActionStatusAnnouncer();
     
     
     useEffect(() =>
@@ -30,11 +34,17 @@ export default function ExpensesTable(props)
     }, [expensesData]);
     
     
-    
-    const totalPages = Math.ceil(expensesData.length / pagination.pageSize);
-    
-    const startIndex = pagination.pageIndex * pagination.pageSize;
-    const endIndex = startIndex + pagination.pageSize;
+    function normalize(str)
+    {
+        return(
+            str
+            .toLowerCase()
+            .normalize("NFD") // caracteres acentuados
+            .replace(/[\u0300-\u036f]/g, "") //acentos
+            .replace(/ç/g, "c")
+            .replace(/\s+/g, "") // remove espaços
+        );
+    }
     
     
     function handleSorting(column, direction)
@@ -100,28 +110,71 @@ export default function ExpensesTable(props)
         const filtered = sortedExpenses.filter(expense =>
         {
             return(
-                expense.category
-                .toLowerCase()
-                .startsWith(filter.toLowerCase())
-            );
+               normalize(expense.category)
+                .includes(normalize(filter))
+           );
         });
         
         return(filtered);
     
     }, [filter, sortedExpenses]);
     
-    const expensesToShow = filteredExpenses.slice(startIndex, endIndex);
+    
+    useEffect(() =>
+    {
+        async function announceFilterResults()
+        {
+            if (filter.trim() === "")
+            {
+                return;
+            }
+            
+            if (filteredExpenses.length === 0)
+            {
+                await announce("Nenhum resultado encontrado.");
+            }
+            else if (filteredExpenses.length === 1)
+            {
+                await announce("1 despesa encontrada.");
+            }
+            else
+            {
+                await announce(`${filteredExpenses.length} despesas encontradas`);
+            }
+        }
+        
+        announceFilterResults();
+    
+    }, [filter, filteredExpenses.length, announce]);
+    
+    
+    useEffect(() =>
+    {
+        async function announceOrder()
+        {
+            if (hasOrdered === true)
+            {
+                await announce(orderMessage);
+                setHasOrdered(false);
+            }
+        }
+        
+        announceOrder();
+    
+    }, [hasOrdered]);
     
     
     return(
         <>
-        <ExpensesTableSearch
-            filter={filter}
-            setFilter={setFilter}
-        />
+        
+        <ExpensesTableSearch setFilter={setFilter}/>
+        
         <div className="table-wrapper">
             <table className="expenses-table">
-                <caption className="visually-hidden">Tabela de Despesas</caption>
+                <caption className="visually-hidden">
+                    Tabela de despesas do mês atual com a colunas Categoria e Valor.
+                    As colunas podem ser ordenadas em modo ascendente ou descendente.
+                </caption>
                 <ExpensesTableHeader
                     categoryOrder={categoryOrder}
                     setCategoryOrder={setCategoryOrder}
@@ -129,21 +182,25 @@ export default function ExpensesTable(props)
                     setAmountOrder={setAmountOrder}
                     activeColumn={activeColumn}
                     setActiveColumn={setActiveColumn}
+                    setOrderMessage={setOrderMessage}
+                    setHasOrdered={setHasOrdered}
                     totalExpenses={expensesData.length}
                 />
                <ExpensesTableBody
-                    expenses={expensesToShow}
+                    expenses={filteredExpenses}
                     isLoading={isLoading}
-                    pageSize={pagination.pageSize}
+                    rowsToShow={5}
                 />
             </table>
+            
+            <div
+                className="visually-hidden"
+                aria-live="polite"
+            >
+                {ariaMessage}
+            </div>
+            
         </div>
-        <ExpensesTablePagination
-            pagination={pagination}
-            setPagination={setPagination}
-            totalPages={totalPages}
-            totalExpenses={expensesData.length}
-        />
         
         </>
             

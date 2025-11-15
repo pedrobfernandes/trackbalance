@@ -1,17 +1,21 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import AuthModal from "../components/AuthModal";
 
 import "./Home.css";
 
+
 export default function Home()
 {
+    const [isAuthFormOpen, setIsAuthFormOpen] = useState(false);
     const navigate = useNavigate();
     
-    
-    function goToLogin()
+    function goToOverview()
     {
-        navigate("/auth");
+        setIsAuthFormOpen(false);
+        navigate("/overview");
     }
+    
     
     useEffect(() =>
     {
@@ -25,18 +29,23 @@ export default function Home()
         
             <main className="home-main">
             
+                <div className="heading1-container">
                 <h1>TrackBalance - Home</h1>
+                </div>
+                
+                <div className="content-container">
                 <p>
                     Uma aplicação simples para controlar receitas e despesas.
                     Projeto de aprendizado e portfólio.
                 </p>
                 <button
                     type="button"
-                    onClick={goToLogin}
-                    aria-label="Ir para a página de login e criação de conta"
+                    onClick={() => setIsAuthFormOpen(true)}
+                    aria-label="Abrir modal de login e autenticação"
                 >
                     Login
                 </button>
+                </div>
             </main>
             
             <footer className="home-footer" >
@@ -52,6 +61,13 @@ export default function Home()
                     </a>
                 </p>
             </footer>
+            
+            <AuthModal
+                isOpen={isAuthFormOpen}
+                onCancel={() => setIsAuthFormOpen(false)}
+                onSucess={goToOverview}
+            >
+            </AuthModal>
             
         </div>
     );

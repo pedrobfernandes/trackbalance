@@ -416,3 +416,101 @@ export async function loopThroughAndFillMonths({
     
     return(currentFlags);
 }
+
+
+export async function getTopFiveExpensesFromLastThreeMonths(userId)
+{
+
+    // Pegamos as flags para pegar o current_month_id
+    const flags = await hasUserFlags(userId);
+    
+    if (flags.status === "not_found")
+    {
+        return([]);
+    }
+    
+    const currentMonthId = flags.data.current_month_id;
+    
+    // Usamos ele para pegar a data correta (ano / mes)
+    const currentMonthDate = await fetchMonthById(currentMonthId);
+    
+    if (currentMonthDate.status !== "success")
+    {
+        return([]);
+    }
+    
+    let { year: currentYear, month: currentMonth } = currentMonthDate.data;
+    
+    let monthsToCheck = [];
+    
+    // Pega os últimos 3 meses (incluindo o atual)
+    let yearIterator = currentYear;
+    let monthIterator = currentMonth;
+    
+    for (let i = 0; i < 3; i++)
+    {
+        monthsToCheck.push({ year: yearIterator, month: monthIterator });
+        const previous = getPreviousMonth(yearIterator, monthIterator);
+        yearIterator = previous.year;
+        monthIterator = previous.month;
+    }
+    
+    // Pega as despesas dos meses.
+    let aggregated = {};
+    
+    for (const item of monthsToCheck)
+    {
+        // Verifica se o mês existe no banco
+        const monthRecord = await isMonthExists({
+            userId: userId,
+            year: item.year,
+            month: item.month
+        });
+        
+        if (monthRecord.status === "not_found")
+        {
+            continue;
+        }
+        
+        const monthId = monthRecord.data.id;
+        console.log(monthId);
+        
+        // Pega as despesas
+        const expensesRecord = await hasMonthExpenses(monthId);
+        
+        if (expensesRecord.status === "not_found")
+        {
+            continue;
+        }
+        
+        // Soma as categorias
+        for (const expense of expensesRecord.data)
+        {
+            if (Object.hasOwn(aggregated, expense.category) === false)
+            {
+                aggregated[expense.category] = 0;
+            }
+            
+            aggregated[expense.category] += Number(expense.amount);
+        }
+    }
+    
+    // Tranformar objeto em array de array:
+    // [ [chave, valor], [chave, valor] ]...
+    const entries = Object.entries(aggregated);
+    
+    // Tranformar cada array interno em objeto
+    const mapped = entries.map(([category, total]) =>
+    {
+        return({ category, total });
+    });
+    
+    // Agora ordena do maior para o menor (o total né..)
+    const sorted = mapped.sort((a, b) => b.total - a.total);
+    
+    // Por fim pega os 5 maiores
+    const topFive = sorted.slice(0, 5);
+    
+    return(topFive)
+    
+}

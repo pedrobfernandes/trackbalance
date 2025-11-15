@@ -6,7 +6,8 @@ export function useOverviewExport(props)
     const
     {
         getCurrentViewingYear, getCurrentViewingMonth, 
-        getIncome, getExpenses, donutChartRef
+        getIncome, getExpenses, donutChartRef,
+        announce, menuButtonRef
     
     } = props;
     
@@ -31,7 +32,7 @@ export function useOverviewExport(props)
     }
     
     
-    function handleExportToCsv()
+    async function handleExportToCsv()
     {
         const
         {
@@ -51,6 +52,16 @@ export function useOverviewExport(props)
                 viewYear
             }
         );
+        
+        if (menuButtonRef.current !== null)
+        {
+            menuButtonRef.current.focus();
+        }
+        
+        if (announce)
+        {
+            await announce("Dados exportados com sucesso para CSV");
+        }
     }
     
     
@@ -73,6 +84,16 @@ export function useOverviewExport(props)
             },
             chartRef: donutChartRef
         });
+        
+        if (menuButtonRef.current !== null)
+        {
+            menuButtonRef.current.focus();
+        }
+        
+        if (announce)
+        {
+            await announce("Dados exportados com sucesso para PDF");
+        }
     }
     
     

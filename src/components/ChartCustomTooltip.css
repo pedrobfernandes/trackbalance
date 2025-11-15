@@ -1,0 +1,14 @@
+.chart-custom-tooltip
+{
+    background-color: var(--main-background-color);
+    color: var(--text-color);
+    border: var(--outline-style);
+    border-radius: 1rem;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Manrope", sans-serif;
+    font-weight: var(--bolder-font);
+    font-size: var(--text-font);
+}

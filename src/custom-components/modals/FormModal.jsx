@@ -22,6 +22,7 @@ export default function FormModal(props)
     const modalRef = useRef(null);
     const firstFocusableRef = useRef(null);
     const lastFocusableRef = useRef(null);
+    const backdropRef = useRef(null);
 
 
     /*
@@ -31,17 +32,25 @@ export default function FormModal(props)
     */
     function getFocusableElements()
     {
+        let selectors = [];
+        
         const baseFocusableSelector =
             "input, button, select, textarea, [tabindex]:not([tabindex='-1'])";
         
-        const extraClasses = Object.values(focusableClasses).join(', ');
+        const extraClasses = Object.values(focusableClasses);
         
-        return(modalRef.current.querySelectorAll(
-            `${baseFocusableSelector}, ${extraClasses}`)
-        );
+        selectors.push(baseFocusableSelector);
+        
+        if (extraClasses.length > 0)
+        {
+            selectors.push(extraClasses.join(", "));
+        }
+        
+        return(modalRef.current.querySelectorAll(selectors.join(", ")));
     }
     
     
+    // Cuida de prender o foco no modal
     function handleKeyDown(event)
     {
         if (event.key === "Escape")
@@ -71,6 +80,7 @@ export default function FormModal(props)
     }
     
     
+    // Cuida de travar a rolagem
     function toggleOverflow()
     {
         if (isFormModalOpen === true)
@@ -84,6 +94,35 @@ export default function FormModal(props)
     }
 
 
+    // Cuida do clique no backdrop (overlay). Se em vez do ref
+    // usasse o evento onClick no backdrop, a ferramenta de acessibilidade
+    // do firefox dá um aviso: "Elementos clicaveis devem poder receber foco
+    // e ter semanticas interativas" 
+    useEffect(() =>
+    {
+        if (isFormModalOpen === false)
+        {
+            return;
+        }
+
+        function handleClickOnBackdrop(event)
+        {
+            if
+            (
+                backdropRef.current !== null &&
+                backdropRef.current.contains(event.target) === true
+            )
+            {
+                onCancel();
+            }
+        }
+        
+        document.addEventListener("mousedown", handleClickOnBackdrop);
+        return(() => document.removeEventListener("mousedown", handleClickOnBackdrop))
+    
+    }, [isFormModalOpen]);
+
+
     useEffect(() =>
     {
         if (isFormModalOpen === false ||
@@ -93,28 +132,39 @@ export default function FormModal(props)
         }
 
         const focusableElements = getFocusableElements();
-
-        if (focusableElements.length > 0)
+        
+        if (focusableElements.length === 0)
         {
-            firstFocusableRef.current = focusableElements[0];
-            lastFocusableRef.current = focusableElements[focusableElements.length - 1];
-            firstFocusableRef.current.focus();
+            return;
         }
+
+       
+        firstFocusableRef.current = focusableElements[0];
+        lastFocusableRef.current = focusableElements[focusableElements.length - 1];
+        
+        setTimeout(() =>
+        {
+            firstFocusableRef.current.focus();
+        
+        }, 200);
+        
 
         modalRef.current.addEventListener("keydown", handleKeyDown);
 
         return(() =>
         {
             modalRef.current?.removeEventListener("keydown", handleKeyDown);
-            menuButtonRef.current?.focus();
+            menuButtonRef?.current?.focus();
         });
         
     }, [isFormModalOpen]);
+    
   
   
     useEffect(() =>
     {
         toggleOverflow();
+        
         return(() =>
         {
             document.body.style.overflow = "";
@@ -133,7 +183,7 @@ export default function FormModal(props)
     return(createPortal(
         <div className={`formModal-wrapper ${className}`}>
 
-            <div className="formModal-backdrop" onClick={onCancel}></div>
+            <div className="formModal-backdrop" ref={backdropRef}></div>
 
             <div
                 className="formModal"

@@ -101,7 +101,7 @@ export async function initData({ testYear = null, testMonth = null } = {})
         // 4.2 - Se tiver, e o usuario quiser preencher,
         // criamos os meses (incluindo o atual), preenchemos
         // e saimos.
-        const wantToFill = await showConfirm(
+        await showConfirm(
         `Há ${monthsDifference} meses sem dados entre o último` +
         " mês registrado e o mês atual. Deseja preencher esses meses" +
         " automaticamente com os dados do último mês?"

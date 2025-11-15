@@ -2,7 +2,6 @@ import { useState, useEffect} from "react";
 import { Routes, Route, Navigate } from "react-router";
 import { supabase } from "./lib/supabaseClient";
 import Home from "./pages/Home";
-import Auth from "./pages/Auth";
 import Overview from "./pages/Overview";
 import { useModal } from "./custom-components/modals";
 
@@ -83,20 +82,11 @@ export default function App()
             />
             
             <Route 
-                path="/auth" 
-                element={
-                    session === null 
-                    ? <Auth /> 
-                    : <Navigate to="/overview" replace />
-                } 
-            />
-            
-            <Route 
                 path="/overview" 
                 element={
                     session !== null
                     ? <Overview onExit={handleLogout}/> 
-                    : <Navigate to="/auth" replace />
+                    : <Navigate to="/" replace />
                 } 
             />
             
@@ -105,7 +95,7 @@ export default function App()
                 element={
                     session !== null
                     ? <Navigate to="/overview" replace/>
-                    : <Navigate to="/auth" replace/>
+                    : <Navigate to="/" replace/>
                 }
             />
         </Routes>

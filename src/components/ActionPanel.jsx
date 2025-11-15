@@ -71,7 +71,5 @@ export default function ActionPanel(props)
         );
     }
     
-    return(
-        renderActionPanel()
-    );
+    return(renderActionPanel());
 }

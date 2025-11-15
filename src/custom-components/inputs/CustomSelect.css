@@ -10,7 +10,8 @@
 
 .custom-select-label
 {
-    font-weight: var(--medium-font);
+    font-weight: var(--bolder-font);
+    margin-bottom: 1rem;
 }
 
 

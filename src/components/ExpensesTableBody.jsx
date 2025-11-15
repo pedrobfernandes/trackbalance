@@ -3,15 +3,15 @@ export default function ExpensesTableBody(props)
     const
     {
         expenses, isLoading,
-        pageSize
+        rowsToShow = 5
     
     } =  props;
 
     
     // Tenta evita layout-shitf
-    function getPlaceholderLines(pageSize)
+    function getPlaceholderLines(rowsToShow)
     {
-        const lines = Array.from({ length: pageSize  }, (_, index) =>
+        const lines = Array.from({ length: rowsToShow  }, (_, index) =>
         {
             return(
                 <tr key={index} className="placeholder-row">
@@ -33,10 +33,10 @@ export default function ExpensesTableBody(props)
     {
         if (isLoading === true)
         {
-            return(getPlaceholderLines(pageSize));
+            return(getPlaceholderLines(rowsToShow));
         }
         
-        const rowsToShow = expenses.map((expense, index) =>
+        const rows = expenses.map((expense, index) =>
         {
             return(
                 <tr key={expense.id ?? `expense-${index}`}>
@@ -46,8 +46,8 @@ export default function ExpensesTableBody(props)
             );
         });
         
-        const emptyRows = getPlaceholderLines(pageSize - expenses.length);
-        return(rowsToShow.concat(emptyRows));
+        const emptyRows = getPlaceholderLines(rowsToShow - expenses.length);
+        return(rows.concat(emptyRows));
     }
     
     return(

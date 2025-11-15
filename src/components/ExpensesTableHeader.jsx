@@ -8,7 +8,8 @@ export default function ExpensesTableHeader(props)
         categoryOrder, setCategoryOrder,
         amountOrder, setAmountOrder,
         activeColumn, setActiveColumn,
-        totalExpenses
+        totalExpenses, setOrderMessage,
+        setHasOrdered
    
     } = props;
    
@@ -37,6 +38,7 @@ export default function ExpensesTableHeader(props)
    function handleSortOrder(column)
    {
         let newOrder = "asc";
+        let direction = "";
        
         if (column === "category")
         {
@@ -46,8 +48,11 @@ export default function ExpensesTableHeader(props)
                 newOrder = "desc";
             }
            
+            direction = newOrder === "asc" ? "ascendente" : "descendente";
             setCategoryOrder(newOrder);
             setActiveColumn("category");
+            setOrderMessage(`Categoria ordenado ${direction}`);
+            setHasOrdered(true);
         }
         else if (column === "amount")
         {
@@ -57,8 +62,12 @@ export default function ExpensesTableHeader(props)
                 newOrder = "desc";
             }
            
+            direction = newOrder === "asc" ? "ascendente" : "descendente";
             setAmountOrder(newOrder);
             setActiveColumn("amount");
+            setOrderMessage(`Valor ordenado ${direction}`);
+            setHasOrdered(true);
+            
         }
     }
 
@@ -79,7 +88,7 @@ export default function ExpensesTableHeader(props)
                 return("descending");
             }
             
-            return("none");
+            return(undefined);
         }
         
         if (column === "amount")
@@ -96,7 +105,7 @@ export default function ExpensesTableHeader(props)
                 return("descending");
             }
             
-            return("none");
+            return(undefined);
         }
     }
 
@@ -109,7 +118,6 @@ export default function ExpensesTableHeader(props)
                     <button
                         type="button"
                         className="sort-button"
-                        aria-label=" Ordene as despesas em modo ascendente ou descendente pela categoria"
                         onClick={() => handleSortOrder("category")}
                         disabled={totalExpenses === 0}
                     >
@@ -121,7 +129,6 @@ export default function ExpensesTableHeader(props)
                      <button
                         type="button"
                         className="sort-button"
-                        aria-label="Ordene as despesas em modo ascendente ou descendente pelo valor"
                         onClick={() => handleSortOrder("amount")}
                         disabled={totalExpenses === 0}
                     >

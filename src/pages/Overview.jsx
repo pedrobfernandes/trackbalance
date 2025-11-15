@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import GrouppedButtons from "../components/GrouppedButtons";
 import { FormModal } from "../custom-components/modals";
+import { getTopFiveExpensesFromLastThreeMonths } from "../helpers/dataHelpers"
 import InsertIncomeForm from "../components/InsertIncomeForm";
 import UpdateIncomeForm from "../components/UpdateIncomeForm";
 import InsertExpensesForm from "../components/InsertExpensesForm";
 import UpdateExpensesForm from "../components/UpdateExpensesForm";
 import DeleteExpensesForm from "../components/DeleteExpensesForm";
+import TopExpenses from "../components/TopExpenses";
 import MonthNavigation from "../components/MonthNavigation";
 import ActionPanel from "../components/ActionPanel";
 import ExpensesTable from "../components/ExpensesTable";
@@ -35,6 +37,8 @@ export default function Overview(props)
     
     const [income, setIncome] = useState(0);
     const [expenses, setExpenses] = useState([]);
+    
+    const [topFive, setTopFive] = useState([]);
     
     const { ariaMessage, announce } = useAriaActionStatusAnnouncer();
     
@@ -84,20 +88,36 @@ export default function Overview(props)
     }, []);
     
     
+    
     useEffect(() =>
     {
-        document.title = "TrackBalance - Visão Geral";
-        
-        const announcer = document.getElementById("overview-page-announcer");
-        
-        if (announcer !== null)
+        if (loggedUserId === null)
         {
-            announcer.innerHTML =
-            `
-                <p>Você está agora na página principal da aplicação, Visão Geral.</p>
-                <p>Manipule a receita, despesas, exporte dados e navegue entre os meses.</p>
-            `
+            return;
         }
+        
+        async function loadTopFive()
+        {
+           const stats = await getTopFiveExpensesFromLastThreeMonths(loggedUserId);
+           setTopFive(stats);
+        }
+        
+        loadTopFive();
+    
+    }, [loggedUserId]);
+
+    
+    useEffect(() =>
+    {
+        async function announceOverviewArrival()
+        {
+            await announce(
+                "Você está agora na página principal da aplicação. Visão geral.\n" +
+                " Manipule a receita, despesas, exporte dados e navegue entre os meses."
+            );
+        }
+        
+        announceOverviewArrival();
     
     }, []);
     
@@ -142,7 +162,8 @@ export default function Overview(props)
         getIncome: () => income, setIncome,
         getExpenses: () => expenses,
         setExpenses, setIsFormModalOpen,
-        setFormType, formTypeMap, donutChartRef
+        setFormType, formTypeMap, donutChartRef,
+        announce, menuButtonRef
     });
     
     
@@ -241,10 +262,9 @@ export default function Overview(props)
             currentViewingDate = `${formattedViewingMonth}/${currentViewingYear}`;
             
             return(
-                <h2 className="current-date">
-                    <span className="visually-hidden">Mês atualmente em visualização: </span>
-                    {currentViewingDate}
-                </h2>
+                <>
+                {currentViewingDate}
+                </>
             );
         }
         else
@@ -257,13 +277,12 @@ export default function Overview(props)
             currentViewingDate = `${formattedViewingMonth}/${year}`;
             
             return(
-                <h2 className="current-date">
-                    <span className="visually-hidden">Mês atualmente em visualização: </span>
-                    {currentViewingDate}
-                </h2>
+                <>
+                {currentViewingDate}
+                </>
             );
         }
-    }
+    }   
     
     
     function renderFormModal()
@@ -289,20 +308,11 @@ export default function Overview(props)
     
     return(
         <>
-        
             <main
                 className="overview-main"
                 ref={mainRef}
                 tabIndex={-1}
             >
-                
-                <div
-                    className="visually-hidden"
-                    id="overview-page-announcer"
-                    aria-live="polite"
-                    aria-atomic="true"
-                ></div>
-                
                 
                 <div
                     className="visually-hidden"
@@ -427,17 +437,16 @@ export default function Overview(props)
                     <button
                         type="button"
                         onClick={onExit}
-                        aria-label="Sair da aplicação e voltar á página de login"
+                        aria-label="Sair da aplicação e voltar á página inicial"
                     >
                         Sair
                     </button>
                 </aside>
                 
+
                 <h1>
-                    TrackBalance - Visão Geral
+                    Visão Geral {showCurrentViewingDate()}
                 </h1>
-                
-                {showCurrentViewingDate()}
 
                 <section className="summary-section">
                     <h2>Sumário</h2>
@@ -460,9 +469,14 @@ export default function Overview(props)
                         
                     </div>
                 </section>
+                
+                <section className="top-expenses-section">
+                    <h2>Maiores gastos dos últimos 3 meses (top 5)</h2>
+                    <TopExpenses expenses={topFive}/>
+                </section>
 
                 <section className="details-section">
-                    <h2>Detalhes</h2>
+                    <h2>Detalhes das despesas (mês atual)</h2>
                     <div className="details-container">
                         
                         <div className="table-container">
@@ -471,15 +485,14 @@ export default function Overview(props)
                             />
                         </div>
                         
-                        <div className="donut-container">
-                            <ExpensesDonutChart
-                                expensesData={expenses}
-                                chartRef={donutChartRef}
-                            />
-                        </div>
+                        <ExpensesDonutChart
+                            expensesData={expenses}
+                            chartRef={donutChartRef}
+                        />
                         
                     </div>
                 </section>
+
             </main>
             
             {renderFormModal()}

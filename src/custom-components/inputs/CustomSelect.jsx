@@ -15,6 +15,11 @@ export default function CustomSelect(props)
     const [open, setOpen] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     
+    
+    // A ferramenta IBM EQUAL Accesibility Checker, acusa um erro
+    // usando este metodo de id: "The 'id' "«r1»" specified for the ARIA property
+    // 'aria-controls' value is not valid". Mas, se é válido para bibliotecas como
+    // react-modal e outras é valido aqui....
     const labelId = useId();
     const listboxId = useId();
     

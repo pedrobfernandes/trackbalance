@@ -15,7 +15,8 @@ export function useOverviewHandlers(props)
         setCurrentViewingMonth, getIncome,
         setIncome, getExpenses, setExpenses,
         setIsFormModalOpen, setFormType,
-        formTypeMap, donutChartRef
+        formTypeMap, donutChartRef,
+        announce, menuButtonRef
     
     } = props;
         
@@ -26,7 +27,8 @@ export function useOverviewHandlers(props)
         getCurrentYear, getCurrentMonth,
         setIncome, getExpenses, setExpenses,
         setIsFormModalOpen, setFormType,
-        formTypeMap, currentViewingMonthId
+        formTypeMap, currentViewingMonthId,
+        announce, menuButtonRef
     });
     
     const { openMonthNavigationalModal, handleCloseNavigate, navigateToMonth } = useOverviewNavigation({
@@ -39,7 +41,8 @@ export function useOverviewHandlers(props)
     
     const { handleExportToCsv, handleExportToPdf } = useOverviewExport({
         getCurrentViewingYear, getCurrentViewingMonth, 
-        getIncome, getExpenses, donutChartRef
+        getIncome, getExpenses, donutChartRef,
+        announce, menuButtonRef
     });
     
     

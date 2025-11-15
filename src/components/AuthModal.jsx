@@ -1,51 +1,80 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useModal } from "../custom-components/modals";
+import { FormModal } from "../custom-components/modals";
 
-import "./Auth.css";
 
-
-export default function Auth()
+export default function AuthModal(props)
 {
+    const { isOpen, onCancel, onSucess} = props;
+    
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [step, setStep] = useState("email");
-
-    const formSignupRef = useRef(null);
-    const formOtpRef = useRef(null);
+    const [resendCooldown, setResendCooldown] = useState(0);
+    
+    const otpInputRef = useRef(null);
     const { alert } = useModal();
     
     
-    useEffect(() =>
+    function startResendCooldown()
     {
-        const message = "Página de Login";
-        document.title = "TrackBalance - Login"
+        setResendCooldown(30);
         
-        const announcer = document.getElementById("auth-page-announcer");
-        
-        if (announcer !== null)
+        const interval = setInterval(() =>
         {
-            announcer.textContent = message;
-        }
-    
-    }, []);
-    
-    
-    useEffect(() =>
+            setResendCooldown(previous =>
+            {
+                if (previous <= 1)
+                {
+                    clearInterval(interval);
+                    return(0);
+                }
+                
+                return(previous - 1);
+            });
+        
+        }, 1000);
+    }
+
+
+    async function handleResendOtp()
     {
-        if (step === "email" && formSignupRef.current !== null)
-        {
-            formSignupRef.current.focus();
-        }
+        setLoading(true);
+        setError(null);
         
-        if (step === "otp" && formOtpRef.current !== null)
+        try
         {
-            formOtpRef.current.focus();
+            const { error } = await supabase.auth.signInWithOtp({ email });
+            
+            if (error !== null)
+            {
+                setError("Erro ao reenviar código: " + error.message);
+            }
+            else
+            {
+                await alert(
+                    "Código reenviado. Verifique seu e-mail e digite o código.",
+                );
+                startResendCooldown();
+                
+                if (otpInputRef.current !== null)
+                {
+                    otpInputRef.current.focus();
+                }
+            }
         }
-    
-    }, [step]);
+        catch
+        {
+            setError("Algo deu errado ao reenviar o codigo.");
+        }
+        finally
+        {
+            setLoading(false);
+        }
+    }
 
 
     async function handleSendOtp(event)
@@ -73,8 +102,10 @@ export default function Auth()
             }
             else
             {
-                setStep("otp");
-                await alert("Código enviado. Verifique seu e-mail e digite o código abaixo.");
+                await alert(
+                    "Código enviado. Verifique seu e-mail e digite o código para entrar na aplicação.",
+                    () => setStep("otp")
+                );
             }
         }
         catch
@@ -116,9 +147,8 @@ export default function Auth()
             }
             else
             {
-                setStep("email");
-                setEmail("");
-                setOtp("");
+                resetModal();
+                onSucess();
             }
         }
         catch
@@ -132,6 +162,15 @@ export default function Auth()
     }
     
     
+    function resetModal()
+    {
+        setStep("email");
+        setEmail("");
+        setOtp("");
+        setError(null);
+    }
+    
+    
     function renderEmailOrOtpForm()
     {
         if (step === "email")
@@ -140,16 +179,9 @@ export default function Auth()
                 <form
                     className="signup-form"
                     onSubmit={handleSendOtp}
-                    ref={formSignupRef}
-                    tabIndex={-1}
-                    aria-describedby="signup-form-desc"
                 >
                     
-                    <p id="signup-form-desc" className="visually-hidden">
-                        Formulário de login e criação de conta.
-                    </p>
-                    
-                    <label htmlFor="email-input">Endereço de email</label>
+                    <label htmlFor="email-input">Endereço de e-mail</label>
                     <input
                         id="email-input"
                         type="email"
@@ -162,6 +194,14 @@ export default function Auth()
                         aria-label="Enviar código de validação para o e-mail"
                     >
                         {loading ? "Enviando" : "Enviar código"}
+                    </button>
+                    
+                    <button
+                        type="button"
+                        onClick={() => { resetModal(); onCancel(); }}
+                        aria-label="Cancelar login e fechar modal"
+                    >
+                        Cancelar
                     </button>
                     
                     <p
@@ -182,18 +222,12 @@ export default function Auth()
                 <form
                     className="otp-form"
                     onSubmit={handleVerifyOtp}
-                    ref={formOtpRef}
-                    tabIndex={-1}
-                    aria-describedby="otp-form-desc"
                 >
-                    
-                    <p id="otp-form-desc" className="visually-hidden">
-                        Formuário de validação e entrada.
-                    </p>
                     
                     <label htmlFor="otp-input">Código de 6 dígitos</label>
                     <input
                         id="otp-input"
+                        ref={otpInputRef}
                         type="text"
                         value={otp}
                         onChange={(event) => setOtp(event.target.value)}
@@ -201,11 +235,32 @@ export default function Auth()
                     />
                     
                     <p id="otp-form-input-desc" className="visually-hidden">
-                        Insira o código de 6 digitos para validar e entrar na aplicação.
+                        Insira o código de 6 digitos enviado para seu e-mail.
                     </p>
                     
-                    <button type="submit" disabled={loading}>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        aria-label="Verificar código para entrar na aplicação"
+                    >
                         {loading ? "Verificando..." : "Verificar código"}
+                    </button>
+                    
+                    <button
+                        type="button"
+                        onClick={handleResendOtp}
+                        disabled={loading || resendCooldown > 0}
+                        aria-label="Reenviar código de verificação para o e-mail"
+                    >
+                        {resendCooldown > 0 ? `Reenviar em ${resendCooldown}s` : "Reenviar código"}
+                    </button>
+                    
+                    <button
+                        type="button"
+                        onClick={resetModal}
+                        aria-label="Voltar atrás para etapa de e-mail e envio de código"
+                    >
+                        Voltar
                     </button>
                     
                     <p
@@ -224,22 +279,13 @@ export default function Auth()
 
 
     return(
-        <div className="auth-container">
-            
-            <main className="auth-main">
-            
-                <div
-                    className="visually-hidden"
-                    id="auth-page-announcer"
-                    aria-live="polite"
-                ></div>
-            
-                <h1>TrackBalance - Login</h1>
-                
-                {renderEmailOrOtpForm()}
-                
-            </main>
-
-        </div>
+        <FormModal
+            key={step}
+            label="Modal de login e autenticação"
+            isFormModalOpen={isOpen}
+            onCancel={onCancel}
+        >
+            {renderEmailOrOtpForm()}
+        </FormModal>
     );
 }

@@ -1,0 +1,58 @@
+.top-expenses-container
+{
+    width: var(--max-size);
+    margin: 0 auto;
+    height: 23rem;
+    display: flex;
+    align-items: center;
+    padding: 2rem 4rem;
+    border: var(--border-style);
+    border-radius: 1rem;
+    text-align: center;
+}
+
+
+.top-expenses-list
+{
+    list-style: none;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: var(--max-size);
+}
+
+
+.top-expenses-empty
+{
+    text-align: center;
+}
+
+
+.top-expenses-item
+{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    font-weight: var(--medium-font);
+}
+
+
+@media (min-width: 35.5em)
+{
+    .top-expenses-item
+    {
+        justify-content: space-between;
+    }
+}
+
+
+@media (min-width: 50em)
+{
+    .top-expenses-container
+    {
+        max-width: 80%;
+    }
+}
