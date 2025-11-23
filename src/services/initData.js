@@ -9,7 +9,7 @@ import
 } from "../helpers/dataHelpers";
 
 
-export async function initData({ testYear = null, testMonth = null } = {})
+export async function initData({ testYear = null, testMonth = null, announce = null } = {})
 {
     let loggedUserId = null;
     let lastMonthWithDataId = null;
@@ -101,13 +101,15 @@ export async function initData({ testYear = null, testMonth = null } = {})
         // 4.2 - Se tiver, e o usuario quiser preencher,
         // criamos os meses (incluindo o atual), preenchemos
         // e saimos.
-        await showConfirm(
-        `Há ${monthsDifference} meses sem dados entre o último` +
+        const wantsToFill = await showConfirm(
+        `Existe ${monthsDifference} meses sem dados entre o último` +
         " mês registrado e o mês atual. Deseja preencher esses meses" +
-        " automaticamente com os dados do último mês?"
+        " automaticamente com os dados do último mês?",
+        async () => await announce("Meses preenchidos com sucesso"),
+        async () => await announce("Preenchendo apenas mês atual")
         );
         
-        if (wantToFill === true)
+        if (wantsToFill === true)
         {
             // Criamos e preenchemos os buracos
             // (incluindo o mes atual)
@@ -117,28 +119,33 @@ export async function initData({ testYear = null, testMonth = null } = {})
                 monthsDifference: monthsDifference
             });
             
+            
             return({
                 loggedUserId, currentYear,
                 currentMonth, userFlags: userFlags
             });
         }
+        else
+        {
         
         
-        // 4.3 - Se tiver, e o usuario não quiser preencher,
-        // apenas criamos e preenchemos o mes atual.
-        // Depois saimos.
+            // 4.3 - Se tiver, e o usuario não quiser preencher,
+            // apenas criamos e preenchemos o mes atual.
+            // Depois saimos.
 
-        userFlags = await fillCurrentMonth({
-            userId: loggedUserId,
-            year: currentYear,
-            month: currentMonth,
-            lastMonthId: lastMonthWithDataId
-        });
-        
-        return({
-            loggedUserId, currentYear,
-            currentMonth, userFlags: userFlags
-        });
+            userFlags = await fillCurrentMonth({
+                userId: loggedUserId,
+                year: currentYear,
+                month: currentMonth,
+                lastMonthId: lastMonthWithDataId
+            });
+            
+            
+            return({
+                loggedUserId, currentYear,
+                currentMonth, userFlags: userFlags
+            });
+        }
 
     }
     catch (error)

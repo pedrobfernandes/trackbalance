@@ -10,7 +10,7 @@ export function registerInfoModalFunctions({ alert, confirm })
 }
 
 
-export function showAlert(message)
+export function showAlert(message, onCloseCallback)
 {
     if (alertFunction === null)
     {
@@ -18,11 +18,11 @@ export function showAlert(message)
         return(Promise.resolve());
     }
     
-    return(alertFunction(message));
+    return(alertFunction(message, onCloseCallback));
 }
 
 
-export function showConfirm(message)
+export function showConfirm(message, onConfirmCallback, onCancelCallback, focusButton = "primary")
 {
     if (confirmFunction === null)
     {
@@ -30,5 +30,5 @@ export function showConfirm(message)
         return(Promise.resolve(false));
     }
     
-    return(confirmFunction(message));
+    return(confirmFunction(message, onConfirmCallback, onCancelCallback, focusButton));
 }

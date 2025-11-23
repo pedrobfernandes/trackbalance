@@ -9,20 +9,14 @@ export default function Home()
 {
     const [isAuthFormOpen, setIsAuthFormOpen] = useState(false);
     const navigate = useNavigate();
+       
     
     function goToOverview()
     {
         setIsAuthFormOpen(false);
         navigate("/overview");
     }
-    
-    
-    useEffect(() =>
-    {
-        document.title = "TrackBalance - Home";
-    
-    }, []);
-    
+
     
     return(
         <div className="home-container">

@@ -21,7 +21,7 @@ export function InfoModalProvider({ children })
     const [modal, setModal] = useState(null);
     const modalRef = useRef(null);
     const previousElement = useRef(null);
-    const overlayRef = useRef(null);
+    //~ const overlayRef = useRef(null);
     
     
     function alert(message, onCloseCallback)
@@ -44,7 +44,7 @@ export function InfoModalProvider({ children })
     }
     
     
-    function confirm(message, onConfirmCallback, onCancelCallback)
+    function confirm(message, onConfirmCallback, onCancelCallback, focusButton = "primary")
     {
         return(
             new Promise((resolve) =>
@@ -52,6 +52,7 @@ export function InfoModalProvider({ children })
                 setModal({
                     type: "confirm",
                     message,
+                    focusButton,
                     onConfirm: () =>
                     {
                         setModal(null);
@@ -108,7 +109,9 @@ export function InfoModalProvider({ children })
         }
         
         const modalElement = modalRef.current;
-        const primaryButton = modalElement.querySelector("button");
+        const buttons = modalElement.querySelectorAll("button");
+        const primaryButton = buttons[0];
+        const secondaryButton = buttons[1]
         
         /*
             Aqui, serve para o leitor de tela lêr a mensagem.
@@ -117,16 +120,27 @@ export function InfoModalProvider({ children })
             o foco ao fim de 150 ms.
         */
         modalElement.focus();
-        const timer = setTimeout(() =>
-        {
-            if (primaryButton !== null)
+        
+        if (modal.focusButton !== "none")
+        {        
+            const timer = setTimeout(() =>
             {
-                primaryButton.focus();
-            }
+                let buttonToFocus = primaryButton;
+                
+                if (modal.focusButton === "secondary" && secondaryButton)
+                {
+                    buttonToFocus = secondaryButton;
+                }
+                
+                if (buttonToFocus !== null)
+                {
+                    buttonToFocus.focus();
+                }
+            
+            }, 150);
         
-        }, 150);
-        
-        return(() => clearTimeout(timer));
+            return(() => clearTimeout(timer));
+        }
     
     }, [modal]);
     
@@ -149,10 +163,10 @@ export function InfoModalProvider({ children })
                 {
                     modal.onCancel();
                 }
-                else
-                {
-                    modal.onClose();
-                }
+                //~ else
+                //~ {
+                    //~ modal.onClose(); // alert nativo fecha com esc ?
+                //~ }
             }
         }
         
@@ -167,39 +181,39 @@ export function InfoModalProvider({ children })
     // usasse o evento onClick no backdrop, a ferramenta de acessibilidade
     // do firefox dá um aviso: "Elementos clicaveis devem poder receber foco
     // e ter semanticas interativas
-    useEffect(() =>
-    {
-        if (modal === null)
-        {
-            return;
-        }
+    //~ useEffect(() =>
+    //~ {
+        //~ if (modal === null)
+        //~ {
+            //~ return;
+        //~ }
         
         
-        function handleClickOnOverlay(event)
-        {
-            if
-            (
-                overlayRef.current !== null &&
-                overlayRef.current.contains(event.target) === true
-            )
-            {
+        //~ function handleClickOnOverlay(event)
+        //~ {
+            //~ if
+            //~ (
+                //~ overlayRef.current !== null &&
+                //~ overlayRef.current.contains(event.target) === true
+            //~ )
+            //~ {
                 
-                if (modal.type === "confirm")
-                {
-                    modal.onCancel();
-                }
-                else
-                {
-                    modal.onClose();
-                }
-            }
-        }
+                //~ if (modal.type === "confirm")
+                //~ {
+                    //~ modal.onCancel();
+                //~ }
+                //~ else
+                //~ {
+                    //~ modal.onClose();
+                //~ }
+            //~ }
+        //~ }
         
-        document.addEventListener("mousedown", handleClickOnOverlay);
-        return(() => document.removeEventListener("mousedown", handleClickOnOverlay));
+        //~ document.addEventListener("mousedown", handleClickOnOverlay);
+        //~ return(() => document.removeEventListener("mousedown", handleClickOnOverlay));
         
     
-    }, [modal]);
+    //~ }, [modal]);
     
     
     // Cuida de prender o foco no modal.
@@ -293,7 +307,7 @@ export function InfoModalProvider({ children })
         {
             return(createPortal(
                 <div className="infoModal-wrapper">
-                    <div className="infoModal-backdrop" ref={overlayRef}></div>
+                    <div className="infoModal-backdrop"></div>
                     <div
                         role="dialog"
                         ref={modalRef}

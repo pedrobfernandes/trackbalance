@@ -473,7 +473,6 @@ export async function getTopFiveExpensesFromLastThreeMonths(userId)
         }
         
         const monthId = monthRecord.data.id;
-        console.log(monthId);
         
         // Pega as despesas
         const expensesRecord = await hasMonthExpenses(monthId);

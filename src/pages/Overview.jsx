@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+
 import GrouppedButtons from "../components/GrouppedButtons";
-import { FormModal } from "../custom-components/modals";
-import { getTopFiveExpensesFromLastThreeMonths } from "../helpers/dataHelpers"
 import InsertIncomeForm from "../components/InsertIncomeForm";
 import UpdateIncomeForm from "../components/UpdateIncomeForm";
 import InsertExpensesForm from "../components/InsertExpensesForm";
@@ -12,16 +11,24 @@ import MonthNavigation from "../components/MonthNavigation";
 import ActionPanel from "../components/ActionPanel";
 import ExpensesTable from "../components/ExpensesTable";
 import ExpensesDonutChart from "../components/ExpensesDonutChart";
-import { initializeData } from "../services/initApp";
+
+import { FormModal } from "../custom-components/modals";
+import { useModal } from "../custom-components/modals";
+
 import { useOverviewHandlers } from "../hooks/useOverviewHandlers";
 import { useAriaActionStatusAnnouncer } from "../hooks/useAriaActionStatusAnnouncer";
+
+import { getTopFiveExpensesFromLastThreeMonths } from "../helpers/dataHelpers"
+import { initializeData } from "../services/initApp";
+import { supabase } from "../lib/supabaseClient";
+
 
 import "./Overview.css";
 
 
 export default function Overview(props)
 {
-    const { onExit } = props;
+    const { onExit, onDeleteAccount } = props;
     
     const [loggedUserId, setLoggedUserId] = useState(null);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
@@ -41,6 +48,7 @@ export default function Overview(props)
     const [topFive, setTopFive] = useState([]);
     
     const { ariaMessage, announce } = useAriaActionStatusAnnouncer();
+    const { alert, confirm } = useModal();
     
     const totalExpenses = expenses.reduce(
         (accumulator, expense) =>
@@ -48,6 +56,7 @@ export default function Overview(props)
 
     
     const remaining = income - totalExpenses;
+    
     const donutChartRef = useRef(null);
     const menuButtonRef = useRef(null);
     const mainRef = useRef(null);
@@ -81,11 +90,12 @@ export default function Overview(props)
             initializeData({
                 setLoggedUserId, setCurrentYear,
                 setCurrentMonth, setUserFlags,
-                setIncome, setExpenses
+                setIncome, setExpenses,
+                announce
             });
         }
     
-    }, []);
+    }, [announce]);
     
     
     
@@ -104,7 +114,7 @@ export default function Overview(props)
         
         loadTopFive();
     
-    }, [loggedUserId]);
+    }, [loggedUserId, expenses]);
 
     
     useEffect(() =>
@@ -175,7 +185,10 @@ export default function Overview(props)
                 await announce("Receita adicionada com sucesso");
             }}
             onValueChange={handleValueChange}
-            onCancel={handleCloseModal}
+            onCancel={async () => {
+                handleCloseModal();
+                await announce("Operação cancelada");
+            }}
         />,
     
         updateIncome: <UpdateIncomeForm
@@ -184,7 +197,10 @@ export default function Overview(props)
                 await announce("Receita atualizada com sucesso");
             }}
             onValueChange={handleValueChange}
-            onCancel={handleCloseModal}
+            onCancel={async () => {
+                handleCloseModal();
+                await announce("Operação cancelada");
+            }}
         />,
 
     
@@ -193,8 +209,12 @@ export default function Overview(props)
                 handleCloseModal();
                 await announce("Despesa adicionada com sucesso");
             }}
+            expensesData={expenses}
             onValueChange={handleValueChange}
-            onCancel={handleCloseModal}
+            onCancel={async () => {
+                handleCloseModal();
+                await announce("Operação cancelada");
+            }}
         />,
     
         updateExpenses: <UpdateExpensesForm
@@ -204,7 +224,10 @@ export default function Overview(props)
             }}
             expensesData={expenses}
             onValueChange={handleValueChange}
-            onCancel={handleCloseModal}
+            onCancel={async () => {
+                handleCloseModal();
+                await announce("Operação cancelada");
+            }}
         />,
     
         deleteExpenses: <DeleteExpensesForm
@@ -214,7 +237,10 @@ export default function Overview(props)
             }}
             expensesData={expenses}
             onValueChange={handleValueChange}
-            onCancel={handleCloseModal}
+            onCancel={async () => {
+                handleCloseModal();
+                await announce("Operação cancelada");
+            }}
         />,
         
         monthNavigation: <MonthNavigation
@@ -223,7 +249,10 @@ export default function Overview(props)
                 await announce("Mês selecionado com sucesso");
             }}
             onValueChange={navigateToMonth}
-            onCancel={handleCloseNavigate}
+            onCancel={async () => {
+                handleCloseNavigate();
+                await announce("Operação cancelada");
+            }}
         />,
     }
     
@@ -246,6 +275,32 @@ export default function Overview(props)
             callback();
             setIsOpen(false);
         });
+    }
+    
+    
+    async function handleDeleteAccount()
+    {
+        setIsOpen(false);
+        const confirmed = await confirm(
+            "Tem a certeza que deseja excluir a sua conta?" +
+            " Esta operação é irreversível e irá excluir" +
+            " todos os seus dados financeiros de todos os meses.",
+            null,
+            async () => await announce("Exclusão de conta cancelada"),
+            "secondary"
+        );
+        
+        if (confirmed === false)
+        {
+            if (menuButtonRef.current !== null)
+            {
+                menuButtonRef.current.focus();
+            }
+            
+            return;
+        }
+        
+        onDeleteAccount();
     }
     
     
@@ -282,7 +337,7 @@ export default function Overview(props)
                 </>
             );
         }
-    }   
+    }
     
     
     function renderFormModal()
@@ -297,7 +352,10 @@ export default function Overview(props)
                     }}
                     label={formLabels[formType]}
                     isFormModalOpen={isFormModalOpen}
-                    onCancel={handleCloseModal}
+                    onCancel={async () => {
+                        handleCloseModal();
+                        await announce("Operação cancelada");
+                    }}
                 >
                     {formsToShow[formType]}
                 </FormModal>
@@ -320,6 +378,58 @@ export default function Overview(props)
                     aria-atomic="true"
                 >
                     {ariaMessage}
+                </div>
+                
+                
+                <div className="main-content">
+                    <h1>
+                        Visão Geral {showCurrentViewingDate()}
+                    </h1>
+
+                    <section className="summary-section">
+                        <h2>Sumário</h2>
+                        <div className="summary-container">
+                            
+                            <div className="income-summary-container">
+                                <h3>Receita:</h3>
+                                <p>{income === 0 ? '0' : parseFloat(income).toFixed(2)}</p>
+                            </div>
+                            
+                            <div className="expenses-summary-container">
+                                <h3>Despesas:</h3>
+                                <p>{totalExpenses === 0 ? '0' : parseFloat(totalExpenses).toFixed(2)}</p>
+                            </div>
+                            
+                            <div className="remaining-summary-container">
+                                <h3>Restante:</h3>
+                                <p>{remaining === 0 ? '0' : parseFloat(remaining).toFixed(2)}</p>
+                            </div>
+                            
+                        </div>
+                    </section>
+                    
+                    <section className="top-expenses-section">
+                        <h2 aria-hidden={expenses.length === 0}>Maiores gastos dos últimos 3 meses (top 5)</h2>
+                        <TopExpenses expenses={topFive}/>
+                    </section>
+
+                    <section className="details-section">
+                        <h2>Detalhes das despesas (mês atual)</h2>
+                        <div className="details-container">
+                            
+                            <div className="table-container">
+                                <ExpensesTable
+                                    expensesData={expenses}
+                                />
+                            </div>
+                            
+                            <ExpensesDonutChart
+                                expensesData={expenses}
+                                chartRef={donutChartRef}
+                            />
+                            
+                        </div>
+                    </section>
                 </div>
                 
                 
@@ -352,7 +462,7 @@ export default function Overview(props)
                         <section className="options-section">
                             
                             <p id="action-panel-title" className="visually-hidden">
-                                Painel com opões para manipular receita e despesas,
+                                Painel com opções para manipular receita e despesas,
                                 exportar dados e navegar pelos meses
                             </p>
                             
@@ -429,11 +539,28 @@ export default function Overview(props)
                                         Navegar
                                     </button>
                                 </div>
+                                
+                                <div
+                                    className="options-account-container"
+                                    role="region"
+                                    aria-labelledby="account-section-title"
+                                >
+                                    <h3 id="account-section-title">Sua Conta</h3>
+                                    
+                                    <button
+                                        type="button"
+                                        onClick={handleDeleteAccount}
+                                        aria-label="Excluir conta e todos os dados"
+                                    >
+                                        Excluir conta
+                                    </button>
+                    
+                                </div>
                             
                             </div>
                         </section>
                     </ActionPanel>
-
+                    
                     <button
                         type="button"
                         onClick={onExit}
@@ -442,56 +569,6 @@ export default function Overview(props)
                         Sair
                     </button>
                 </aside>
-                
-
-                <h1>
-                    Visão Geral {showCurrentViewingDate()}
-                </h1>
-
-                <section className="summary-section">
-                    <h2>Sumário</h2>
-                    <div className="summary-container">
-                        
-                        <div className="income-summary-container">
-                            <h3>Receita:</h3>
-                            <p>{income === 0 ? '0' : parseFloat(income).toFixed(2)}</p>
-                        </div>
-                        
-                        <div className="expenses-summary-container">
-                            <h3>Despesas:</h3>
-                            <p>{totalExpenses === 0 ? '0' : parseFloat(totalExpenses).toFixed(2)}</p>
-                        </div>
-                        
-                        <div className="remaining-summary-container">
-                            <h3>Restante:</h3>
-                            <p>{remaining === 0 ? '0' : parseFloat(remaining).toFixed(2)}</p>
-                        </div>
-                        
-                    </div>
-                </section>
-                
-                <section className="top-expenses-section">
-                    <h2>Maiores gastos dos últimos 3 meses (top 5)</h2>
-                    <TopExpenses expenses={topFive}/>
-                </section>
-
-                <section className="details-section">
-                    <h2>Detalhes das despesas (mês atual)</h2>
-                    <div className="details-container">
-                        
-                        <div className="table-container">
-                            <ExpensesTable
-                                expensesData={expenses}
-                            />
-                        </div>
-                        
-                        <ExpensesDonutChart
-                            expensesData={expenses}
-                            chartRef={donutChartRef}
-                        />
-                        
-                    </div>
-                </section>
 
             </main>
             

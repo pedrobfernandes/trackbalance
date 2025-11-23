@@ -2,21 +2,31 @@ import { useState, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useModal } from "../custom-components/modals";
 import { FormModal } from "../custom-components/modals";
+import { useFormFieldValidation } from "../hooks/useFormFieldValidation";
+import FormFieldErrorMessage from "./FormFieldErrorMessage";
 
 
 export default function AuthModal(props)
 {
-    const { isOpen, onCancel, onSucess} = props;
+    const { isOpen, onCancel, onSucess } = props;
     
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [supabaseError, setSupabaseError] = useState(null);
     const [step, setStep] = useState("email");
     const [resendCooldown, setResendCooldown] = useState(0);
     
     const otpInputRef = useRef(null);
     const { alert } = useModal();
+    
+    const
+    {
+        error, validateEmail,
+        validateInputTextNumeric,
+        focusField, clearError
+    
+    } = useFormFieldValidation();
     
     
     function startResendCooldown()
@@ -43,15 +53,15 @@ export default function AuthModal(props)
     async function handleResendOtp()
     {
         setLoading(true);
-        setError(null);
+        setSupabaseError(null);
         
         try
         {
-            const { error } = await supabase.auth.signInWithOtp({ email });
+            const { error: resendRequestError } = await supabase.auth.signInWithOtp({ email });
             
-            if (error !== null)
+            if (resendRequestError !== null)
             {
-                setError("Erro ao reenviar código: " + error.message);
+                setSupabaseError("Erro ao reenviar código: " + resendRequestError.message);
             }
             else
             {
@@ -68,7 +78,7 @@ export default function AuthModal(props)
         }
         catch
         {
-            setError("Algo deu errado ao reenviar o codigo.");
+            setSupabaseError("Algo deu errado ao reenviar o codigo.");
         }
         finally
         {
@@ -81,36 +91,46 @@ export default function AuthModal(props)
     {
         event.preventDefault();
         setLoading(true);
-        setError(null);
+        setSupabaseError(null);
+        clearError();
+        
+        if (validateEmail(email, "o e-mail") === false)
+        {
+            focusField("email-input");
+            setLoading(false);
+            return;
+        }
 
         try
         {
-            if (email.trim() === "")
-            {
-                setError("Por favor, insira seu e-mail.");
-                setLoading(false);
-                return;
-            }
 
-            const { error } = await supabase.auth.signInWithOtp({
+            const { error: sendRequestError } = await supabase.auth.signInWithOtp({
                 email,
             });
 
-            if (error !== null)
+            if (sendRequestError !== null)
             {
-                setError("Erro ao enviar código: " + error.message);
+                setSupabaseError(
+                    "Erro ao enviar código de" +
+                    " verificação para o e-mail: " + sendRequestError.message
+                );
             }
             else
             {
                 await alert(
-                    "Código enviado. Verifique seu e-mail e digite o código para entrar na aplicação.",
+                    "Um código de verificação foi enviado" +
+                    " para seu e-mail.\nPor favor verifique o e-mail" +
+                    " e digite o código para entrar na aplicação.",
                     () => setStep("otp")
                 );
             }
         }
         catch
         {
-            setError("Algo deu errado ao enviar o código.");
+            setSupabaseError(
+                "Algo deu errado ao enviar" +
+                " o código de verificação para o e-mail."
+            );
         }
         finally
         {
@@ -124,26 +144,27 @@ export default function AuthModal(props)
     {
         event.preventDefault();
         setLoading(true);
-        setError(null);
+        setSupabaseError(null);
+        clearError();
         
-        if (otp.trim() === "")
+        if (validateInputTextNumeric(otp, "código", {exactLength: 6}) === false)
         {
-            setError("Por favor, insira o código de 6 digitos.");
+            focusField("otp-input");
             setLoading(false);
             return;
         }
         
         try
         {
-            const { error } = await supabase.auth.verifyOtp({
+            const { error: otpVerifyError } = await supabase.auth.verifyOtp({
                 email,
                 token: otp,
                 type: "email",
             });
             
-            if (error !== null)
+            if (otpVerifyError !== null)
             {
-                setError("Código inválido ou expirado.");
+                setSupabaseError("Código inválido ou expirado.");
             }
             else
             {
@@ -153,7 +174,7 @@ export default function AuthModal(props)
         }
         catch
         {
-            setError("Erro ao verificar o código.");
+            setSupabaseError("Erro ao verificar o código.");
         }
         finally
         {
@@ -167,7 +188,8 @@ export default function AuthModal(props)
         setStep("email");
         setEmail("");
         setOtp("");
-        setError(null);
+        setSupabaseError(null);
+        clearError();
     }
     
     
@@ -179,6 +201,7 @@ export default function AuthModal(props)
                 <form
                     className="signup-form"
                     onSubmit={handleSendOtp}
+                    noValidate
                 >
                     
                     <label htmlFor="email-input">Endereço de e-mail</label>
@@ -191,9 +214,8 @@ export default function AuthModal(props)
                     <button
                         type="submit"
                         disabled={loading}
-                        aria-label="Enviar código de validação para o e-mail"
                     >
-                        {loading ? "Enviando" : "Enviar código"}
+                        {loading ? "Aguarde" : "Seguinte"}
                     </button>
                     
                     <button
@@ -204,14 +226,8 @@ export default function AuthModal(props)
                         Cancelar
                     </button>
                     
-                    <p
-                        id="signup-error-message"
-                        style={{  color: "red", minBlockSize: "1rem"}}
-                        aria-live="assertive"
-                        aria-atomic="true"
-                    >
-                        {error || ""}
-                    </p>
+                    <FormFieldErrorMessage error={error || supabaseError}/>
+                    
                     
                 </form>
             );
@@ -222,6 +238,7 @@ export default function AuthModal(props)
                 <form
                     className="otp-form"
                     onSubmit={handleVerifyOtp}
+                    noValidate
                 >
                     
                     <label htmlFor="otp-input">Código de 6 dígitos</label>
@@ -258,19 +275,12 @@ export default function AuthModal(props)
                     <button
                         type="button"
                         onClick={resetModal}
-                        aria-label="Voltar atrás para etapa de e-mail e envio de código"
+                        aria-label="Voltar atrás para etapa de e-mail"
                     >
                         Voltar
                     </button>
                     
-                    <p
-                        id="otp-error-message"
-                        style={{  color: "red", minBlockSize: "1rem"}}
-                        aria-live="assertive"
-                        aria-atomic="true"
-                    >
-                        {error || ""}
-                    </p>
+                    <FormFieldErrorMessage error={error || supabaseError}/>
                     
                 </form>
             );

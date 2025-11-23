@@ -77,7 +77,10 @@ export function useOverviewFinance(props)
         if (type === "receita" && action === "delete")
         {
             const confirmed = await showConfirm(
-                "Tem certeza que deseja deletar a receita?"
+                "Tem certeza que deseja deletar a receita?",
+                null,
+                async () => await announce("Operação cancelada"),
+                "secondary"
             );
             
             if (confirmed === false)

@@ -1,19 +1,28 @@
 import { useState } from "react";
 import { NumberInput } from "../custom-components/inputs";
+import { useFormFieldValidation } from "../hooks/useFormFieldValidation";
+import FormFieldErrorMessage from "./FormFieldErrorMessage";
 
 
 export default function InsertExpensesForm(props)
 {
-    const { onSubmitSuccess, onValueChange, onCancel } = props;
+    const { onSubmitSuccess, expensesData, onValueChange, onCancel } = props;
     const [expense, setExpense] = useState({ category: "", amount: 0 });
+    const [expenseError, setExpenseError] = useState(null);
+    
+    const
+    {
+        error, validateNumber,
+        validateText, focusField,
+        clearError
+    
+    } = useFormFieldValidation();
     
     
     function handleCategoryInput(event)
     {
-        const newCategory = event.target.value
-        
         setExpense((previous) => ({
-            category: newCategory,
+            category: event.target.value.toLowerCase(),
             amount: previous.amount,
         }));
     }
@@ -21,11 +30,9 @@ export default function InsertExpensesForm(props)
     
     function handleAmountInput(event)
     {
-        const newAmount = parseFloat(event.target.value);
-        
         setExpense((previous) => ({
             category: previous.category,
-            amount: newAmount,
+            amount: parseFloat(event.target.value),
         }));
     }
     
@@ -33,26 +40,45 @@ export default function InsertExpensesForm(props)
     function handleSubmit(event)
     {
         event.preventDefault();
+        clearError();
         
-        const normalizedCategory = expense.category
-            .trim()
-            .replace(/\s+/g,  ' ')
-            .toLowerCase();
+        const hasAlready = expensesData.some(expenseData =>
+            expenseData.category === expense.category
+        );
         
-        const normalizedExpense =
+        if (hasAlready === true)
         {
-            category: normalizedCategory,
-            amount: expense.amount
+            setExpenseError(
+            `A despesa ${expense.category} ja foi registrada.` +
+            " Não é permitido categorias repetidas no mesmo mês"
+            );
+            
+            focusField("expense-category-input");
+            return;
         }
         
-        onValueChange("insertExpenses", normalizedExpense);
+        
+        if (validateText(expense.category, "categoria") === false)
+        {
+            focusField("expense-category-input");
+            return;
+        }
+        
+        if (validateNumber(expense.amount, "valor") === false)
+        {
+            focusField("expense-amount-input");
+            return;
+        }
+        
+        
+        onValueChange("insertExpenses", expense);
         setExpense({ category: "", amount: 0 });        
         onSubmitSuccess();
     }
     
     
     return(
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
             <label
                 id="expenses-category-label"
                 htmlFor="expense-category-input"
@@ -64,7 +90,6 @@ export default function InsertExpensesForm(props)
                 type="text"
                 value={expense.category}
                 onChange={handleCategoryInput}
-                required
             />
 
             <label htmlFor="expense-amount-input">Digite o valor da despesa:</label>
@@ -78,6 +103,9 @@ export default function InsertExpensesForm(props)
             
             <button type="submit">Enviar</button>
             <button type="button" onClick={onCancel}>Cancelar</button>
+            
+            <FormFieldErrorMessage error={error || expenseError}/>
+            
         </form>
     );
 }

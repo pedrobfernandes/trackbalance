@@ -90,17 +90,16 @@ export default function NumberInput(props)
     
     function handleKeyDown(event)
     {
-        if (event.key === "ArrowUp")
+        if (event.key === "ArrowUp" || event.key === "ArrowDown")
         {
             event.preventDefault();
-            handleIncrement();
         }
-        
-        if (event.key === "ArrowDown")
-        {
-            event.preventDefault();
-            handleDecrement();
-        }
+    }
+    
+    
+    function handleWheel(event)
+    {
+        event.preventDefault();
     }
     
     
@@ -114,6 +113,7 @@ export default function NumberInput(props)
                 value={value}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
+                onWheel={handleWheel}
                 min={min}
                 max={max}
                 step={step}

@@ -11,15 +11,16 @@ export async function initializeData(props)
     {
         setLoggedUserId, setCurrentYear,
         setCurrentMonth, setUserFlags,
-        setIncome, setExpenses
+        setIncome, setExpenses,
+        announce
     
     } = props;
     
-    const testYear = 2026;
-    const testMonth = 5;
+    //~ const testYear = 2027;
+    //~ const testMonth = 6;
     
-    const initResult = await initData({ testYear, testMonth });
-    //~ const initResult = await initData();
+    //~ const initResult = await initData({ testYear, testMonth, announce });
+    const initResult = await initData(announce);
     
     if (initResult !== null)
     {

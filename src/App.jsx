@@ -1,15 +1,20 @@
-import { useState, useEffect} from "react";
-import { Routes, Route, Navigate } from "react-router";
+import { useState, useEffect } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router";
 import { supabase } from "./lib/supabaseClient";
 import Home from "./pages/Home";
 import Overview from "./pages/Overview";
 import { useModal } from "./custom-components/modals";
+import { useAriaActionStatusAnnouncer } from "./hooks/useAriaActionStatusAnnouncer";
 
 
 export default function App()
 {
     const [session, setSession] = useState(null);
-    const { confirm } = useModal();
+    const { confirm, alert } = useModal();
+    const { ariaMessage, announce } = useAriaActionStatusAnnouncer();
+    const location = useLocation();
+    
+    const deleteUrl = import.meta.env.VITE_SUPABASE_DELETE_ACCOUNT_URL;
 
 
     async function loadUserSession()
@@ -52,10 +57,68 @@ export default function App()
     }, []);
     
     
+    useEffect(() =>
+    {
+        if (location.pathname === "/")
+        {
+            document.title = "TrackBalance - Home";
+        }
+        else
+        {
+            document.title = "TrackBalance - Visão Geral";
+        }
+        
+    }, [location.pathname]);
+    
+    
+    async function handleRemoveAccount()
+    {
+        try
+        {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (session === null)
+            {
+                throw new Error("Nenhuma sessão ativa");
+            }
+            
+            const response = await fetch(deleteUrl, {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${session.access_token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            
+            const result = await response.json();
+            
+            if (result.ok === false)
+            {
+                throw new Error(result.error || "Falha ao deletar conta")
+            }
+            
+            await alert(
+                "Sua conta e todos os dados foram excluidos com sucesso." +
+                " Em seguida irá sair da aplicação e retornar" +
+                " á página inicial."
+            );
+            
+            await supabase.auth.signOut();
+            await announce("Você está agora na página incial, Home");
+        }
+        catch (error)
+        {
+            await alert("Erro ao deletar conta: " + error);
+        }
+    }
+    
+    
     async function handleLogout()
     {
         const wantsToExit = await confirm(
-            "Tem a certeza que deseja sair da aplicação?"
+            "Tem a certeza que deseja sair da aplicação?",
+            null,
+            async () => await announce("Cancelado")
         );
 
         if (wantsToExit === false)
@@ -65,6 +128,8 @@ export default function App()
 
         await supabase.auth.signOut();
         setSession(null);
+        
+        await announce("Você está agora na página incial, Home");
     }
 
 
@@ -85,7 +150,7 @@ export default function App()
                 path="/overview" 
                 element={
                     session !== null
-                    ? <Overview onExit={handleLogout}/> 
+                    ? <Overview onExit={handleLogout} onDeleteAccount={handleRemoveAccount}/> 
                     : <Navigate to="/" replace />
                 } 
             />
@@ -99,6 +164,14 @@ export default function App()
                 }
             />
         </Routes>
+        
+        <div
+            className="visually-hidden"
+            aria-live="polite"
+            aria-atomic="true"
+        >
+            {ariaMessage}
+        </div>
         
         </>
     );

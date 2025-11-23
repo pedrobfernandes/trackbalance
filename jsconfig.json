@@ -1,17 +1,23 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ES2022",
-    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "module": "ESNext",
+
+    // Permite JSX (necessário para React)
     "jsx": "react-jsx",
-    "checkJs": false,
+
+    
+    // Melhorias de IntelliSense
     "allowJs": true,
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "strict": false,
-    "lib": ["DOM", "ES2022"]
+    "checkJs": false,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+
+    // Evita erros de biblioteca
+    "lib": ["DOM", "ESNext"]
   },
+
+  // Define quais pastas o editor deve considerar
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

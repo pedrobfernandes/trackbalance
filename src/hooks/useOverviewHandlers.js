@@ -36,7 +36,8 @@ export function useOverviewHandlers(props)
         getCurrentYear, getCurrentMonth, getCurrentViewingYear,
         getCurrentViewingMonth, setCurrentViewingYear,
         setCurrentViewingMonth, setIncome, setExpenses,
-        setCurrentViewingMonthId, setFormType, setIsFormModalOpen
+        setCurrentViewingMonthId, setFormType, setIsFormModalOpen,
+        announce
     });
     
     const { handleExportToCsv, handleExportToPdf } = useOverviewExport({

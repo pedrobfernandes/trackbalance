@@ -6,7 +6,7 @@ import
     getPreviousMonthId, toYearMonthNumber
 
 } from "../helpers/dataHelpers";
-import { showAlert, showConfirm } from "../custom-components/modals";
+import { showAlert } from "../custom-components/modals";
 
 
 export function useOverviewNavigation(props)
@@ -17,7 +17,8 @@ export function useOverviewNavigation(props)
         getCurrentYear, getCurrentMonth, getCurrentViewingYear,
         getCurrentViewingMonth, setCurrentViewingYear,
         setCurrentViewingMonth, setIncome, setExpenses,
-        setCurrentViewingMonthId, setFormType, setIsFormModalOpen
+        setCurrentViewingMonthId, setFormType, setIsFormModalOpen,
+        announce
     
     } = props;
     
@@ -57,7 +58,9 @@ export function useOverviewNavigation(props)
         
         if (direction === "backwards")
         {
-            if (targetMonth < stopMonth)
+            const userFlags = getUserFlags();
+
+            if (targetMonth < stopMonth || userFlags === null)
             {
                 await showAlert(
                 "Não é possivel navegar para meses" +
@@ -98,16 +101,6 @@ export function useOverviewNavigation(props)
         
         if (monthData.status === "not_found")
         {
-            const wantsToCreateAndFill = await showConfirm(
-            `Mês ${month.toString().padStart(2, "0")}` +
-            ` ainda não existe. Deseja criar o mês` +
-            ` e preencher com os dados do mês anterior?`
-            );
-            
-            if (wantsToCreateAndFill === false)
-            {
-                return(null);
-            }
             
             monthData = await createCurrentMonth({
                 userId: getLoggedUserId(),
@@ -236,7 +229,7 @@ export function useOverviewNavigation(props)
                 year: monthData.data.year,
                 month: monthData.data.month
             });
-            
+
             return(true);
             
         }

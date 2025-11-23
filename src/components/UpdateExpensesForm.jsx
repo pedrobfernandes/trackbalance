@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { NumberInput } from "../custom-components/inputs";
 import { CustomSelect } from "../custom-components/inputs";
+import { useFormFieldValidation } from "../hooks/useFormFieldValidation";
+import FormFieldErrorMessage from "./FormFieldErrorMessage";
 
 
 export default function UpdateExpensesForm(props)
@@ -14,6 +16,13 @@ export default function UpdateExpensesForm(props)
     
     const initialCategory = expensesData[0].category;
     const [newExpense, setNewExpense] = useState({ category: initialCategory, amount: 0 });
+    
+    const
+    {
+        error, validateNumber,
+        focusField, clearError
+    
+    } = useFormFieldValidation();
     
     
     const categories = expensesData.map(expense =>
@@ -33,11 +42,9 @@ export default function UpdateExpensesForm(props)
     
     function handleAmountChange(event)
     {
-        const expense =  parseFloat(event.target.value);
-        
         setNewExpense((previous) => ({
             category: previous.category,
-            amount: expense,
+            amount: parseFloat(event.target.value)
         }));
     }
     
@@ -45,6 +52,14 @@ export default function UpdateExpensesForm(props)
     function handleSubmit(event)
     {
         event.preventDefault();
+        clearError();
+        
+        if (validateNumber(newExpense.amount, "nova despesa") === false)
+        {
+            focusField("new-value-input");
+            return;
+        }
+        
         onValueChange("updateExpenses", newExpense);
         setNewExpense({ category: "", amount: 0 });        
         onSubmitSuccess();
@@ -52,7 +67,7 @@ export default function UpdateExpensesForm(props)
 
 
     return(
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
 
             <CustomSelect
                 value={newExpense.category}
@@ -72,6 +87,9 @@ export default function UpdateExpensesForm(props)
             
             <button type="submit">Enviar</button>
             <button type="button" onClick={onCancel}>Cancelar</button>
+            
+            <FormFieldErrorMessage error={error}/>
+            
         </form>
     );
 }
