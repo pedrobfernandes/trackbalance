@@ -272,8 +272,8 @@ export default function Overview(props)
     {
         return(() =>
         {
+            setIsOpen(false);           
             callback();
-            setIsOpen(false);
         });
     }
     
