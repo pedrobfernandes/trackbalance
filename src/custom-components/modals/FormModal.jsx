@@ -141,12 +141,21 @@ export default function FormModal(props)
         firstFocusableRef.current = focusableElements[0];
         lastFocusableRef.current = focusableElements[focusableElements.length - 1];
         
+        const isMobile = "ontouchstart" in window;
         
-        setTimeout(() =>
+        if (isMobile)
         {
-            firstFocusableRef.current.focus();
+            modalRef.current.focus();
+        }
+        else
+        {
         
-        }, 300);
+            setTimeout(() =>
+            {
+                firstFocusableRef.current.focus();
+            
+            }, 300);
+        }
         
 
         modalRef.current.addEventListener("keydown", handleKeyDown);
