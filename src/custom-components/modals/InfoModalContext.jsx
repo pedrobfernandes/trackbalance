@@ -317,7 +317,11 @@ export function InfoModalProvider({ children })
                         tabIndex={-1}
                         >
                         <div className="infoModal-content-container">
-                            <p className="infoModal-message" id="title">
+                            <p
+                                className="infoModal-message"
+                                id="title"
+                                aria-live="assertive"
+                            >
                                 {modal.message}
                             </p>
                             

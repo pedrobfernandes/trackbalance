@@ -189,10 +189,11 @@ export default function FormModal(props)
                 className="formModal"
                 role="dialog"
                 aria-modal="true"
-                aria-label={label}
+                aria-labelledby="dialog-label"
                 ref={modalRef}
                 tabIndex={-1}
             >
+                <h1 className="visually-hidden" id="dialog-label">{label}</h1>
 
                 <div className="formModal-content-container">
                     {children}
