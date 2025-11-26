@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 import "./FormModal.css";
@@ -19,6 +19,8 @@ export default function FormModal(props)
     } = props;
 
 
+    const [announceLabel, setAnnounceLabel] = useState(false);
+    
     const modalRef = useRef(null);
     const firstFocusableRef = useRef(null);
     const lastFocusableRef = useRef(null);
@@ -142,11 +144,15 @@ export default function FormModal(props)
         firstFocusableRef.current = focusableElements[0];
         lastFocusableRef.current = focusableElements[focusableElements.length - 1];
         
+        setAnnounceLabel(true);
+        
         setTimeout(() =>
         {
             firstFocusableRef.current.focus();
+            
+            setTimeout(() => setAnnounceLabel(false), 1000);
         
-        }, 200);
+        }, 300);
         
 
         modalRef.current.addEventListener("keydown", handleKeyDown);
@@ -184,6 +190,14 @@ export default function FormModal(props)
         <div className={`formModal-wrapper ${className}`}>
 
             <div className="formModal-backdrop" ref={backdropRef}></div>
+            
+            <div
+                className="visually-hidden"
+                aria-live="assertive"
+                aria-atomic="true"
+            >
+                {announceLabel && label}
+            </div>
 
             <div
                 className="formModal"
