@@ -146,7 +146,7 @@ export default function FormModal(props)
         {
             firstFocusableRef.current.focus();
         
-        }, 500);
+        }, 200);
         
 
         modalRef.current.addEventListener("keydown", handleKeyDown);
