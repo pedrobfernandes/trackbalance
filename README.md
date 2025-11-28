@@ -95,7 +95,7 @@ VITE_SUPABASE_ANON_KEY=sua_chave_anon_publica
 4. Configure o banco de dados
 - Crie um projeto no Supabase
 - Execute o script que está na pasta `database/setup.sql` no editor SQL do projeto
-- Crie uma Edge Function com o nome: `delete-user`
+- Crie uma Edge Function com o nome: `delete-user-account`
 - Configure a Edge Function `delete-user-account` usando o arquivo da pasta `database/delete-user-account/index.ts`
 - No dashboard do Supabase, procure pelos templates de Email, e use o template da pasta `email-template` para "Confirm sign up" e "Magic link"
 5. Execute a aplicação
