@@ -246,6 +246,7 @@ export default function AuthModal(props)
                         id="otp-input"
                         ref={otpInputRef}
                         type="text"
+                        inputMode="numeric"
                         value={otp}
                         onChange={(event) => setOtp(event.target.value)}
                         aria-describedby="otp-form-input-desc"
