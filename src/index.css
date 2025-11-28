@@ -20,13 +20,13 @@
     --max-size: 100%;
     
     
-    --main-background-color: #0D0D1A;
+    --main-background-color: #0E121E;
     --text-color: #B7B7B7;
-    --button-color: #0D0D1A;
+    --button-color: #0E121E;
     
     
-    --border-style: 0.1rem solid #1C2331;
-    --outline-style: 0.2rem solid #1C2331;
+    --border-style: 0.1rem solid #2C3242;
+    --outline-style: 0.2rem solid #2C3242;
     --transitions: transform 0.3s ease-in-out;
     --transform-hover: translate(0.3rem, 0.3rem);
     --transform-active: translate(0.6rem, 0.6rem);
@@ -111,20 +111,27 @@ button
     font-size: var(--text-font);
     padding: 0.5rem 1rem;
     border: var(--border-style);
-    border-radius: 1rem;
+    border-radius: 1.5rem;
     background-color: var(--button-color);
     color: var(--text-color);
     transition: var(--transitions);
+    min-width: 4.4rem;
+    min-height: 4.4rem;
 }
 
+input[type="text"],
+input[type="number"],
+input[type="email"]
+{
+    min-height: 4.4rem;
+}
 
 
 input
 {
-    outline: none;
     width: var(--max-size);
     padding: 0.5rem 1rem;
-    border-radius: 1rem;
+    border-radius: 1.5rem;
     border: var(--border-style);
     background-color: var(--main-background-color);
     color: var(--text-color);
@@ -186,6 +193,17 @@ button:focus,
 input:focus,
 a:focus
 {
+    outline: none;
+}
+
+button:focus,
+input:focus
+{
     outline: var(--outline-style);
     outline-offset: 0;
+}
+
+a:focus
+{
+    outline: 0.3rem solid #2C3242;
 }

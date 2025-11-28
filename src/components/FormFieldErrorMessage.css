@@ -1,0 +1,6 @@
+.form-field-error-message
+{
+    color: var(--text-color);
+    font-weight: var(--bolder-font);
+    min-block-size: 1rem;
+}

@@ -27,8 +27,8 @@
 
 .formModal
 {
-    width: 80vw;
-    max-width: 60rem;
+    width: 90vw;
+    min-height: 50%;
     max-height: 70%;
     border: var(--border-style);
     background-color: var(--main-background-color);
@@ -42,4 +42,14 @@
 {
     overflow: auto;
     padding: 0;
+}
+
+
+@media (min-width: 28.2em)
+{
+    .formModal
+    {
+        max-width: 60rem;
+        min-height: auto;
+    }
 }

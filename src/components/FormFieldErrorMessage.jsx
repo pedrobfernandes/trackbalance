@@ -1,3 +1,5 @@
+import "./FormFieldErrorMessage.css";
+
 export default function FormFieldErrorMessage(props)
 {
     const { error, className = "" } = props;
@@ -11,7 +13,6 @@ export default function FormFieldErrorMessage(props)
     return(
         <p
             className={`form-field-error-message ${className}`}
-            style={{ color: "red", fontWeight: "700", minBlockSize: "1rem" }}
             aria-live="assertive"
             aria-atomic="true"
         >

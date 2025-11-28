@@ -122,7 +122,7 @@ export function InfoModalProvider({ children })
         modalElement.focus();
         
         if (modal.focusButton !== "none")
-        {        
+        {           
             const timer = setTimeout(() =>
             {
                 let buttonToFocus = primaryButton;
