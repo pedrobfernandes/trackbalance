@@ -2,6 +2,27 @@
 
 Uma aplicação web para controle de finanças pessoais desenvolvida como projeto de aprendizado e portfólio. O foco principal foi garantir uma experiência acessível e intuitiva para todos os usuários.
 
+## 📸 Capturas de Tela
+
+| Dashboard desktop top | Dashboard desktop bottom |
+|-----------------------|--------------------------|
+| [![Screenshot Dashboard Desktop](./screenshots/TrackBalance-Visão-Geral-desktop-top.png)](./screenshots/) | [![Screenshot Dashboard Desktop](./screenshots/TrackBalance-Visão-Geral-desktop-bottom.png)](./screenshots/) |
+
+| Modal de Forms desktop| Sidebar desktop         |
+|-----------------------|--------------------------|
+| [![Screenshot Form Modal Desktop](./screenshots/TrackBalance-Visão-Geral-desktop-modal.png)](./screenshots/) | [![Screenshot Sidebar Desktop](./screenshots/TrackBalance-Visão-Geral-desktop-sidebar.png)](./screenshots/) |
+
+| Dashboard mobile top  | Dashboard mobile bottom  | Sidebar mobile |
+|-----------------------|--------------------------|-----------------
+| [![Screenshot Dashboard Mobile](./screenshots/TrackBalance-Visão-Geral-mobile-top.png)](./screenshots/) | [![Screenshot Dashboard Mobile](./screenshots/TrackBalance-Visão-Geral-mobile-bottom.png)](./screenshots/) | [![Screenshot Sidebar Mobile](./screenshots/TrackBalance-Visão-Geral-mobile-sidebar.png)](./screenshots/) |
+
+| Home Mobile  | Login Mobile | Modal de Forms Mobile |
+|-----------------------|--------------------------|-----------------
+| [![Screenshot Home Mobile](./screenshots/TrackBalance-Home-mobile.png)](./screenshots/) | [![Screenshot Login Mobile](./screenshots/TrackBalance-Home-mobile-login.png)](./screenshots/) | [![Screenshot Form Modal Mobile](./screenshots/TrackBalance-Visão-Geral-mobile-modal.png)](./screenshots/) |
+
+
+
+
 ## 📋 Sobre o Projeto
 
 O TrackBalance permite que usuários gerenciem suas finanças mensais de forma simples e organizada. A aplicação oferece controle sobre receitas e despesas, com navegação entre meses e exportação de dados.
