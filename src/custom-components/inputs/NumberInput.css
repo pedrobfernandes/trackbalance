@@ -2,7 +2,7 @@
 {
     display: flex;
     flex-direction: column;
-    width: var(--max-size);
+    width: 100%;
     align-items: center;
     gap: 1rem;
     border: var(--border-style);

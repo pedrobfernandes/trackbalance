@@ -3,14 +3,14 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    width: var(--max-size);
+    width: 100%;
     position: relative; /* para o dropdown absoluto */
 }
 
 
 .custom-select-label
 {
-    font-weight: var(--bolder-font);
+    font-weight: 700;
     margin-bottom: 1rem;
 }
 
@@ -26,7 +26,7 @@
     background-color: var(--main-background-color);
     color: var(--text-color);
     cursor: pointer;
-    font-size: var(--text-font);
+    font-size: 1.6rem;
     min-height: 4.4rem;
 }
 
@@ -50,7 +50,7 @@
     position: absolute;
     top: 100%;
     left: 0;
-    width: var(--max-size);
+    width: 100%;
     max-height: calc(100vh - 4rem);
     overflow: auto;
     background-color: var(--main-background-color);

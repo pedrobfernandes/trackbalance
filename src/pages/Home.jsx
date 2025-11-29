@@ -20,14 +20,12 @@ export default function Home()
     
     return(
         <div className="home-container">
-        
-            <main className="home-main">
             
-                <div className="heading1-container">
-                <h1>TrackBalance - Home</h1>
-                </div>
-                
-                <div className="content-container">
+            <header>
+                <h1>TrackBalance</h1>
+            </header>
+            
+            <main className="home-main">
                 <p>
                     Uma aplicação simples para controlar receitas e despesas.
                     Projeto de aprendizado e portfólio.
@@ -39,7 +37,6 @@ export default function Home()
                 >
                     Login
                 </button>
-                </div>
             </main>
             
             <footer className="home-footer" >

@@ -7,18 +7,7 @@
     --second-level-heading-font: clamp(2rem, 2.2rem + 4vw, 2.4rem);
     --third-level-heading-font: clamp(1.8rem, 2rem + 4vw, 2.2rem);
     --text-font: 1.6rem;
-    
-    --thin-font: 300;
-    --normal-font: 400;
-    --medium-font: 500;
-    --bolder-font: 700;
-    --heavier-font: 900;
 
-    --main-gap: 4rem;
-    --half-gap: 2rem;
-
-    --max-size: 100%;
-    
     
     --main-background-color: #0E121E;
     --text-color: #B7B7B7;
@@ -73,11 +62,12 @@ body
 {
     cursor: default;
     line-height: 1.6;
-    font-size: var(--text-font);
-    font-weight: var(--normal-font);
+    font-size: 1.6rem;
+    font-weight: 400;
     font-family: "Manrope", sans-serif;
     background-color: var(--main-background-color);
     color: var(--text-color);
+    padding: 0.1rem 0;
 }
 
 
@@ -85,21 +75,21 @@ h1
 {
     text-align: center;
     font-size: var(--first-level-heading-font);
-    font-weight: var(--heavier-font);
+    font-weight: 900;
 }
 
 h2
 {
     text-align:  center;
     font-size: var(--second-level-heading-font);
-    font-weight: var(--bolder-font);
-    margin-bottom: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem
 }
 
 h3
 {
     font-size: var(--third-level-heading-font);
-    font-weight: var(--medium-font);
+    font-weight: 500;
 }
 
 
@@ -107,8 +97,8 @@ button
 {
     cursor: pointer;
     font-family: "Manrope", sans-serif;
-    font-weight: var(--bolder-font);
-    font-size: var(--text-font);
+    font-weight: 700;
+    font-size: 1.6rem;
     padding: 0.5rem 1rem;
     border: var(--border-style);
     border-radius: 1.5rem;
@@ -129,19 +119,19 @@ input[type="email"]
 
 input
 {
-    width: var(--max-size);
+    width: 100%;
     padding: 0.5rem 1rem;
     border-radius: 1.5rem;
     border: var(--border-style);
     background-color: var(--main-background-color);
     color: var(--text-color);
-    font-size: var(--text-font);
+    font-size: 1.6rem;
 }
 
 
 form
 {
-    margin: var(--main-gap);
+    margin: 4rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -153,7 +143,7 @@ form
 
 form button
 {
-    width: var(--max-size);
+    width: 100%;
 }
 
 form h2
@@ -163,19 +153,17 @@ form h2
 
 label
 {
-    font-weight: var(--bolder-font);
+    font-weight: 700;
     color: var(--text-color);
 }
 
 
-button:hover,
-a:hover
+button:hover
 {
     transform: var(--transform-hover);
 }
 
-button:active,
-a:active
+button:active
 {
     transform: var(--transform-active);
 }
@@ -188,13 +176,6 @@ button:disabled
     transform: none;
 }
 
-
-button:focus,
-input:focus,
-a:focus
-{
-    outline: none;
-}
 
 button:focus,
 input:focus

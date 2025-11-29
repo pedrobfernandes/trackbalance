@@ -3,9 +3,15 @@
     border-radius: 1rem;
     overflow: auto;
     border:var(--border-style);
-    width: var(--max-size);
+    width: 100%;
     height: 23rem;
     outline: none;
+}
+
+.table-wrapper:focus
+{
+    outline: 0.3rem solid #2C3242;
+    outline-offset: 0;
 }
 
 
@@ -22,7 +28,7 @@
 .expenses-table
 {
     table-layout: auto;
-    width: var(--max-size);
+    width: 100%;
     border-collapse: collapse;
     text-align: left;
 }
@@ -100,7 +106,7 @@ tbody td
 
 .sort-button
 {
-    width: var(--max-size);
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -110,7 +116,7 @@ tbody td
 
 .table-search-form
 {
-    width: var(--max-size);
+    width: 100%;
     margin: 0 auto;
     background-color: var(--main-background-color);
 }
