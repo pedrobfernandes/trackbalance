@@ -24,10 +24,8 @@
 .home-main p
 {
     max-width: 42ch;
-    text-wrap: balance;
     margin: 0 auto;
 }
-
 
 
 .home-footer
@@ -35,6 +33,7 @@
     width: 100%;
     border-top: var(--border-style);
     padding: 1rem 0;
+    background-color: var(--secondary-background-color)
 }
 
 .author-link

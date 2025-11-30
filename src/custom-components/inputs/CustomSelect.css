@@ -72,6 +72,6 @@
 .custom-select-item.highlighted,
 .custom-select-item:hover
 {
-    background-color: #1c2331;
-    color: white;
+    background-color: #535361;
+    color: var(--text-color);
 }

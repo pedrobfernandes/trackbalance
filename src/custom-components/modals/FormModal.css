@@ -31,10 +31,23 @@
     min-height: 50%;
     max-height: 70%;
     border: var(--border-style);
-    background-color: var(--main-background-color);
+    background-color: var(--secondary-background-color);
     border-radius: 1rem;
     z-index: 1110;
     overflow: auto;
+}
+
+
+.formModal form
+{
+    background-color: var(--secondary-background-color);
+}
+
+
+.formModal form input,
+.formModal form button
+{
+    background-color: var(--main-background-color);
 }
 
 

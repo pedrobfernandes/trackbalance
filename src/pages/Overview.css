@@ -42,7 +42,7 @@ h1
     left: 0;
     height: calc(100% - 8rem);
     width: 24rem;
-    background: var(--main-background-color);
+    background: var(--secondary-background-color);
     border-right: var(--border-style);
     padding: 1rem;
     overflow-y: auto;
@@ -51,8 +51,14 @@ h1
 
 .action-panel:focus
 {
-    outline: 0.3rem solid #2C3242;
+    outline: 0.3rem solid #C0C0C0;
     outline-offset: 0;
+}
+
+
+.action-panel button
+{
+    background-color: var(--main-background-color);
 }
 
 .sidebar button
@@ -164,9 +170,10 @@ h1
     {
         top: 0;
         left: 1.5rem;
-        height: 100vh;
+        height: 100%;
         width: 6rem;
         border-right: var(--border-style);
+        border-top: none;
         flex-direction: column;
         align-items: center;
         padding: 1rem 0;

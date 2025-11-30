@@ -3,14 +3,15 @@
     border-radius: 1rem;
     overflow: auto;
     border:var(--border-style);
-    width: 100%;
+    width: 98%;
+    margin: 0 auto;
     height: 23rem;
     outline: none;
 }
 
 .table-wrapper:focus
 {
-    outline: 0.3rem solid #2C3242;
+    outline: 0.3rem solid #C0C0C0;
     outline-offset: 0;
 }
 
@@ -118,7 +119,6 @@ tbody td
 {
     width: 100%;
     margin: 0 auto;
-    background-color: var(--main-background-color);
 }
 
 
@@ -141,20 +141,6 @@ tbody td
         table-layout: fixed;
     }
     
-    .input-group
-    {
-        flex-direction: row;
-    }
-    
-    .input-group input
-    {
-        width: 60%;
-    }
-    
-    .input-group button
-    {
-        width: 40%;
-    }
     
     .sort-button
     {
@@ -174,7 +160,34 @@ tbody td
 }
 
 
-@media (min-width: 35.75em)
+@media (min-width: 37.5em)
+{
+    .input-group
+    {
+        flex-direction: row;
+    }
+    
+    .input-group input
+    {
+        width: 60%;
+    }
+    
+    .input-group button
+    {
+        width: 40%;
+    }
+}
+
+@media (min-width: 41em)
+{
+    .input-group
+    {
+        max-width: 80rem;
+    }
+}
+
+
+@media (min-width: 62.5em)
 {
     .input-group input
     {
@@ -184,14 +197,5 @@ tbody td
     .input-group button
     {
         width: 20%;
-    }
-}
-
-
-@media (min-width: 41em)
-{
-    .input-group
-    {
-        max-width: 80rem;
     }
 }

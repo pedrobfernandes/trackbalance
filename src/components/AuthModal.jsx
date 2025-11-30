@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useModal } from "../custom-components/modals";
 import { FormModal } from "../custom-components/modals";
@@ -18,6 +18,7 @@ export default function AuthModal(props)
     const [resendCooldown, setResendCooldown] = useState(0);
     
     const otpInputRef = useRef(null);
+    const resendIntervalRef = useRef(null);
     const { alert } = useModal();
     
     const
@@ -29,17 +30,36 @@ export default function AuthModal(props)
     } = useFormFieldValidation();
     
     
+    useEffect(() =>
+    {
+        return(() =>
+        {
+            if (resendIntervalRef.current !== null)
+            {
+                clearInterval(resendIntervalRef.current);
+            }
+        })
+    
+    }, []);
+    
+    
     function startResendCooldown()
     {
+        if (resendIntervalRef.current !== null)
+        {
+            clearInterval(resendIntervalRef.current);
+        }
+        
         setResendCooldown(30);
         
-        const interval = setInterval(() =>
+        resendIntervalRef.current = setInterval(() =>
         {
             setResendCooldown(previous =>
             {
                 if (previous <= 1)
                 {
-                    clearInterval(interval);
+                    clearInterval(resendIntervalRef.current);
+                    resendIntervalRef.current = null;
                     return(0);
                 }
                 
@@ -185,10 +205,17 @@ export default function AuthModal(props)
     
     function resetModal()
     {
+        if (resendIntervalRef.current !== null)
+        {
+            clearInterval(resendIntervalRef.current);
+            resendIntervalRef.current = null;
+        }
+        
         setStep("email");
         setEmail("");
         setOtp("");
         setSupabaseError(null);
+        setResendCooldown(0);
         clearError();
     }
     

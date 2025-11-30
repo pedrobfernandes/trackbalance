@@ -46,12 +46,3 @@
         justify-content: space-between;
     }
 }
-
-
-@media (min-width: 50em)
-{
-    .top-expenses-container
-    {
-        max-width: 80%;
-    }
-}

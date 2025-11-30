@@ -15,11 +15,12 @@ export default function ExpensesDonutChart(props)
 {
     const { expensesData, chartRef } = props;
     const RADIAN = Math.PI / 180;
+
     const COLORS =
     [
-        "#0088FE", "#00C49F",
-        "#FFBB28", "#FF8042",
-        "#AA66CC", "#FF4444"
+         "#535361", "#6A6A7A",
+         "#818193", "#40404D",
+         "#9898AC", "#2A2A33"
     ];
     
     

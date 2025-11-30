@@ -34,10 +34,16 @@
     width: 90vw;
     transform: translate(-50%, -50%);
     border: var(--border-style);
-    background-color: var(--main-background-color);
+    background-color: var(--secondary-background-color);
     border-radius: 1.5rem;
     overflow: hidden;
     z-index: 1100;
+}
+
+
+.infoModal button
+{
+    background-color: var(--main-background-color);
 }
 
 .infoModal:focus
@@ -50,7 +56,7 @@
 .infoModal-content-container
 {
     height: 100%;
-    background-color: var(--main-background-color);
+    background-color: var(--secondary-background-color);
     color: var(--text-color);
     padding: 2rem;
     overflow: auto;
