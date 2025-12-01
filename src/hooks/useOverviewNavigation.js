@@ -46,14 +46,17 @@ export function useOverviewNavigation(props)
         {
             if (targetMonth > stopMonth)
             {
-                await showAlert(
-                "Não é possivel navegar para meses" +
-                " futuros além do mês atual."
-                );
-                return(false);
+                return({
+                    status: false,
+                    message: "Não é possivel navegar para" +
+                    " meses futuros além do mês atual."
+                });
             }
             
-            return(true);
+            return({
+                status: true,
+                message: null
+            });
         }
         
         if (direction === "backwards")
@@ -62,14 +65,17 @@ export function useOverviewNavigation(props)
 
             if (targetMonth < stopMonth || userFlags === null)
             {
-                await showAlert(
-                "Não é possivel navegar para meses" +
-                " passados anteriores ao primeiro registrado."
-                );
-                return(false);
+                return({
+                    status: false,
+                    message: "Não é possivel navegar para" +
+                    " meses passados anteriores ao primeiro registrado."
+                });
             }
             
-            return(true);
+            return({
+                status: true,
+                message: null
+            });
         }
     }
     
@@ -210,9 +216,12 @@ export function useOverviewNavigation(props)
             });
             
             
-            if (canTravel === false)
+            if (canTravel.status === false)
             {
-                return(false);
+                return({
+                    status: canTravel.status,
+                    message: canTravel.message
+                });
             }
             
              const monthData = await loadOrCreateMonth(
@@ -235,7 +244,7 @@ export function useOverviewNavigation(props)
         }
         catch (error)
         {
-            await showAlert(error);
+            console.error(error);
             return(false);
         }
     }

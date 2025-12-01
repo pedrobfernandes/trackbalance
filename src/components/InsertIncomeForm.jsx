@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { NumberInput } from "../custom-components/inputs";
 import { useFormFieldValidation } from "../hooks/useFormFieldValidation";
-import FormFieldErrorMessage from "./FormFieldErrorMessage";
+import FormFieldStatusMessage from "./FormFieldStatusMessage";
 
 
 export default function InsertIncomeForm(props)
@@ -47,7 +47,7 @@ export default function InsertIncomeForm(props)
             <button type="submit">Enviar</button>
             <button type="button" onClick={onCancel}>Cancelar</button>
             
-            <FormFieldErrorMessage error={error}/>
+            <FormFieldStatusMessage status={error}/>
         
         </form>
     );

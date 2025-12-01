@@ -2,7 +2,7 @@ import { useState } from "react";
 import { NumberInput } from "../custom-components/inputs";
 import { CustomSelect } from "../custom-components/inputs";
 import { useFormFieldValidation } from "../hooks/useFormFieldValidation";
-import FormFieldErrorMessage from "./FormFieldErrorMessage";
+import FormFieldStatusMessage from "./FormFieldStatusMessage";
 
 
 export default function UpdateExpensesForm(props)
@@ -88,7 +88,7 @@ export default function UpdateExpensesForm(props)
             <button type="submit">Enviar</button>
             <button type="button" onClick={onCancel}>Cancelar</button>
             
-            <FormFieldErrorMessage error={error}/>
+            <FormFieldStatusMessage status={error}/>
             
         </form>
     );

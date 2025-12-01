@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { NumberInput } from "../custom-components/inputs";
 import { CustomSelect } from "../custom-components/inputs";
+import FormFieldStatusMessage from "./FormFieldStatusMessage";
 
 
 export default function MonthNavigation(props)
 {
     const { onSubmitSuccess, onValueChange, onCancel } = props;
+    const [navigationError, setNavigationError] = useState(null);
     
     const monthsMap =
     {
@@ -32,14 +34,17 @@ export default function MonthNavigation(props)
                 month: monthsMap[month] + 1
             });
             
-            if (canNavigate === true)
+            if (canNavigate.status === false)
             {
-                onSubmitSuccess();
+                setNavigationError(canNavigate.message);
+                return;
             }
+            
+            onSubmitSuccess();
         }
         catch (error)
         {
-            console.error("Erro ao navegar:", error);
+            console.error(error);
         }
         
     }
@@ -66,6 +71,8 @@ export default function MonthNavigation(props)
             />
             <button type="submit">Ir</button>
             <button type="button" onClick={onCancel}>Cancelar</button>
+            
+            <FormFieldStatusMessage status={navigationError}/>
             
         </form>
     );

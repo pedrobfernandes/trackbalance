@@ -28,6 +28,13 @@
 }
 
 
+.otp-form label
+{
+    max-width: 26ch;
+    margin: 0 auto;
+}
+
+
 .home-footer
 {
     width: 100%;

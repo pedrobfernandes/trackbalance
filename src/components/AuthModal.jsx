@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
-import { useModal } from "../custom-components/modals";
 import { FormModal } from "../custom-components/modals";
 import { useFormFieldValidation } from "../hooks/useFormFieldValidation";
-import FormFieldErrorMessage from "./FormFieldErrorMessage";
+import FormFieldStatusMessage from "./FormFieldStatusMessage";
+
+import "../pages/Home.css";
 
 
 export default function AuthModal(props)
@@ -14,12 +15,12 @@ export default function AuthModal(props)
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
     const [supabaseError, setSupabaseError] = useState(null);
+    const [resendMessage, setResendMessage] = useState(null);
     const [step, setStep] = useState("email");
     const [resendCooldown, setResendCooldown] = useState(0);
     
     const otpInputRef = useRef(null);
     const resendIntervalRef = useRef(null);
-    const { alert } = useModal();
     
     const
     {
@@ -74,6 +75,8 @@ export default function AuthModal(props)
     {
         setLoading(true);
         setSupabaseError(null);
+        clearError();
+        setResendMessage(null);
         
         try
         {
@@ -85,9 +88,7 @@ export default function AuthModal(props)
             }
             else
             {
-                await alert(
-                    "Código reenviado. Verifique seu e-mail e digite o código.",
-                );
+                setResendMessage("Código reenviado. Verifique seu e-mail");
                 startResendCooldown();
                 
                 if (otpInputRef.current !== null)
@@ -137,12 +138,7 @@ export default function AuthModal(props)
             }
             else
             {
-                await alert(
-                    "Um código de verificação foi enviado" +
-                    " para seu e-mail.\nPor favor verifique o e-mail" +
-                    " e digite o código para entrar na aplicação.",
-                    () => setStep("otp")
-                );
+                setStep("otp");
             }
         }
         catch
@@ -215,6 +211,7 @@ export default function AuthModal(props)
         setEmail("");
         setOtp("");
         setSupabaseError(null);
+        setResendMessage(null);
         setResendCooldown(0);
         clearError();
     }
@@ -253,7 +250,7 @@ export default function AuthModal(props)
                         Cancelar
                     </button>
                     
-                    <FormFieldErrorMessage error={error || supabaseError}/>
+                    <FormFieldStatusMessage status={error || supabaseError}/>
                     
                     
                 </form>
@@ -268,7 +265,9 @@ export default function AuthModal(props)
                     noValidate
                 >
                     
-                    <label htmlFor="otp-input">Código de 6 dígitos</label>
+                    <label htmlFor="otp-input">
+                        Insira o código de 6 digitos enviado para seu e-mail
+                    </label>
                     <input
                         id="otp-input"
                         ref={otpInputRef}
@@ -278,10 +277,6 @@ export default function AuthModal(props)
                         onChange={(event) => setOtp(event.target.value)}
                         aria-describedby="otp-form-input-desc"
                     />
-                    
-                    <p id="otp-form-input-desc" className="visually-hidden">
-                        Insira o código de 6 digitos enviado para seu e-mail.
-                    </p>
                     
                     <button
                         type="submit"
@@ -308,7 +303,7 @@ export default function AuthModal(props)
                         Voltar
                     </button>
                     
-                    <FormFieldErrorMessage error={error || supabaseError}/>
+                    <FormFieldStatusMessage status={error || supabaseError || resendMessage}/>
                     
                 </form>
             );
