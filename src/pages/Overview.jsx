@@ -268,14 +268,18 @@ export default function Overview(props)
     };
     
     
-    //~ function handleActionAndClose(callback)
-    //~ {
-        //~ return(() =>
-        //~ {
-            //~ setIsOpen(false);           
-            //~ callback();
-        //~ });
-    //~ }
+    function handleActionAndClose(callback)
+    {
+        return(() =>
+        {
+            setIsOpen(false);     
+            
+            requestAnimationFrame(() =>
+            {
+                callback();
+            });
+        });
+    }
     
     
     async function handleDeleteAccount()
@@ -476,9 +480,9 @@ export default function Overview(props)
                                     <h3 id="income-section-title">Receita</h3>
                                     <GrouppedButtons
                                         type="receita"
-                                        onInsert={() => handleClick("receita", "insert")}
-                                        onUpdate={() => handleClick("receita", "update")}
-                                        onDelete={() => handleClick("receita", "delete")}
+                                        onInsert={handleActionAndClose(() => handleClick("receita", "insert"))}
+                                        onUpdate={handleActionAndClose(() => handleClick("receita", "update"))}
+                                        onDelete={handleActionAndClose(() => handleClick("receita", "delete"))}
                                         disabledButtons={{
                                             Inserir: income > 0,
                                             Atualizar: income === 0,
@@ -495,9 +499,9 @@ export default function Overview(props)
                                     <h3 id="expenses-section-title">Despesas</h3>
                                     <GrouppedButtons
                                         type="despesa"
-                                        onInsert={() => handleClick("despesa", "insert")}
-                                        onUpdate={() => handleClick("despesa", "update")}
-                                        onDelete={() => handleClick("despesa", "delete")}
+                                        onInsert={handleActionAndClose(() => handleClick("despesa", "insert"))}
+                                        onUpdate={handleActionAndClose(() => handleClick("despesa", "update"))}
+                                        onDelete={handleActionAndClose(() => handleClick("despesa", "delete"))}
                                         disabledButtons={{
                                             Inserir: false,
                                             Atualizar: expenses.length === 0,
@@ -514,8 +518,8 @@ export default function Overview(props)
                                     <h3 id="export-section-title">Exportar</h3>
                                     <GrouppedButtons
                                         type="exportar"
-                                        onExportToCsv={handleExportToCsv}
-                                        onExportToPdf={handleExportToPdf}
+                                        onExportToCsv={handleActionAndClose(() => handleExportToCsv())}
+                                        onExportToPdf={handleActionAndClose(() =>handleExportToPdf())}
                                         disabledButtons={{
                                             CSV: income === 0 && expenses.length === 0,
                                             PDF: income === 0 && expenses.length === 0,
@@ -533,7 +537,7 @@ export default function Overview(props)
                                     <button
                                         type="button"
                                         aria-label="Escolha o mês e ano para onde quer navegar"
-                                        onClick={() => openMonthNavigationalModal("monthNavigation")}
+                                        onClick={handleActionAndClose(() => openMonthNavigationalModal("monthNavigation"))}
                                         disabled={userFlags === null}
                                     >
                                         Navegar
