@@ -2,32 +2,31 @@
 
 **🚀 Demo Online:** [https://trackbalance123.netlify.app](https://trackbalance123.netlify.app)
 
-Uma aplicação web para controle de finanças pessoais desenvolvida como projeto de aprendizado e portfólio. O foco principal foi garantir uma experiência acessível e intuitiva para todos os usuários.
+Uma aplicação web para controle de finanças pessoais desenvolvida como projeto de aprendizado e portfólio.
 
 ## 📸 Capturas de Tela
 
-| Dashboard desktop top | Dashboard desktop bottom |
+| Desktop Home | Desktop Login | Desktop Otp |
+|-----------------------|--------------------------|--------------------|
+| [![Screenshot Desktop Home](./screenshots/desktop1.png)](./screenshots/) | [![Screenshot Desktop Login](./screenshots/desktop2.png)](./screenshots/) | [![Screenshot Desktop Otp](./screenshots/desktop3.png)](./screenshots)
+
+| Desktop Dashboard Cima| Desktop Dashboard Baixo |
 |-----------------------|--------------------------|
-| [![Screenshot Dashboard Desktop](./screenshots/TrackBalance-Visão-Geral-desktop-top.png)](./screenshots/) | [![Screenshot Dashboard Desktop](./screenshots/TrackBalance-Visão-Geral-desktop-bottom.png)](./screenshots/) |
+| [![Screenshot Desktop Dashboard Cima](./screenshots/desktop4.png)](./screenshots/) | [![Screenshot Desktop Dashboard Baixo](./screenshots/desktop5.png)](./screenshots/) |
 
-| Modal de Forms desktop| Sidebar desktop         |
+| Desktop Sidebar| Desktop Modal |
 |-----------------------|--------------------------|
-| [![Screenshot Form Modal Desktop](./screenshots/TrackBalance-Visão-Geral-desktop-modal.png)](./screenshots/) | [![Screenshot Sidebar Desktop](./screenshots/TrackBalance-Visão-Geral-desktop-sidebar.png)](./screenshots/) |
+| [![Screenshot Desktop Sidebar](./screenshots/desktop6.png)](./screenshots/) | [![Screenshot Desktop Modal](./screenshots/desktop7.png)](./screenshots/) |
 
-| Dashboard mobile top  | Dashboard mobile bottom  | Sidebar mobile |
+
+| Mobile Dashboard Cima  | Mobile Dashboard Baixo | Mobile Home |
 |-----------------------|--------------------------|-----------------
-| [![Screenshot Dashboard Mobile](./screenshots/TrackBalance-Visão-Geral-mobile-top.png)](./screenshots/) | [![Screenshot Dashboard Mobile](./screenshots/TrackBalance-Visão-Geral-mobile-bottom.png)](./screenshots/) | [![Screenshot Sidebar Mobile](./screenshots/TrackBalance-Visão-Geral-mobile-sidebar.png)](./screenshots/) |
+| [![Screenshot Mobaile Dashboard Cima](./screenshots/mobile2.png)](./screenshots/) | [![Screenshot Mobile Dashboard Baixo](./screenshots/mobile3.png)](./screenshots/) | [![Screenshot Mobile Home](./screenshots/mobile1.png)](./screenshots/) |
 
-| Home Mobile  | Login Mobile | Modal de Forms Mobile |
-|-----------------------|--------------------------|-----------------
-| [![Screenshot Home Mobile](./screenshots/TrackBalance-Home-mobile.png)](./screenshots/) | [![Screenshot Login Mobile](./screenshots/TrackBalance-Home-mobile-login.png)](./screenshots/) | [![Screenshot Form Modal Mobile](./screenshots/TrackBalance-Visão-Geral-mobile-modal.png)](./screenshots/) |
+| Mobile Sidebar  | Mobile Modal |
+|-----------------------|--------------------------|
+| [![Screenshot Mobile Sidebar](./screenshots/mobile4.png)](./screenshots/) | [![Screenshot Mobile Modal](./screenshots/mobile5.png)](./screenshots/) |
 
-
-
-
-## 📋 Sobre o Projeto
-
-O TrackBalance permite que usuários gerenciem suas finanças mensais de forma simples e organizada. A aplicação oferece controle sobre receitas e despesas, com navegação entre meses e exportação de dados.
 
 ## ✨ Funcionalidades
 
@@ -37,8 +36,8 @@ O TrackBalance permite que usuários gerenciem suas finanças mensais de forma s
 - **Exportação de Dados**: Exportar dados do mês atual para CSV e PDF
 - **Dashboard Resumido**: Visualização rápida do saldo e despesas recentes
 - **Exclusão de Conta**: Remoção completa dos dados do usuário
-- **Gestão Inteligente de Meses**:
-  - Evita criar meses desnecessários (apenas cria quando há dados reais)
+- **Gestão dos Meses**:
+  - Não cria meses desnecessários (apenas cria quando há dados reais)
   - Detecta "meses vazios" no histórico e oferece preenchimento automático
   - Sempre garante que o mês atual existe, copiando dados do último mês válido
   - Cria meses intermediários automaticamente durante a navegação nos meses (caso queira navegar para um mês que não existe)
@@ -46,15 +45,15 @@ O TrackBalance permite que usuários gerenciem suas finanças mensais de forma s
 ## 🛠️ Tecnologias Utilizadas
 
 - **Frontend**: React + Vite
-- **Backend**: Supabase (Banco de dados e autenticação)
+- **Backend**: Supabase (Banco de dados e autenticação OTP)
 - **Roteamento**: React Router
 - **Gráficos**: Recharts
 - **Exportação PDF**: jsPDF + AutoTables
-- **Estilização**: CSS customizado
+- **Estilização**: CSS
 
 ## ♿ Acessibilidade
 
-Desenvolvi este projeto com especial atenção à acessibilidade:
+Desenvolvi este projeto com grande foco em acessibilidade:
 
 ### 🎯 Porque Componentes Customizados?
 Embora este projeto seja para portfólio, ele é também (até mais) de aprendizado. Como tal, queria aprender a criar componentes "substitutos" aos elementos nativos e acima de tudo aprender a deixar-los acessíveis.
@@ -73,9 +72,9 @@ Embora este projeto seja para portfólio, ele é também (até mais) de aprendiz
 
 #### 🔍 Manuais
 - Navegação completa via teclado (todas as funcionalidades)
-- Teste com leitor de tela Orca (Linux) 
+- Teste com leitor de tela Orca + navegador Firefox (Linux)
 - Navegação por landmarks e headings
-- Teste de focus management em modais
+- Teste de focus trap em modais
 - Validação de contrastes de cor
 
 #### ⚙️ Ferramentas de Teste
@@ -89,7 +88,7 @@ Embora este projeto seja para portfólio, ele é também (até mais) de aprendiz
 - **months**: Controle de meses por usuário
 - **incomes**: Receitas mensais (uma por mês)
 - **expenses**: Despesas mensais (categorias únicas)
-- **user_flags**: Controle de navegação entre meses
+- **user_flags**: Controle de navegação entre meses - enquanto flags forem null usuario não colocou dados uteis (receita e ou despesas). Não cria registro de mês.
 
 ## 🚀 Como Executar
 
@@ -114,6 +113,7 @@ npm install
 ```bash
 VITE_SUPABASE_URL=sua_url_do_supabase
 VITE_SUPABASE_ANON_KEY=sua_chave_anon_publica
+VITE_SUPABASE_DELETE_ACCOUNT_URL=url_da_edge_function_para_excluir_conta
 ```
 4. Configure o banco de dados
 - Crie um projeto no Supabase
@@ -130,3 +130,4 @@ npm run dev
 - A autenticação é por OTP (código enviado para o email)
 - Usei o mesmo template de email para  "Confirm Signup" e "Magic Link", caso contrário, no segundo login, o Supabase envia Magic Link ao invés de código
 - Como iniciante, configurei a Edge Function (e basicamente tudo) pelo dashboard do Supabase, sem usar supabase-cli ou outro método
+- Todos os testes de acessibilidade foram feitos no Firefox (linux) + ORCA apenas. Não tenho acesso a outros sistemas nem leitores de tela
