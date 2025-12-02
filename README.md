@@ -130,4 +130,4 @@ npm run dev
 - A autenticação é por OTP (código enviado para o email)
 - Usei o mesmo template de email para  "Confirm Signup" e "Magic Link", caso contrário, no segundo login, o Supabase envia Magic Link ao invés de código
 - Como iniciante, configurei a Edge Function (e basicamente tudo) pelo dashboard do Supabase, sem usar supabase-cli ou outro método
-- Todos os testes de acessibilidade foram feitos no Firefox (linux) + ORCA apenas. Não tenho acesso a outros sistemas nem leitores de tela
+- Todos os testes de acessibilidade foram feitos no Firefox (Linux) + Orca apenas. Não tenho acesso a outros sistemas nem leitores de tela
