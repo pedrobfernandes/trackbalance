@@ -151,6 +151,19 @@ export default function Overview(props)
         }
     
     }, [currentYear, currentMonth]);
+    
+    
+    useEffect(() =>
+    {
+        if (menuButtonRef.current !== null)
+        {
+            const button = menuButtonRef.current;
+            const expanded = button.getAttribute("aria-expanded");
+            
+            button.setAttribute("aria-expanded", expanded);
+        }
+    
+    }, [isOpen]);
         
     
     const
@@ -270,12 +283,9 @@ export default function Overview(props)
     
     function handleActionAndClose(callback)
     {
-        return( async () =>
+        return(() =>
         {
             setIsOpen(false);
-            
-            await new Promise(resolve => setTimeout(resolve, 200));           
-            
             callback();
         });
     }
