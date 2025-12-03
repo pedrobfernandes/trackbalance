@@ -55,7 +55,7 @@ Uma aplicação web para controle de finanças pessoais desenvolvida como projet
 
 Desenvolvi este projeto com grande foco em acessibilidade:
 
-### 🎯 Porque Componentes Customizados?
+### 🎯 Porque "Reinventar a Roda"?
 Embora este projeto seja para portfólio, ele é também (até mais) de aprendizado. Como tal, queria aprender a criar componentes "substitutos" aos elementos nativos e acima de tudo aprender a deixar-los acessíveis.
 
 ### 🎯 Componentes Customizados
@@ -82,6 +82,28 @@ Embora este projeto seja para portfólio, ele é também (até mais) de aprendiz
 - WAVE Evaluation Tool
 - IBM Equal Access Accessibility Checker
 - Ferramenta nativa de Acessibilidade do Firefox
+
+#### 🐛 O que não está funcionando *(possível erro nas minhas implementações...)*
+
+**Contexto:**  
+A barra de ações do usuário (inserir receita, despesas etc.) antes fechava automaticamente ao abrir algum modal.
+
+**O problema:**  
+Quando o **primeiro elemento focado no modal era um `input`**:
+1. ✅ Ao abrir: Leitor anunciava "Recolhido" → título do modal → label do input
+2. ✅ Ao fechar: Foco voltava ao botão de Menu, leitor lia "Recolhido"
+3. ❌ **Bug:** Ao pressionar o botão para abrir a barra, o leitor **não anunciava "Expandido"**
+
+**Observação:**  
+Isso **não acontecia** quando o primeiro elemento era um `select` (como meu componente customizado).
+
+**Minha solução:**  
+Após várias tentativas sem sucesso, optei por:
+- A barra agora só fecha quando o usuário clica explicitamente no botão de Menu
+- Não fecha mais automaticamente ao abrir modais
+
+**Honestamente:**  
+Não sei se é um comportamento específico do leitor de tela (Orca + Firefox) ou se fiz algo errado no código (mais provavel né...!!!). Mas com essa mudança, tudo funciona corretamente! ✅
 
 ## 🗄️ Estrutura do Banco de Dados
 
