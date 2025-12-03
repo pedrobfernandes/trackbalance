@@ -10,51 +10,51 @@ export default function ActionPanel(props)
     
     } = props;
     
-    //~ const panelRef = useRef(null);
+    const panelRef = useRef(null);
     
     
-    //~ function handleClickOutside(event)
-    //~ {
-        //~ if
-        //~ (
-            //~ panelRef.current !== null &&
-            //~ panelRef.current.contains(event.target) === false &&
-            //~ menuButtonRef.current !== null &&
-            //~ menuButtonRef.current.contains(event.target) === false
-        //~ )
-        //~ {
-            //~ setIsOpen(false);
-        //~ }
-    //~ }
+    function handleClickOutside(event)
+    {
+        if
+        (
+            panelRef.current !== null &&
+            panelRef.current.contains(event.target) === false &&
+            menuButtonRef.current !== null &&
+            menuButtonRef.current.contains(event.target) === false
+        )
+        {
+            setIsOpen(false);
+        }
+    }
     
     
-    //~ function handleKeyDown(event)
-    //~ {
-        //~ if (event.key === "Escape")
-        //~ {
-            //~ setIsOpen(false);
-            //~ menuButtonRef.current.focus();
-        //~ }
-    //~ }
+    function handleKeyDown(event)
+    {
+        if (event.key === "Escape")
+        {
+            setIsOpen(false);
+            menuButtonRef.current.focus();
+        }
+    }
     
     
-    //~ useEffect(() =>
-    //~ {
-        //~ if (isOpen === false)
-        //~ {
-            //~ return;
-        //~ }
+    useEffect(() =>
+    {
+        if (isOpen === false)
+        {
+            return;
+        }
         
-        //~ document.addEventListener("mousedown", handleClickOutside);
-        //~ document.addEventListener("keydown", handleKeyDown);
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("keydown", handleKeyDown);
         
-        //~ return(() =>
-        //~ {
-            //~ document.removeEventListener("mousedown", handleClickOutside);
-            //~ document.removeEventListener("keydown", handleKeyDown);
-        //~ })
+        return(() =>
+        {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("keydown", handleKeyDown);
+        })
     
-    //~ }, [isOpen]);
+    }, [isOpen]);
 
     
     function renderActionPanel()
