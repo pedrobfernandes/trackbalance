@@ -8,24 +8,24 @@ Uma aplicação web para controle de finanças pessoais desenvolvida como projet
 
 | Desktop Home | Desktop Login | Desktop Otp |
 |-----------------------|--------------------------|--------------------|
-| [![Screenshot Desktop Home](./screenshots/desktop1.png)](./screenshots/) | [![Screenshot Desktop Login](./screenshots/desktop2.png)](./screenshots/) | [![Screenshot Desktop Otp](./screenshots/desktop3.png)](./screenshots)
+| [![Screenshot Desktop Home](./screenshots/desktop1.png)](./screenshots/desktop1.png) | [![Screenshot Desktop Login](./screenshots/desktop2.png)](./screenshots/desktop2.png) | [![Screenshot Desktop Otp](./screenshots/desktop3.png)](./screenshots/desktop3.png)
 
 | Desktop Dashboard Cima| Desktop Dashboard Baixo |
 |-----------------------|--------------------------|
-| [![Screenshot Desktop Dashboard Cima](./screenshots/desktop4.png)](./screenshots/) | [![Screenshot Desktop Dashboard Baixo](./screenshots/desktop5.png)](./screenshots/) |
+| [![Screenshot Desktop Dashboard Cima](./screenshots/desktop4.png)](./screenshots/desktop4.png) | [![Screenshot Desktop Dashboard Baixo](./screenshots/desktop5.png)](./screenshots/desktop5.png) |
 
 | Desktop Sidebar| Desktop Modal |
 |-----------------------|--------------------------|
-| [![Screenshot Desktop Sidebar](./screenshots/desktop6.png)](./screenshots/) | [![Screenshot Desktop Modal](./screenshots/desktop7.png)](./screenshots/) |
+| [![Screenshot Desktop Sidebar](./screenshots/desktop6.png)](./screenshots/desktop6.png) | [![Screenshot Desktop Modal](./screenshots/desktop7.png)](./screenshots/desktop7.png) |
 
 
 | Mobile Dashboard Cima  | Mobile Dashboard Baixo | Mobile Home |
 |-----------------------|--------------------------|-----------------
-| [![Screenshot Mobaile Dashboard Cima](./screenshots/mobile2.png)](./screenshots/) | [![Screenshot Mobile Dashboard Baixo](./screenshots/mobile3.png)](./screenshots/) | [![Screenshot Mobile Home](./screenshots/mobile1.png)](./screenshots/) |
+| [![Screenshot Mobile Dashboard Cima](./screenshots/mobile2.png)](./screenshots/mobile2.png) | [![Screenshot Mobile Dashboard Baixo](./screenshots/mobile3.png)](./screenshots/mobile3.png) | [![Screenshot Mobile Home](./screenshots/mobile1.png)](./screenshots/mobile1.png) |
 
 | Mobile Sidebar  | Mobile Modal |
 |-----------------------|--------------------------|
-| [![Screenshot Mobile Sidebar](./screenshots/mobile4.png)](./screenshots/) | [![Screenshot Mobile Modal](./screenshots/mobile5.png)](./screenshots/) |
+| [![Screenshot Mobile Sidebar](./screenshots/mobile4.png)](./screenshots/mobile4.png) | [![Screenshot Mobile Modal](./screenshots/mobile5.png)](./screenshots/mobile5.png) |
 
 
 ## ✨ Funcionalidades
@@ -57,6 +57,10 @@ Desenvolvi este projeto com grande foco em acessibilidade:
 
 ### 🎯 Porque "Reinventar a Roda"?
 Embora este projeto seja para portfólio, ele é também (até mais) de aprendizado. Como tal, queria aprender a criar componentes "substitutos" aos elementos nativos e acima de tudo aprender a deixar-los acessíveis.
+
+### 📚 Base Técnica e Referências
+1. Em todos os componentes customizados, segui como referência principal o [WAI-ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) - o guia oficial para implementação de componentes acessíveis. Em alguns componentes adaptei para a minha situação (alguns ajustes em timeout, para gerenciar melhor o foco e o comportamento do leitor de tela), mas o "grosso", leia-se atributos aria, focus trap e tudo o resto segui os padrões recomendados.
+2. Usei muita ajuda do [ChatGPT](https://chatgpt.com/) e [deepseek](https://www.deepseek.com) - (claro que não conseguiria fazer sozinho né...!!! afinal sou iniciante 😂)
 
 ### 🎯 Componentes Customizados
 - **Modal Context** - substitui alertas/confirms nativos
@@ -96,7 +100,7 @@ Quando o **primeiro elemento focado no modal era um `input`**:
 
 **Observações:**  
 1. Isso **não acontecia** quando o primeiro elemento era um `select` (como meu componente customizado)
-2. ***Acontecia apenas no deploy - em desenvolvimeto local tudo funcionava perfeitamente***.
+2. ***Acontecia apenas no deploy - em desenvolvimento local tudo funcionava perfeitamente***.
 
 **Minha solução:**  
 Após várias tentativas sem sucesso, optei por:
@@ -104,7 +108,7 @@ Após várias tentativas sem sucesso, optei por:
 - Não fecha mais automaticamente ao abrir modais
 
 **Honestamente:**  
-Não sei se é um comportamento específico do leitor de tela (Orca + Firefox) ou se fiz algo errado no código (mais provavel né...!!!). Mas com essa mudança, tudo funciona corretamente! ✅
+Não sei se é um comportamento específico do leitor de tela (Orca + Firefox) ou se fiz algo errado no código (mais provável né...!!! 😅). Mas com essa mudança, tudo funciona corretamente! ✅
 
 ## 🗄️ Estrutura do Banco de Dados
 
