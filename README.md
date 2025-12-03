@@ -59,8 +59,7 @@ Desenvolvi este projeto com grande foco em acessibilidade:
 Embora este projeto seja para portfólio, ele é também (até mais) de aprendizado. Como tal, queria aprender a criar componentes "substitutos" aos elementos nativos e acima de tudo aprender a deixar-los acessíveis.
 
 ### 📚 Base Técnica e Referências
-1. Em todos os componentes customizados, segui como referência principal o [WAI-ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) - o guia oficial para implementação de componentes acessíveis. Em alguns componentes adaptei para a minha situação (alguns ajustes em timeout, para gerenciar melhor o foco e o comportamento do leitor de tela), mas o "grosso", leia-se atributos aria, focus trap e tudo o resto segui os padrões recomendados.
-2. Usei muita ajuda do [ChatGPT](https://chatgpt.com/) e [deepseek](https://www.deepseek.com) - (claro que não conseguiria fazer sozinho né...!!! afinal sou iniciante 😂)
+Em todos os componentes customizados, segui como referência principal o [WAI-ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) - o guia oficial para implementação de componentes acessíveis. Em alguns componentes adaptei para a minha situação (alguns ajustes em timeout, para gerenciar melhor o foco e o comportamento do leitor de tela), mas o "grosso", leia-se atributos aria, focus trap e tudo o resto segui os padrões recomendados.
 
 ### 🎯 Componentes Customizados
 - **Modal Context** - substitui alertas/confirms nativos
@@ -115,7 +114,7 @@ Não sei se é um comportamento específico do leitor de tela (Orca + Firefox) o
 - **months**: Controle de meses por usuário
 - **incomes**: Receitas mensais (uma por mês)
 - **expenses**: Despesas mensais (categorias únicas)
-- **user_flags**: Controle de navegação entre meses - enquanto flags forem null usuario não colocou dados uteis (receita e ou despesas). Não cria registro de mês.
+- **user_flags**: Controle de navegação entre meses - enquanto flags forem null, quer dizer que o usuario não colocou dados uteis (receita e ou despesas). Não cria registro de mês.
 
 ## 🚀 Como Executar
 
@@ -157,4 +156,4 @@ npm run dev
 - A autenticação é por OTP (código enviado para o email)
 - Usei o mesmo template de email para  "Confirm Signup" e "Magic Link", caso contrário, no segundo login, o Supabase envia Magic Link ao invés de código
 - Como iniciante, configurei a Edge Function (e basicamente tudo) pelo dashboard do Supabase, sem usar supabase-cli ou outro método
-- Todos os testes de acessibilidade foram feitos no Firefox (Linux) + Orca apenas. Não tenho acesso a outros sistemas nem leitores de tela
+- Todos os testes de acessibilidade foram feitos no Firefox (Linux) + Orca apenas. Não garanto nada em outra combinação de sistema/navegador/leitor.
