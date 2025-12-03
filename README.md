@@ -59,7 +59,7 @@ Desenvolvi este projeto com grande foco em acessibilidade:
 Embora este projeto seja para portfólio, ele é também (até mais) de aprendizado. Como tal, queria aprender a criar componentes "substitutos" aos elementos nativos e acima de tudo aprender a deixar-los acessíveis.
 
 ### 📚 Base Técnica e Referências
-Em todos os componentes customizados, segui como referência principal o [WAI-ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) - o guia oficial para implementação de componentes acessíveis. Em alguns componentes adaptei para a minha situação (alguns ajustes em timeout, para gerenciar melhor o foco e o comportamento do leitor de tela), mas o "grosso", leia-se atributos aria, focus trap e tudo o resto segui os padrões recomendados.
+Em todos os componentes customizados, segui como referência principal o [WAI-ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/). Em alguns componentes adaptei para a minha situação (alguns ajustes em timeout, para gerenciar melhor o foco e o comportamento do leitor de tela), mas o "grosso", leia-se atributos aria, focus trap e tudo o resto segui os padrões recomendados.
 
 ### 🎯 Componentes Customizados
 - **Modal Context** - substitui alertas/confirms nativos
