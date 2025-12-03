@@ -153,17 +153,17 @@ export default function Overview(props)
     }, [currentYear, currentMonth]);
     
     
-    useEffect(() =>
-    {
-        if (menuButtonRef.current !== null)
-        {
-            const button = menuButtonRef.current;
-            const expanded = button.getAttribute("aria-expanded");
+    //~ useEffect(() =>
+    //~ {
+        //~ if (menuButtonRef.current !== null)
+        //~ {
+            //~ const button = menuButtonRef.current;
+            //~ const expanded = button.getAttribute("aria-expanded");
             
-            button.setAttribute("aria-expanded", expanded);
-        }
+            //~ button.setAttribute("aria-expanded", expanded);
+        //~ }
     
-    }, [isOpen]);
+    //~ }, [isOpen]);
         
     
     const
@@ -285,8 +285,8 @@ export default function Overview(props)
     {
         return(() =>
         {
-            setIsOpen(false);
             callback();
+            setIsOpen(false);
         });
     }
     
