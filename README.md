@@ -94,8 +94,9 @@ Quando o **primeiro elemento focado no modal era um `input`**:
 2. ✅ Ao fechar: Foco voltava ao botão de Menu, leitor lia "Recolhido"
 3. ❌ **Bug:** Ao pressionar o botão para abrir a barra, o leitor **não anunciava "Expandido"**
 
-**Observação:**  
-Isso **não acontecia** quando o primeiro elemento era um `select` (como meu componente customizado).
+**Observações:**  
+1. Isso **não acontecia** quando o primeiro elemento era um `select` (como meu componente customizado)
+2. ***Acontecia apenas no deploy - em desenvolvimeto local tudo funcionava perfeitamente***.
 
 **Minha solução:**  
 Após várias tentativas sem sucesso, optei por:
