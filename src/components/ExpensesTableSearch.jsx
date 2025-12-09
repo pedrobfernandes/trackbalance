@@ -48,7 +48,13 @@ export default function ExpensesTableSearch(props)
                     value={query}
                     onChange={handleValueChange}
                 />
-                <button type="submit">Filtrar</button>
+                <button type="submit">
+                    <i
+                        className="fa-solid fa-magnifying-glass"
+                        aria-hidden="true"
+                    ></i>
+                    Filtrar
+                </button>
             </div>
         </form>
     );

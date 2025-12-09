@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import AuthModal from "../components/AuthModal";
+import CalculatorIllustration from "../components/CalculatorIllustration";
 
 import "./Home.css";
 
@@ -22,21 +23,33 @@ export default function Home()
         <div className="home-container">
             
             <header>
-                <h1>TrackBalance</h1>
+                <h1>
+                    TrackBalance
+                    <i
+                        className="fa-solid fa-scale-balanced"
+                        aria-hidden="true"
+                    ></i>
+                </h1>
             </header>
             
             <main className="home-main">
-                <p>
-                    Uma aplicação simples para controlar receitas e despesas.
-                    Projeto de aprendizado e portfólio.
-                </p>
-                <button
-                    type="button"
-                    onClick={() => setIsAuthFormOpen(true)}
-                    aria-label="Abrir modal de login e autenticação"
-                >
-                    Login
-                </button>
+                <div className="home-main-container">
+
+                    <CalculatorIllustration/>
+                    <div className="home-main-content-container">
+                        <p>
+                            Uma aplicação simples para controlar receitas e despesas.
+                            Projeto de aprendizado e portfólio.
+                        </p>
+                        <button
+                            type="button"
+                            onClick={() => setIsAuthFormOpen(true)}
+                            aria-label="Abrir modal de login e autenticação"
+                        >
+                            Login
+                        </button>
+                    </div>
+                </div>
             </main>
             
             <footer className="home-footer" >

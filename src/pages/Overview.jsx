@@ -391,17 +391,35 @@ export default function Overview(props)
                         <div className="summary-container">
                             
                             <div className="income-summary-container">
-                                <h3>Receita:</h3>
+                                <h3>
+                                    <i
+                                        className="fa-solid fa-hand-holding-dollar"
+                                        aria-hidden="true"
+                                    ></i>
+                                    Receita:
+                                </h3>
                                 <p>{income === 0 ? '0' : parseFloat(income).toFixed(2)}</p>
                             </div>
                             
                             <div className="expenses-summary-container">
-                                <h3>Despesas:</h3>
+                                <h3>
+                                    <i
+                                        className="fa-solid fa-basket-shopping"
+                                        aria-hidden="true"
+                                    ></i>
+                                    Despesas:
+                                </h3>
                                 <p>{totalExpenses === 0 ? '0' : parseFloat(totalExpenses).toFixed(2)}</p>
                             </div>
                             
                             <div className="remaining-summary-container">
-                                <h3>Restante:</h3>
+                                <h3>
+                                    <i
+                                        className="fa-solid fa-piggy-bank"
+                                        aria-hidden="true"
+                                    ></i>
+                                    Restante:
+                                </h3>
                                 <p>{remaining === 0 ? '0' : parseFloat(remaining).toFixed(2)}</p>
                             </div>
                             
