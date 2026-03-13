@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import AuthModal from "../components/AuthModal";
 import CalculatorIllustration from "../components/CalculatorIllustration";
@@ -10,6 +10,7 @@ export default function Home()
 {
     const [isAuthFormOpen, setIsAuthFormOpen] = useState(false);
     const navigate = useNavigate();
+    const loginButtonRef = useRef(null);
        
     
     function goToOverview()
@@ -18,6 +19,17 @@ export default function Home()
         navigate("/overview");
     }
 
+
+    function handleAuthModalCancel()
+    {
+        setIsAuthFormOpen(false);
+        
+        if (loginButtonRef.current !== null)
+        {
+            loginButtonRef.current.focus();
+        }
+    }
+    
     
     return(
         <div className="home-container">
@@ -42,6 +54,7 @@ export default function Home()
                             Projeto de aprendizado e portfólio.
                         </p>
                         <button
+                            ref={loginButtonRef}
                             type="button"
                             onClick={() => setIsAuthFormOpen(true)}
                             aria-label="Abrir modal de login e autenticação"
@@ -68,7 +81,7 @@ export default function Home()
             
             <AuthModal
                 isOpen={isAuthFormOpen}
-                onCancel={() => setIsAuthFormOpen(false)}
+                onCancel={handleAuthModalCancel}
                 onSucess={goToOverview}
             >
             </AuthModal>
