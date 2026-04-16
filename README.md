@@ -27,7 +27,7 @@ Aplicação completa de finanças pessoais com autenticação, persistência de 
 
 ---
 
-## ♿ Acessibilidade (Diferencial do Projeto)
+## ♿ Acessibilidade
 
 Este projeto foi desenvolvido com foco prático em acessibilidade, seguindo diretrizes WCAG e padrões WAI-ARIA.
 
