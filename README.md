@@ -1,6 +1,6 @@
 # TrackBalance
 
-Aplicação completa de finanças pessoais com autenticação, persistência de dados e foco avançado em acessibilidade (WCAG).
+Aplicação de gestão financeira pessoal com autenticação, persistência de dados e forte foco em acessibilidade (WCAG).
 
 🔗 **Demo:** https://trackbalance123.netlify.app
 
@@ -9,21 +9,33 @@ Aplicação completa de finanças pessoais com autenticação, persistência de 
 ## 🚀 Principais Destaques
 
 * Autenticação via OTP com Supabase
-* Persistência de dados e exclusão completa de conta
-* Dashboard financeiro com receitas, despesas e saldo
+* CRUD completo com persistência de dados
+* Dashboard financeiro (receitas, despesas e saldo)
 * Exportação de dados (CSV e PDF)
-* Navegação inteligente entre meses
+* Navegação entre meses com atualização dinâmica
 
 ---
 
 ## 🛠️ Tecnologias
 
-* React + Vite
+* React
+* Vite
 * Supabase (database + autenticação)
 * React Router
 * Recharts
 * jsPDF + AutoTables
 * CSS
+
+---
+
+## 🧠 Aprendizados
+
+Durante o desenvolvimento deste projeto, aprofundei conhecimentos em:
+
+* Implementação de autenticação e fluxo de usuário com Supabase
+* Gerenciamento de estado e sincronização de dados com backend
+* Construção de componentes acessíveis sem bibliotecas externas
+* Aplicação prática de padrões WAI-ARIA
 
 ---
 
