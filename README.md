@@ -77,13 +77,31 @@ Este projeto foi desenvolvido com foco prático em acessibilidade, seguindo dire
 
 ---
 
-## ⚠️ Observação Técnica
+## ⚠️ Observações Técnicas
 
-Durante o desenvolvimento, identifiquei um comportamento inconsente ao abrir modais com foco inicial em inputs utilizando leitor de tela (Orca + Firefox).
+Durante o desenvolvimento, foram implementados dois tipos de modais:
 
-Ao fechar o modal, o foco retornava corretamente ao botão de menu, porém o leitor de tela não anunciava a mudança de estado ("expandido") ao reabrir a interface.
+- Modaal de formulário (utilizado para entrada de dados)
+- Modal customizado para substituir `alert()` e `confirm()` do navegador
 
-Após investigação, optei por ajustar o fluxo da interface para evitar fechamento automático da barra de ações ao abrir modais, garantindo consistência na navegação e feedback ao usuário.
+### Comportamento com leitor de tela
+
+Ao testar com leitor de tela (Orca + Firefox), identifiquei um comportamento inconsistente relacionado ao fluxo de foco e anúncio de estado ao interagir com modais a partir da barra lateral.
+
+Ao fechar o modal, o foco retornava corretamente ao botão de menu. No entanto, em alguns cenários, o leitor de tela não anunciava corretamente a mudança de estado ("expandido") ao reabrir a interface.
+
+Como ajuste, optei por modificar o fluxo da interface, evitando o fechamento automático da barra de ações ao abrir modais, garantindo maior consistência na navegação e no feedback ao usuário.
+
+### Limitação conhecida (modal customizado)
+
+O modal utilizado como substituto de `alert()` e `confirm()` apresenta uma limitação:
+
+- O retorno de foco não é tratado de forma totalmente genérica
+- O comportamento funciona corretamente neste projeto devido ao contexto da interface (uso recorrente do botão de menu), mas depende dessa estrutura
+
+Além disso, a implementação inicial utilizava um pequeno atraso (`setTimeout`) para mover o foco do container do modal para o botão de ação.
+
+Essa abordagem foi posteriormente identificada como desnecessária e refinada em projetos seguintes, com uma gestão de foco mais consistente e alinhada às boas práticas de acessibilidade.
 
 ---
 
